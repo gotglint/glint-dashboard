@@ -1,11 +1,19 @@
 package main
 
 import (
-  "github.com/gin-gonic/gin"
-  "github.com/gorilla/websocket"
-  "net/http"
   "fmt"
+  "net/http"
+  "time"
+
+  "github.com/gin-gonic/gin"
+  "github.com/gin-gonic/contrib/static"
+  "github.com/gin-gonic/contrib/ginrus"
+
+  "github.com/gorilla/websocket"
+  "github.com/Sirupsen/logrus"
 )
+
+var log = logrus.New()
 
 var wsupgrader = websocket.Upgrader{
   ReadBufferSize:  1024,
@@ -31,11 +39,9 @@ func wshandler(w http.ResponseWriter, r *http.Request) {
 func main() {
   r := gin.Default()
 
-  r.LoadHTMLFiles("index.html")
+  r.Use(ginrus.Ginrus(log, time.RFC3339, false))
 
-  r.GET("/", func(c *gin.Context) {
-    c.HTML(200, "index.html", nil)
-  })
+  r.Use(static.Serve("/", static.LocalFile("./static", true)))
 
   r.GET("/ws", func(c *gin.Context) {
     wshandler(c.Writer, c.Request)

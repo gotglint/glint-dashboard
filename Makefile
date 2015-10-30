@@ -16,9 +16,13 @@ clean:
 	rm -f ./glint
 
 bootstrap-dist:
-	go get -u github.com/gin-gonic/gin
-	go get -u github.com/gorilla/websocket
+	go get -u github.com/ivpusic/rerun
 	go get -u github.com/mitchellh/gox
+	go get -u github.com/gin-gonic/gin
+	go get -u github.com/gin-gonic/contrib/ginrus
+	go get -u github.com/gin-gonic/contrib/static
+	go get -u github.com/gorilla/websocket
+	go get -u github.com/Sirupsen/logrus
 
 build-all:
 	gox -verbose \
