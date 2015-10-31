@@ -1,7 +1,7 @@
 VERSION := $(shell git describe --tags)
 DIST_DIRS := find * -type d -exec
 
-build:
+build: bootstrap
 	go build -o glint -ldflags "-X main.version=${VERSION}" main.go
 
 install: build
@@ -15,7 +15,7 @@ clean:
 	rm -f ./glint.test
 	rm -f ./glint
 
-bootstrap-dist:
+bootstrap:
 	go get -u github.com/ivpusic/rerun
 	go get -u github.com/mitchellh/gox
 	go get -u github.com/gin-gonic/gin
@@ -38,4 +38,4 @@ dist: build-all
 	$(DIST_DIRS) zip -r glide-{}.zip {} \; && \
 	cd ..
 
-.PHONY: build test install clean bootstrap-dist build-all dist
+.PHONY: build test install clean bootstrap build-all dist
