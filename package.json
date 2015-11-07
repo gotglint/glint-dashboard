@@ -1,0 +1,24 @@
+{
+  "name": "glint",
+  "version": "0.1.0",
+  "description": "Got Glint?",
+  "license": "AGPL-3.0",
+  "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com/)",
+  "repository": "mlaccetti/glint",
+  "scripts": {
+    "compile": "babel -d lib/ src/",
+    "prepublish": "npm run compile"
+  },
+  "main": "lib/person.js",
+  "dependencies": {
+    "core-js": "^0.6.1"
+  },
+  "devDependencies": {
+    "babel": "^6.0.15",
+    "broccoli": "^0.16.8",
+    "broccoli-babel-transpiler": "^5.4.5",
+    "broccoli-concat": "0.0.13",
+    "broccoli-funnel": "^0.2.12",
+    "broccoli-merge-trees": "^0.2.4"
+  }
+}
