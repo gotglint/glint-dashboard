@@ -1,0 +1,15 @@
+nginx:
+  image: nginx
+  ports:
+   - 3000:3000
+  volumes:
+   - ..:/opt/glint
+   - nginx:/etc/nginx/conf.d
+
+graphite-statsd:
+  image: hopsoft/graphite-statsd
+  ports:
+    - 8888:80
+    - 2003:2003
+    - 8125:8125
+    - 8126:8126
