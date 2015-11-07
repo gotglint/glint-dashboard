@@ -1,27 +1,34 @@
-// Node path module
-var path = require('path');
+var sassDir = 'app/scss';
+var scriptDir = 'app/js';
 
-// Babel transpiler
-var babel = require('broccoli-babel-transpiler');
-// filter trees (subsets of files)
-var funnel = require('broccoli-funnel');
-// concatenate trees
-var concat = require('broccoli-concat');
-// merge trees
+var BrowserSync = require('broccoli-browser-sync');
+var Funnel = require('broccoli-funnel');
+
+var eslint = require('broccoli-lint-eslint');
+var env = require('broccoli-env').getEnv();
 var mergeTrees = require('broccoli-merge-trees');
+var sass = require('broccoli-sass');
+var stew = require('broccoli-stew');
+var pickFiles = require('broccoli-static-compiler');
 
-// Transpile the source files
-var appJs = babel('src', {browserPolyfill: true});
+var styles = sass([sassDir], 'app.scss', 'css/app.css');
 
-// Concatenate all the JS files into a single file
-appJs = concat(appJs, {
-  inputFiles: ['**/*.js'],
-  outputFile: '/js/my-app.js'
+var lintedScripts = eslint(scriptDir, {});
+var renamedScripts = stew.rename(lintedScripts, '.jsx', '.js');
+var movedScripts = new Funnel(renamedScripts, {
+  destDir: 'js'
 });
 
-// Grab the index file
-var index = funnel('src', {files: ['index.html']});
+var staticFiles = new Funnel('app', {include: ['config.js', '*.html', '*.png', '*.gif']});
 
-// Grab all our trees and
-// export them as a single and final tree
-module.exports = mergeTrees([index, appJs]);
+if (env === 'production') {
+  // do minification/babel/...
+}
+
+var sync = new BrowserSync([staticFiles, styles]);
+
+var jspm = new Funnel('jspm_packages', {
+  destDir: 'jspm_packages'
+});
+
+module.exports = mergeTrees([staticFiles, styles, movedScripts, sync, jspm]);

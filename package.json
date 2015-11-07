@@ -1,24 +1,45 @@
 {
   "name": "glint",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Got Glint?",
-  "license": "AGPL-3.0",
-  "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com/)",
-  "repository": "mlaccetti/glint",
-  "scripts": {
-    "compile": "babel -d lib/ src/",
-    "prepublish": "npm run compile"
+  "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mlaccetti/glint.git"
   },
-  "main": "lib/person.js",
-  "dependencies": {
-    "core-js": "^0.6.1"
+  "bugs": {
+    "url": "https://github.com/mlaccetti/glint/issues"
   },
+  "license": "LGPL-2.1",
   "devDependencies": {
-    "babel": "^6.0.15",
+    "babel-eslint": "^4.1.4",
     "broccoli": "^0.16.8",
-    "broccoli-babel-transpiler": "^5.4.5",
-    "broccoli-concat": "0.0.13",
-    "broccoli-funnel": "^0.2.12",
-    "broccoli-merge-trees": "^0.2.4"
+    "broccoli-browser-sync": "^1.0.0",
+    "broccoli-env": "0.0.1",
+    "broccoli-eslint": "0.0.5",
+    "broccoli-funnel": "^0.2.13",
+    "broccoli-lint-eslint": "^1.1.1",
+    "broccoli-merge-trees": "^0.2.4",
+    "broccoli-sass": "^0.6.8",
+    "broccoli-static-compiler": "^0.2.2",
+    "broccoli-stew": "^1.0.0",
+    "jspm": "^0.16.14"
+  },
+  "jspm": {
+    "configFile": "app/config.js",
+    "dependencies": {
+      "immutable": "npm:immutable@^3.7.5",
+      "jquery": "github:components/jquery@^2.1.4",
+      "jsx": "github:floatdrop/plugin-jsx@^1.1.0",
+      "react": "npm:react@^0.14.2",
+      "react-dom": "npm:react-dom@^0.14.2",
+      "react-redux": "npm:react-redux@^4.0.0",
+      "react-router": "npm:react-router@^1.0.0-rc4"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
   }
 }
