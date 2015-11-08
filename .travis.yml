@@ -5,7 +5,7 @@ node_js:
   - "node"
 
 env:
-  - BROCCOLI_ENV=test
+  - BROCCOLI_ENV=development
 
 sudo: false
 
