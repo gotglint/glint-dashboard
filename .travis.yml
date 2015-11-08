@@ -28,6 +28,7 @@ addons:
 
 before_script:
   - npm install -g broccoli-cli jspm
+  - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
   - npm install
   - jspm install
 
