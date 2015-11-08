@@ -27,9 +27,10 @@ addons:
     - build-essential
 
 before_script:
+  - cd glint-dashboard
   - npm install -g broccoli-cli jspm
   - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
   - npm install
   - jspm install
 
-script: broccoli build travis
+script: cd glint-dashboard; broccoli build travis
