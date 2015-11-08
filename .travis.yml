@@ -1,18 +1,23 @@
----
 language: node_js
 
 node_js:
-  - "node"
+  - node
 
 env:
-  - BROCCOLI_ENV=development
+  matrix:
+    - BROCCOLI_ENV=development
+  global:
+    secure: H68tY4sPcxp7/3tlO3vohOaGC7rhZ5sWngdbBRj7fC205lkRxUOc3NoFLrq30F9Odp+mIe8mRLXopb9EQiM14BC3R6zgn2LgjFhVgql5j20jC1teVL1IAvacwQpQhhhFVcGBh4fxiGkqUdDWRQhybcVoH8hI1I6hHmHqW5wtOKrDjarVqvJFbhjILtkUpEv4SwbDehjPTINuvya2/B+xOA+EISB/rTBpPM7rXtwYA4MWrjwoacXs833MozvglVDQAd6rVzFy7S15vtxlFG8YEBHLOR1LN4m/swXFlqxT6yCczB/JDX+IKkBeSrpg/KoMo8aINhPnZburmg0RjlPLUEyJyunfB/8FjSpoyNUU4MsyWZkbdbSXKHmm/ayBFQkVOTpu9ehH8na+HOOz3W+ENuGeu5VsVAYHQXWQr/kCq1/00OpqQzUGT5x41RsWyWpJJCxjWR63nOOMt55nU/KUSazpL4lpNWwECrAHlxCffEV6isfqPqSTflBn20bdAMV2IgzFCGL0WlXKuo6VfcfrXAZu42cHYEDmkKmfGKvFZhwUl0G6YYnqsMO0qEn9UpcS6qSdi82m17syCvIw8Vo2XmfYGjvt5kymwM7luOZiZr2fkigs/aSIF6wYM7uhsTyLWOHPgwOVpI2ev7Two/FeYj0qkxhpapKMOAtt/Ztl2lc=
 
 sudo: false
 
 addons:
   apt:
     packages:
-    - build-essential
+      - build-essential
+
+before_install:
+  git config --global github.accesstoken $GITHUB_OAUTH_TOKEN
 
 before_script:
   - npm install -g broccoli-cli jspm
