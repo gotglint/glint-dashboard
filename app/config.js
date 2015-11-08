@@ -21,10 +21,13 @@ System.config({
     "immutable": "npm:immutable@3.7.5",
     "jquery": "github:components/jquery@2.1.4",
     "jsx": "github:floatdrop/plugin-jsx@1.1.0",
+    "multireducer": "npm:multireducer@1.0.2",
     "react": "npm:react@0.14.2",
     "react-dom": "npm:react-dom@0.14.2",
     "react-redux": "npm:react-redux@4.0.0",
     "react-router": "npm:react-router@1.0.0-rc4",
+    "redux-form": "npm:redux-form@3.0.5",
+    "redux-router": "npm:redux-router@1.0.0-beta4",
     "github:floatdrop/plugin-jsx@1.1.0": {
       "react-tools": "npm:react-tools@0.13.3"
     },
@@ -370,6 +373,11 @@ System.config({
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:multireducer@1.0.2": {
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "react-redux": "npm:react-redux@4.0.0",
+      "redux": "npm:redux@3.0.4"
+    },
     "npm:once@1.3.2": {
       "wrappy": "npm:wrappy@1.0.1"
     },
@@ -427,6 +435,9 @@ System.config({
     "npm:react-dom@0.14.2": {
       "react": "npm:react@0.14.2"
     },
+    "npm:react-lazy-cache@3.0.0": {
+      "deep-equal": "npm:deep-equal@1.0.1"
+    },
     "npm:react-redux@4.0.0": {
       "hoist-non-react-statics": "npm:hoist-non-react-statics@1.0.3",
       "invariant": "npm:invariant@2.1.2",
@@ -472,6 +483,17 @@ System.config({
       "private": "npm:private@0.1.6",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "source-map": "npm:source-map@0.5.3"
+    },
+    "npm:redux-form@3.0.5": {
+      "deep-equal": "npm:deep-equal@1.0.1",
+      "hoist-non-react-statics": "npm:hoist-non-react-statics@1.0.3",
+      "is-promise": "npm:is-promise@2.1.0",
+      "react-lazy-cache": "npm:react-lazy-cache@3.0.0",
+      "react-redux": "npm:react-redux@4.0.0",
+      "redux": "npm:redux@3.0.4"
+    },
+    "npm:redux-router@1.0.0-beta4": {
+      "deep-equal": "npm:deep-equal@1.0.1"
     },
     "npm:redux@3.0.4": {
       "process": "github:jspm/nodelibs-process@0.1.2"

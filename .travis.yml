@@ -1,17 +1,16 @@
-sudo: required
-
-services:
-  - docker
+---
+language: node_js
+node_js:
+  - "node"
 
 env:
-  DOCKER_COMPOSE_VERSION: 1.5.0rc3
+  - BROCCOLI_ENV=test
 
-before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-  - docker-compose up
+before_script:
+  - sudo apt-get update
+  - sudo apt-get install -y build-essential
+  - npm install -g broccoli-cli jspm-cli
+  - npm install
+  - jspm install
 
-script:
-  - echo "done!"
+script: broccoli build travis

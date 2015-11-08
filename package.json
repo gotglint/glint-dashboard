@@ -31,10 +31,13 @@
       "immutable": "npm:immutable@^3.7.5",
       "jquery": "github:components/jquery@^2.1.4",
       "jsx": "github:floatdrop/plugin-jsx@^1.1.0",
+      "multireducer": "npm:multireducer@^1.0.2",
       "react": "npm:react@^0.14.2",
       "react-dom": "npm:react-dom@^0.14.2",
       "react-redux": "npm:react-redux@^4.0.0",
-      "react-router": "npm:react-router@^1.0.0-rc4"
+      "react-router": "npm:react-router@^1.0.0-rc4",
+      "redux-form": "npm:redux-form@^3.0.5",
+      "redux-router": "npm:redux-router@^1.0.0-beta4"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
