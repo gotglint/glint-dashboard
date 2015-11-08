@@ -19,7 +19,7 @@ var movedScripts = new Funnel(renamedScripts, {
   destDir: 'js'
 });
 
-var staticFiles = new Funnel('app', {include: ['config.js', '*.html', '*.png', '*.gif']});
+var staticFiles = new Funnel('app', {include: ['config.js', '*.html', '*.png', '*.gif', '*.jpg', '*.ico']});
 
 if (env === 'production') {
   // do minification/babel/...
