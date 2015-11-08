@@ -1,11 +1,12 @@
 var sassDir = 'app/scss';
 var scriptDir = 'app/js';
 
+var env = process.env.BROCCOLI_ENV || 'development';
+
 var BrowserSync = require('broccoli-browser-sync');
 var Funnel = require('broccoli-funnel');
 
 var eslint = require('broccoli-lint-eslint');
-var env = require('broccoli-env').getEnv();
 var mergeTrees = require('broccoli-merge-trees');
 var sass = require('broccoli-sass');
 var stew = require('broccoli-stew');
@@ -23,6 +24,10 @@ var staticFiles = new Funnel('app', {include: ['config.js', '*.html', '*.png', '
 
 if (env === 'production') {
   // do minification/babel/...
+}
+
+if (env === 'test') {
+  // run tests
 }
 
 var sync = new BrowserSync([staticFiles, styles]);
