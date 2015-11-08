@@ -5,9 +5,7 @@ node_js:
 
 env:
   matrix:
-    - BROCCOLI_ENV=development
-  global:
-    secure: H68tY4sPcxp7/3tlO3vohOaGC7rhZ5sWngdbBRj7fC205lkRxUOc3NoFLrq30F9Odp+mIe8mRLXopb9EQiM14BC3R6zgn2LgjFhVgql5j20jC1teVL1IAvacwQpQhhhFVcGBh4fxiGkqUdDWRQhybcVoH8hI1I6hHmHqW5wtOKrDjarVqvJFbhjILtkUpEv4SwbDehjPTINuvya2/B+xOA+EISB/rTBpPM7rXtwYA4MWrjwoacXs833MozvglVDQAd6rVzFy7S15vtxlFG8YEBHLOR1LN4m/swXFlqxT6yCczB/JDX+IKkBeSrpg/KoMo8aINhPnZburmg0RjlPLUEyJyunfB/8FjSpoyNUU4MsyWZkbdbSXKHmm/ayBFQkVOTpu9ehH8na+HOOz3W+ENuGeu5VsVAYHQXWQr/kCq1/00OpqQzUGT5x41RsWyWpJJCxjWR63nOOMt55nU/KUSazpL4lpNWwECrAHlxCffEV6isfqPqSTflBn20bdAMV2IgzFCGL0WlXKuo6VfcfrXAZu42cHYEDmkKmfGKvFZhwUl0G6YYnqsMO0qEn9UpcS6qSdi82m17syCvIw8Vo2XmfYGjvt5kymwM7luOZiZr2fkigs/aSIF6wYM7uhsTyLWOHPgwOVpI2ev7Two/FeYj0qkxhpapKMOAtt/Ztl2lc=
+  - BROCCOLI_ENV=development
 
 sudo: false
 
@@ -20,10 +18,7 @@ cache:
 addons:
   apt:
     packages:
-      - build-essential
-
-before_install:
-  git config --global github.accesstoken $GITHUB_OAUTH_TOKEN
+    - build-essential
 
 before_script:
   - npm install -g broccoli-cli jspm
@@ -31,3 +26,7 @@ before_script:
   - jspm install
 
 script: broccoli build travis
+
+deploy:
+  api-key:
+    secure: rvJg6JPIuathpIOhuZ/lISXHB4MbB4ihzoNDmNkSVIruPbNR7m4QMJfMP1oBX0bL1vAUnqjQqRHYQ8xJ3iE93K/tTl4HUHnRcgKAsyeYbl2Va4suZS/0S9am+k4zr2VLJtoA6104BhtKRNgYAOTdnWnz8HoFMZ43HeqS5h7KiOct3skMo/c6wswoKdb5JkRwQWSHZvrbMzEr7Xe3OyYN2s3JOXcBlRAqS6aiLivw/ELu+6VjaPQLieSfnBBc3z/Z/xAD/1PJaPxy6duLkq06/GSN55qQ4Sd013sqR5urxUEW8mGAasqNxkjZ2ol9R9WMGcibvV5EacCgAs6J6ufyHVsuqDH/LvP7Me0zGIOed34JJyMlso5lFW62guON6CdfnHDBPEEdmUf88SdWeS53Lt4s1pbbmMLHa+Q9QSlog6EVR+4iwaC2IxsLzGtSp5iDftq4y7GFlkjUhMwdMcgjQBz8Jd2Kdb+HRxvDGyhe2uPpwcx8V2OH2BP1eGikzGWqBmPcMRuXCjSPuF8RH5fpsYS1JWQb6XYzzcnNE/zFVKipii/yHeZn81rBQ8/L9ARXhMBu74fy0D6s+c0XxJh3l2GacoWqwPtHjaDiqHvX2wS610Mx/QCTqSTLY6uOAKsgWmYlr5Xz0Y6OKTV0WcgOfENI18LhflBwoEew95U5hBg=
