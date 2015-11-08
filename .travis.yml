@@ -11,6 +11,12 @@ env:
 
 sudo: false
 
+cache:
+  - apt
+  - directories:
+    - node_modules
+    - jspm_packages
+
 addons:
   apt:
     packages:
