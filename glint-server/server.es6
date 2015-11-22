@@ -7,6 +7,9 @@ const server = koala();
 const app = new App();
 setupRoutes(app);
 
+/**
+ * The dirty bloody magic that binds Koa to Horse to our routes
+ */
 server.use(function *() {
   yield app.route(this, function () { });
 });
