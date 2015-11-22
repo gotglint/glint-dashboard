@@ -15,9 +15,11 @@ log.basicConfig({
 const server = koala();
 const app = new App();
 
-setupRoutes(app);
-
+// set stuff into the context for children to access
 server.context.log = log;
+
+// init the routes/dependencies
+setupRoutes(app, server);
 
 /**
  * The dirty bloody magic that binds Koa to Horse to our routes
