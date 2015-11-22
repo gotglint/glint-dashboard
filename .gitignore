@@ -6,3 +6,6 @@ tmp
 *.iml
 dist
 travis
+bower_components
+build/reports
+coverage

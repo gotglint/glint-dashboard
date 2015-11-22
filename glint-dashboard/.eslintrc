@@ -1,15 +1,10 @@
 {
-  "parser": "babel-eslint",
-  "env": {
-    "browser": true,
-    "es6": true
-  },
-  "ecmaFeatures": {
-    "modules": true,
-    "jsx": true
-  },
+  "extends": "./node_modules/aurelia-tools/.eslintrc",
   "rules": {
-    "strict": 0,
-    "semi": [2, "always"]
-  }
+    "no-alert": 0
+  },
+  "env": [
+    "es6",
+    "browser"
+  ]
 }
