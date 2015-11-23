@@ -47,6 +47,7 @@
       "bootstrap": "github:twbs/bootstrap@^3.3.5",
       "fetch": "github:github/fetch@^0.10.1",
       "font-awesome": "npm:font-awesome@^4.4.0",
+      "gooy/aurelia-ace": "github:gooy/aurelia-ace@^0.0.1",
       "immutable": "npm:immutable@^3.7.5",
       "polymer/mutationobservers": "github:polymer/mutationobservers@^0.4.2",
       "text": "github:systemjs/plugin-text@^0.0.3",

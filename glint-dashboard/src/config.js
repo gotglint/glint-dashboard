@@ -35,6 +35,7 @@ System.config({
     "core-js": "npm:core-js@1.2.6",
     "fetch": "github:github/fetch@0.10.1",
     "font-awesome": "npm:font-awesome@4.4.0",
+    "gooy/aurelia-ace": "github:gooy/aurelia-ace@0.0.1",
     "immutable": "npm:immutable@3.7.5",
     "jquery": "github:components/jquery@2.1.4",
     "jsx": "github:floatdrop/plugin-jsx@1.1.0",
@@ -50,6 +51,10 @@ System.config({
     "uzairfarooq/arrive": "github:uzairfarooq/arrive@2.3.0",
     "github:floatdrop/plugin-jsx@1.1.0": {
       "react-tools": "npm:react-tools@0.13.3"
+    },
+    "github:gooy/aurelia-ace@0.0.1": {
+      "ace": "github:ajaxorg/ace-builds@1.2.2",
+      "js-beautify": "github:beautify-web/js-beautify@1.5.10"
     },
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
