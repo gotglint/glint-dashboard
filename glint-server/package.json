@@ -13,6 +13,20 @@
   },
   "license": "LGPL-2.1",
   "dependencies": {
+    "axon": "^2.0.2",
+    "babel-polyfill": "^6.2.0",
+    "horse": "^1.3.2",
+    "intel": "^1.0.2",
+    "koa-router": "^5.2.3",
+    "koa-trie-router": "^1.0.10",
+    "koala": "^1.0.0",
+    "node-etcd": "^4.2.1",
     "statsd-client": "^0.2.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.1.21",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18",
+    "nodemon": "^1.4.1"
   }
 }

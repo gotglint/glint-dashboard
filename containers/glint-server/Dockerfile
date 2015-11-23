@@ -1,8 +1,8 @@
 FROM node
 
-RUN npm install -g nodemon
+RUN npm install -g forever
 
 WORKDIR /opt/glint
 RUN npm install
 
-CMD nodemon ./server.js
+CMD forever ./server.es6

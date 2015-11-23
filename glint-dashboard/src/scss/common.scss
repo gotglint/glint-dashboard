@@ -4,6 +4,12 @@ $font-stack:    Helvetica, sans-serif;
 $primary-color: #333;
 
 body {
-  font: 100% $font-stack;
+  font: 1.2em $font-stack;
   color: $primary-color;
+
+  padding-top: 40px;
+}
+
+.page-host {
+  padding: 5px;
 }

@@ -13,37 +13,52 @@
   },
   "license": "LGPL-2.1",
   "devDependencies": {
-    "babel-eslint": "^4.1.4",
+    "aurelia-bundler": "^0.1.9",
+    "aurelia-tools": "^0.1.16",
     "broccoli": "^0.16.8",
+    "broccoli-babel-transpiler": "^5.5.0",
     "broccoli-browser-sync": "^1.0.0",
-    "broccoli-env": "0.0.1",
-    "broccoli-eslint": "0.0.5",
+    "broccoli-env": "^0.0.1",
+    "broccoli-eslint": "^0.0.5",
     "broccoli-funnel": "^0.2.13",
     "broccoli-lint-eslint": "^1.1.1",
     "broccoli-merge-trees": "^0.2.4",
     "broccoli-sass": "^0.6.8",
     "broccoli-static-compiler": "^0.2.2",
     "broccoli-stew": "^1.0.0",
-    "jspm": "^0.16.14"
+    "jspm": "^0.16.15"
   },
   "jspm": {
-    "configFile": "app/config.js",
+    "configFile": "src/config.js",
     "dependencies": {
+      "FezVrasta/bootstrap-material-design": "github:FezVrasta/bootstrap-material-design@^0.4.4",
+      "arrive": "npm:arrive@^2.3.0",
+      "aurelia-animator-css": "npm:aurelia-animator-css@^1.0.0-beta.1.0.1",
+      "aurelia-bootstrapper": "npm:aurelia-bootstrapper@^1.0.0-beta.1",
+      "aurelia-fetch-client": "npm:aurelia-fetch-client@^1.0.0-beta.1",
+      "aurelia-framework": "npm:aurelia-framework@^1.0.0-beta.1.0.1",
+      "aurelia-history-browser": "npm:aurelia-history-browser@^1.0.0-beta.1",
+      "aurelia-loader-default": "npm:aurelia-loader-default@^1.0.0-beta.1.0.1",
+      "aurelia-logging-console": "npm:aurelia-logging-console@^1.0.0-beta.1",
+      "aurelia-router": "npm:aurelia-router@^1.0.0-beta.1",
+      "aurelia-templating-binding": "npm:aurelia-templating-binding@^1.0.0-beta.1",
+      "aurelia-templating-resources": "npm:aurelia-templating-resources@^1.0.0-beta.1.0.1",
+      "aurelia-templating-router": "npm:aurelia-templating-router@^1.0.0-beta.1.0.1",
+      "bootstrap": "github:twbs/bootstrap@^3.3.5",
+      "fetch": "github:github/fetch@^0.10.1",
+      "font-awesome": "npm:font-awesome@^4.4.0",
       "immutable": "npm:immutable@^3.7.5",
-      "jquery": "github:components/jquery@^2.1.4",
-      "jsx": "github:floatdrop/plugin-jsx@^1.1.0",
-      "multireducer": "npm:multireducer@^1.0.2",
-      "react": "npm:react@^0.14.2",
-      "react-dom": "npm:react-dom@^0.14.2",
-      "react-redux": "npm:react-redux@^4.0.0",
-      "react-router": "npm:react-router@^1.0.0-rc4",
-      "redux-form": "npm:redux-form@^3.0.5",
-      "redux-router": "npm:redux-router@^1.0.0-beta4"
+      "polymer/mutationobservers": "github:polymer/mutationobservers@^0.4.2",
+      "text": "github:systemjs/plugin-text@^0.0.3",
+      "uzairfarooq/arrive": "github:uzairfarooq/arrive@^2.3.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "core-js": "npm:core-js@^1.1.4"
     }
+  },
+  "dependencies": {
+    "sass-flex-mixin": "^1.0.0"
   }
 }
