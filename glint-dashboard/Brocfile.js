@@ -1,6 +1,3 @@
-var sassDir = 'src/scss';
-var scriptDir = 'src/app';
-
 var env = process.env.BROCCOLI_ENV || 'development';
 
 var BrowserSync = require('broccoli-browser-sync');
@@ -13,8 +10,14 @@ var mergeTrees = require('broccoli-merge-trees');
 var sass = require('broccoli-sass');
 var stew = require('broccoli-stew');
 
+// variables
+var sassDir = 'src/scss';
+var scriptDir = 'src/app';
+
+// styles
 var styles = sass([sassDir], 'app.scss', 'css/app.css');
 
+// scripts
 var lintedScripts = eslint(scriptDir, {
   extensions: ['.es6', '.js']
 });
@@ -26,6 +29,7 @@ var movedScripts = new Funnel(renamedScripts, {
   destDir: 'js'
 });
 
+// static content
 var staticFiles = new Funnel('src', {include: ['config.js', '*.html', '*.png', '*.gif', '*.jpg', '*.ico']});
 
 if (env === 'production') {
@@ -36,10 +40,13 @@ if (env === 'test') {
   // run tests
 }
 
+// browser sync
 var sync = new BrowserSync([staticFiles, styles]);
 
+// copy all jspm files in
 var jspm = new Funnel('jspm_packages', {
   destDir: 'jspm_packages'
 });
 
+// put it all together
 module.exports = mergeTrees([staticFiles, styles, movedScripts, sync, jspm]);

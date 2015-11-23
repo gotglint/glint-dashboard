@@ -16,6 +16,8 @@ System.config({
   },
 
   map: {
+    "FezVrasta/bootstrap-material-design": "github:FezVrasta/bootstrap-material-design@0.4.4",
+    "arrive": "npm:arrive@2.3.0",
     "aurelia-animator-css": "npm:aurelia-animator-css@1.0.0-beta.1.0.1",
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@1.0.0-beta.1",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-beta.1",
@@ -29,22 +31,23 @@ System.config({
     "aurelia-templating-router": "npm:aurelia-templating-router@1.0.0-beta.1.0.1",
     "babel": "npm:babel-core@5.8.33",
     "babel-runtime": "npm:babel-runtime@5.8.29",
+    "bootstrap": "github:twbs/bootstrap@3.3.5",
     "core-js": "npm:core-js@1.2.6",
     "fetch": "github:github/fetch@0.10.1",
     "font-awesome": "npm:font-awesome@4.4.0",
     "immutable": "npm:immutable@3.7.5",
     "jquery": "github:components/jquery@2.1.4",
     "jsx": "github:floatdrop/plugin-jsx@1.1.0",
-    "material-design-lite": "github:google/material-design-lite@1.0.6",
     "multireducer": "npm:multireducer@1.0.2",
+    "polymer/mutationobservers": "github:polymer/mutationobservers@0.4.2",
     "react": "npm:react@0.14.2",
     "react-dom": "npm:react-dom@0.14.2",
     "react-redux": "npm:react-redux@4.0.0",
     "react-router": "npm:react-router@1.0.0-rc4",
-    "redpelicans/aurelia-material": "github:redpelicans/aurelia-material@master",
     "redux-form": "npm:redux-form@3.0.5",
     "redux-router": "npm:redux-router@1.0.0-beta4",
     "text": "github:systemjs/plugin-text@0.0.3",
+    "uzairfarooq/arrive": "github:uzairfarooq/arrive@2.3.0",
     "github:floatdrop/plugin-jsx@1.1.0": {
       "react-tools": "npm:react-tools@0.13.3"
     },
@@ -87,10 +90,8 @@ System.config({
     "github:jspm/nodelibs-vm@0.1.0": {
       "vm-browserify": "npm:vm-browserify@0.0.4"
     },
-    "github:redpelicans/aurelia-material@master": {
-      "google/material-design-lite": "github:google/material-design-lite@1.0.6",
-      "jquery": "github:components/jquery@2.1.4",
-      "lodash": "npm:lodash@3.10.1"
+    "github:twbs/bootstrap@3.3.5": {
+      "jquery": "github:components/jquery@2.1.4"
     },
     "npm:acorn@1.2.2": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -102,6 +103,9 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "module": "github:jspm/nodelibs-module@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:arrive@2.3.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:asap@2.0.3": {
@@ -505,9 +509,6 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "source-map": "npm:source-map@0.1.31"
-    },
-    "npm:lodash@3.10.1": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:loose-envify@1.1.0": {
       "js-tokens": "npm:js-tokens@1.0.2",

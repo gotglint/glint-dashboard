@@ -21,9 +21,7 @@
   <meta name="msapplication-TileImage" content="img/touch/ms-touch-icon-144x144-precomposed.png">
   <meta name="msapplication-TileColor" content="#3372DF">
 
-  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.indigo-pink.min.css">
-  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
-
+  <link rel="stylesheet" href="jspm_packages/github/twbs/bootstrap@3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/app.css">
 </head>
 
@@ -36,7 +34,11 @@
 <script src="jspm_packages/system.js"></script>
 <script src="config.js"></script>
 <script>
-  System.import('aurelia-bootstrapper');
+  System.import('core-js').then(function() {
+    return System.import('polymer/mutationobservers');
+  }).then(function() {
+    System.import('aurelia-bootstrapper');
+  });
 </script>
 </body>
 </html>

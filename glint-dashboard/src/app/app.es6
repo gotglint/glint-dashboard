@@ -7,4 +7,8 @@ export class App {
 
     this.router = router;
   }
+
+  attached() {
+    $.material.init();
+  }
 }
