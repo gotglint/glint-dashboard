@@ -1,3 +1,9 @@
+import 'bootstrap';
+
+import 'bootstrap/css/bootstrap.min.css!';
+import 'bootstrap/css/bootstrap-theme.min.css!';
+import 'font-awesome/css/font-awesome.min.css!';
+
 export class App {
   configureRouter(config, router) {
     config.title = 'Glint Dashboard';

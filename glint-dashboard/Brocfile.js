@@ -4,7 +4,7 @@ var BrowserSync = require('broccoli-browser-sync');
 var Funnel = require('broccoli-funnel');
 
 var eslint = require('broccoli-lint-eslint');
-var esTranspiler = require('broccoli-babel-transpiler');
+var babel = require('broccoli-babel-transpiler');
 
 var mergeTrees = require('broccoli-merge-trees');
 var sass = require('broccoli-sass');
@@ -21,7 +21,12 @@ var styles = sass([sassDir], 'app.scss', 'css/app.css');
 var lintedScripts = eslint(scriptDir, {
   extensions: ['.es6', '.js']
 });
-var scriptTree = esTranspiler(lintedScripts, {
+var scriptTree = babel(lintedScripts, {
+  stage: 0,
+  optional: [
+    "es7.decorators",
+    "es7.classProperties"],
+  browserPolyfill: true,
   filterExtensions:['js', 'es6']
 });
 var renamedScripts = stew.rename(scriptTree, '.es6', '.js');
