@@ -16,6 +16,7 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   meta: {
     "brace/theme/monokai": {
       "deps": [
@@ -33,6 +34,7 @@ System.config({
       ]
     }
   },
+
   map: {
     "FezVrasta/bootstrap-material-design": "github:FezVrasta/bootstrap-material-design@0.4.4",
     "arrive": "npm:arrive@2.3.0",
@@ -339,8 +341,11 @@ System.config({
     },
     "npm:buffer@3.5.2": {
       "base64-js": "npm:base64-js@0.0.8",
+      "child_process": "github:jspm/nodelibs-child_process@0.1.0",
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
       "ieee754": "npm:ieee754@1.1.6",
-      "is-array": "npm:is-array@1.0.1"
+      "is-array": "npm:is-array@1.0.1",
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:cipher-base@1.0.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",

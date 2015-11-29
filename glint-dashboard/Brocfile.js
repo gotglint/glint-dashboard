@@ -45,13 +45,13 @@ if (env === 'test') {
   // run tests
 }
 
-// browser sync
-var sync = new BrowserSync([staticFiles, styles]);
-
 // copy all jspm files in
 var jspm = new Funnel('jspm_packages', {
   destDir: 'jspm_packages'
 });
+
+// browser sync
+var sync = new BrowserSync([staticFiles, styles, movedScripts, jspm]);
 
 // put it all together
 module.exports = mergeTrees([staticFiles, styles, movedScripts, sync, jspm]);
