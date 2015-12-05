@@ -9,6 +9,12 @@ function setupRoutes(app, server) {
     this.body = {test: true};
   });
 
+  app.router.get('/test', function *() {
+    log.debug('Handling default route.');
+
+    this.body = {test: true};
+  });
+
   app.router.post('/job', function *() {
     if (!this.request.is('json')) {
       log.warn('Job submission got a non-JSON request, ignoring.');

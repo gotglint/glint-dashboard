@@ -1,5 +1,7 @@
 import 'bootstrap-material-design/dist/js/material.min';
 
+
+
 export class App {
   configureRouter(config, router) {
     config.title = 'Glint Dashboard';

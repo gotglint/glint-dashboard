@@ -1,4 +1,5 @@
 import koala from 'koala';
+import { IO } from 'koa-socket';
 import {App} from 'horse';
 
 import log from 'intel';
@@ -14,6 +15,8 @@ log.basicConfig({
 
 const server = koala();
 const app = new App();
+const io = new IO();
+io.attach(server);
 
 // set stuff into the context for children to access
 server.context.log = log;
@@ -28,13 +31,17 @@ server.use(function *() {
   yield app.route(this, function () { });
 });
 
-server.listen(3000, function(err) {
+server.listen(8080, function(err) {
   if (err) {
     log.error('Could not fire up server: ' , err);
     throw err;
   }
 
-  log.debug('Server listening on port 3000.');
+  log.debug('Server listening on port 8080.');
+});
+
+io.on( 'join', ( ctx, data ) => {
+  log.debug( 'join event fired', data )
 });
 
 export default app
