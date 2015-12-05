@@ -1,13 +1,22 @@
 var env = process.env.BROCCOLI_ENV || 'development';
 
+// browsersync
 var BrowserSync = require('broccoli-browser-sync');
-var Funnel = require('broccoli-funnel');
 
+// underscore
+var _ = require('underscore');
+
+// script stuff
 var eslint = require('broccoli-lint-eslint');
 var babel = require('broccoli-babel-transpiler');
 
-var mergeTrees = require('broccoli-merge-trees');
+// sass stuff
 var sass = require('broccoli-sass');
+var bourbon = require('node-bourbon').includePaths;
+
+// broc stuff
+var Funnel = require('broccoli-funnel');
+var mergeTrees = require('broccoli-merge-trees');
 var stew = require('broccoli-stew');
 
 // variables
@@ -15,7 +24,8 @@ var sassDir = 'src/scss';
 var scriptDir = 'src/app';
 
 // styles
-var styles = sass([sassDir], 'app.scss', 'css/app.css');
+var bDir = _(bourbon).first().replace(__dirname, "./");
+var styles = sass([sassDir, bDir], 'app.scss', 'css/app.css');
 
 // scripts
 var lintedScripts = eslint(scriptDir, {

@@ -4,8 +4,14 @@ import {ConsoleAppender} from 'aurelia-logging-console';
 import 'bootstrap';
 import 'font-awesome';
 
+import 'bootstrap/css/bootstrap.min.css!';
+import 'font-awesome/css/font-awesome.min.css!';
+
 import 'uzairfarooq/arrive';
-import 'FezVrasta/bootstrap-material-design';
+
+import 'bootstrap-material-design/dist/css/material-fullpalette.min.css!';
+import 'bootstrap-material-design/dist/css/ripples.min.css!';
+import 'bootstrap-material-design/dist/css/roboto.min.css!';
 
 LogManager.addAppender(new ConsoleAppender());
 LogManager.setLevel(LogManager.logLevel.debug);

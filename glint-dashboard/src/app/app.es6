@@ -1,8 +1,4 @@
-import 'bootstrap';
-
-import 'bootstrap/css/bootstrap.min.css!';
-import 'bootstrap/css/bootstrap-theme.min.css!';
-import 'font-awesome/css/font-awesome.min.css!';
+import 'bootstrap-material-design/dist/js/material.min';
 
 export class App {
   configureRouter(config, router) {

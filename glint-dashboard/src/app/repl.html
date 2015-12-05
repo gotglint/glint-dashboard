@@ -1,9 +1,24 @@
 <template>
   <require from="./component/ace"></require>
-  <section class="au-animate flex-container">
-    <h3>REPL</h3>
-    <div class="flex-container">
-      <ace value.two-way="body"></ace>
+  <section class="flex-container-rows flex-fit">
+    <div class="repl-header-row">
+      <h3>REPL</h3>
+    </div>
+    <div class="flex-container-columns">
+      <div class="repl-bar-left">
+        <a class="btn btn-raised btn-primary"><b>Run</b></a>
+      </div>
+      <div class="repl-bar-right">
+        <a class="btn btn-raised btn-primary"><b>Clear</b></a>
+      </div>
+    </div>
+    <div class="flex-container-columns flex-fit">
+      <div class="flex-container-columns repl-left">
+        <ace value.two-way="body" class="flex-container-rows flex-fit"></ace>
+      </div>
+      <div class="flex-container-columns repl-right">
+        <div id="repl-output"></div>
+      </div>
     </div>
   </section>
 </template>

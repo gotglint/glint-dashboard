@@ -26,7 +26,9 @@
     "broccoli-sass": "^0.6.8",
     "broccoli-static-compiler": "^0.2.2",
     "broccoli-stew": "^1.0.0",
-    "jspm": "^0.16.15"
+    "jspm": "^0.16.15",
+    "node-bourbon": "^4.2.3",
+    "underscore": "^1.8.3"
   },
   "jspm": {
     "configFile": "src/config.js",
@@ -46,6 +48,7 @@
       "aurelia-templating-resources": "npm:aurelia-templating-resources@^1.0.0-beta.1.0.1",
       "aurelia-templating-router": "npm:aurelia-templating-router@^1.0.0-beta.1.0.1",
       "bootstrap": "github:twbs/bootstrap@^3.3.5",
+      "bootstrap-material-design": "npm:bootstrap-material-design@^0.3.0",
       "brace": "npm:brace@^0.5.1",
       "css": "github:systemjs/plugin-css@^0.1.20",
       "fetch": "github:github/fetch@^0.10.1",

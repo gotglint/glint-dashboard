@@ -53,6 +53,7 @@ System.config({
     "babel": "npm:babel-core@5.8.33",
     "babel-runtime": "npm:babel-runtime@5.8.29",
     "bootstrap": "github:twbs/bootstrap@3.3.5",
+    "bootstrap-material-design": "npm:bootstrap-material-design@0.3.0",
     "brace": "npm:brace@0.5.1",
     "core-js": "npm:core-js@1.2.6",
     "css": "github:systemjs/plugin-css@0.1.20",
@@ -280,6 +281,16 @@ System.config({
       "core-js": "npm:core-js@1.2.6"
     },
     "npm:babel-runtime@5.8.29": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:bootstrap-material-design@0.3.0": {
+      "bootstrap": "npm:bootstrap@3.3.6",
+      "jquery": "npm:jquery@2.1.4",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:bootstrap@3.3.6": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:brace-expansion@1.1.1": {
@@ -536,6 +547,9 @@ System.config({
     },
     "npm:invariant@2.1.2": {
       "loose-envify": "npm:loose-envify@1.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:jquery@2.1.4": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:jstransform@10.1.0": {

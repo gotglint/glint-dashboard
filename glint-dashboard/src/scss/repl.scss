@@ -1,9 +1,15 @@
-.repl-container {
-  display: flex;
+.repl-header {
+  @include flex(0 0 40px);
+}
 
-  flex-direction: row;
+.repl-bar-row {
+  @include flex(0 0 40px);
+}
 
-  justify-content: flex-start; /* align items in Main Axis */
-  align-items: stretch; /* align items in Cross Axis */
-  align-content: stretch; /* Extra space in Cross Axis */
+.repl-bar-left, .repl-bar-right {
+  @include flex(1 0 50%);
+}
+
+.repl-left, .repl-right {
+  @include flex (1 0 50%);
 }
