@@ -19,7 +19,6 @@
     "intel": "^1.0.2",
     "koa-router": "^5.2.3",
     "koa-socket": "^3.2.0",
-    "koa-trie-router": "^1.0.10",
     "koala": "^1.0.0",
     "node-etcd": "^4.2.1",
     "statsd-client": "^0.2.1"

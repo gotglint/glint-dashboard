@@ -72,6 +72,7 @@ System.config({
     "redux-form": "npm:redux-form@3.0.5",
     "redux-router": "npm:redux-router@1.0.0-beta4",
     "socket.io": "npm:socket.io@1.3.7",
+    "socket.io-client": "npm:socket.io-client@1.3.7",
     "text": "github:systemjs/plugin-text@0.0.3",
     "uzairfarooq/arrive": "github:uzairfarooq/arrive@2.3.0",
     "github:floatdrop/plugin-jsx@1.1.0": {

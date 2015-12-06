@@ -1,6 +1,6 @@
 import 'bootstrap-material-design/dist/js/material.min';
 
-
+import { WS } from './service/ws';
 
 export class App {
   configureRouter(config, router) {
@@ -11,6 +11,7 @@ export class App {
     ]);
 
     this.router = router;
+    this.ws = new WS();
   }
 
   attached() {
