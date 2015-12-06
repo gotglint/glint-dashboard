@@ -6,8 +6,8 @@ export class App {
   configureRouter(config, router) {
     config.title = 'Glint Dashboard';
     config.map([
-      {route: ['', 'home'], name: 'home', moduleId: 'home', nav: true, title: 'Home'},
-      {route: ['/repl', 'repl'], name: 'repl', moduleId: 'repl', nav: true, title: 'REPL'}
+      {route: ['', 'home'], name: 'home', moduleId: 'app/home', nav: true, title: 'Home'},
+      {route: ['/repl', 'repl'], name: 'repl', moduleId: 'app/repl', nav: true, title: 'REPL'}
     ]);
 
     this.router = router;

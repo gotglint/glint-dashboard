@@ -16,7 +16,7 @@ var browserSync = require('browser-sync');
 var connect = require('connect');
 var del = require('del');
 var http = require('http');
-var httpProxy = require('http-proxy');
+var proxyMiddleware = require('http-proxy-middleware');
 var runSequence = require('run-sequence');
 var serveStatic = require('serve-static');
 var url = require('url');
@@ -36,17 +36,6 @@ var paths = {
   dist: 'dist/**/*',
   distjs: 'dist/js/**'
 };
-
-var proxy = httpProxy.createProxyServer({
-  target: {
-    host: 'localhost',
-    port: 8080
-  }
-});
-proxy.on('error', function (e) {
-  console.error('error on proxying websocket');
-  console.error(e);
-});
 
 gulp.task('clean', function () {
   return del([paths.dist]);
@@ -105,18 +94,20 @@ gulp.task('serve', ['watch'], function () {
   connect.use(serveStatic('dist'));
   connect.use('/jspm_packages', serveStatic('jspm_packages'));
   connect.use(require('connect-browser-sync')(bs));
+  connect.use(proxyMiddleware('/api/**', {
+    target: 'http://localhost:8080/',
+    pathRewrite: {
+      '^/api': ''
+    }
+  }));
+  connect.use(proxyMiddleware('/socket.io/**', {
+    target: 'http://localhost:8080/',
+    ws: true
+  }));
+
   var server = http.createServer(connect);
-
-  server.on('upgrade', function (req, socket, head) {
-    proxy.ws(req, socket, head);
-  });
-
   server.listen(3000);
-
-  server.on('upgrade', function (req, socket, head) {
-    proxy.ws(req, socket, head);
-  });
-
+  
   gulp.watch(paths.dist).on('change', browserSync.reload);
 });
 
@@ -131,10 +122,10 @@ gulp.task('clean-js', function () {
 });
 
 gulp.task('bundle-gen', function () {
-  var builder = new Builder('', './config.js');
+  var builder = new Builder('', './dist/config.js');
 
   return builder
-    .buildStatic('./src/js/main.js', './dist/js/main.js', {
+    .buildStatic('./dist/app/main.js', './dist/app/main.js', {
       runtime: true,
       minify: false,
       mangle: false,
@@ -157,7 +148,7 @@ gulp.task('bundle', function (callback) {
 
 gulp.task('zip', function () {
   return gulp.src('dist/**')
-    .pipe(zip('influent-demo-web.zip'))
+    .pipe(zip('glint-dashboard.zip'))
     .pipe(gulp.dest('dist'));
 });
 

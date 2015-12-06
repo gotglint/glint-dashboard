@@ -9,7 +9,7 @@ deploy:
 
 env:
   matrix:
-  - BROCCOLI_ENV=development
+  - NODE_ENV=development
   global:
     secure: RB969KX5sTbwAIOeF+tqg7EsV8GO5GuyV1mS0mulYuMk8pG/iDAzaImAqkYetFtRruyXe8VaweqimnO7OHX8CmGqPuUIoS1Yis4aeN7CcR502Ug8BKnRjYmHLq6YJckMB0FHue/sTro7vFfSXrhdLa4se8zXUScAfY+3nm9FmsT5tkY1MAsIwPrJqYrAQYfk/a0te1nKC1YPlsapjVSYF9bYgSAlW7QrRvh8AjG6X472MfbD10e9pA2cro5Fj1JFqEt6uk87ZXH6ZzNjCPbDFLdh3wNZCy+gxxAxVTJ/d1XRe0Yo/Hn1Kzt9S/GbLyhJlZ0nqCA1nvQCsBGsH6ED49UHQmJ9kJ3qWkqYAjnn2jC8aY/HUZiZlBHrr7227vxMiPR/pdXIE910VSYc0gMKxAQwIo4SOIZHhRpcCVAHJ/tuuQAxIdUZ/0y74aB2F22nybk1EgkeJxqwPbI8lvf8R4vyzwGgz4+NoW2ebY6wo+r8XZpz1AtoelFSNyGsGBiKAoxlu300FOm8fBKWPFtuw1aIPQjNZUkYVhkGjV5eEP+I4jNsTp9KuxN/KO+8B7B7jTTYVNCQzv3ibMnu8S45JT4VuBjt2PvRtAtAxyQY0U8Oe++6FZnyuAoT44Y22HSLT/XqO9QBuFCq17hQSv7VSzFm0h7/WR7NjQAqbwqv2xs=
 
@@ -28,9 +28,9 @@ addons:
 
 before_script:
   - cd glint-dashboard
-  - npm install -g broccoli-cli jspm
+  - npm install -g gulp jspm
   - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
   - npm install
   - jspm install
 
-script: cd glint-dashboard; broccoli build travis
+script: cd glint-dashboard; gulp dist
