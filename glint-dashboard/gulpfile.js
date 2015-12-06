@@ -1,10 +1,10 @@
 var gulp = require('gulp');
 
 // plugins
-var connect = require('gulp-connect');
 var eslint = require('gulp-eslint');
 var htmlreplace = require('gulp-html-replace');
 var plumber = require('gulp-plumber');
+var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var zip = require('gulp-zip');
@@ -13,8 +13,12 @@ var zip = require('gulp-zip');
 var browserSync = require('browser-sync');
 
 // node modules
+var connect = require('connect');
 var del = require('del');
+var http = require('http');
+var httpProxy = require('http-proxy');
 var runSequence = require('run-sequence');
+var serveStatic = require('serve-static');
 var url = require('url');
 
 // classes to instantiate
@@ -32,6 +36,17 @@ var paths = {
   dist: 'dist/**/*',
   distjs: 'dist/js/**'
 };
+
+var proxy = httpProxy.createProxyServer({
+  target: {
+    host: 'localhost',
+    port: 8080
+  }
+});
+proxy.on('error', function (e) {
+  console.error('error on proxying websocket');
+  console.error(e);
+});
 
 gulp.task('clean', function () {
   return del([paths.dist]);
@@ -86,15 +101,20 @@ gulp.task('build', ['sass', 'html:dev', 'scripts', 'images']);
 gulp.task('serve', ['watch'], function () {
   var bs = browserSync({logSnippet: false});
 
-  connect.server({
-    root: 'dist',
-    port: 3000,
-    livereload: false,
-    middleware: function (connect, opt) {
-      return [
-        require('connect-browser-sync')(bs)
-      ];
-    }
+  var connect = require('connect')();
+  connect.use(serveStatic('dist'));
+  connect.use('/jspm_packages', serveStatic('jspm_packages'));
+  connect.use(require('connect-browser-sync')(bs));
+  var server = http.createServer(connect);
+
+  server.on('upgrade', function (req, socket, head) {
+    proxy.ws(req, socket, head);
+  });
+
+  server.listen(3000);
+
+  server.on('upgrade', function (req, socket, head) {
+    proxy.ws(req, socket, head);
   });
 
   gulp.watch(paths.dist).on('change', browserSync.reload);
