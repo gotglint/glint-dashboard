@@ -1,8 +1,17 @@
 import 'bootstrap-material-design/dist/js/material.min';
 
+import {inject} from 'aurelia-framework';
+import {getLogger} from 'aurelia-logging';
+
 import { WS } from './service/ws';
 
+@inject(WS)
 export class App {
+  constructor(ws) {
+    this.ws = ws;
+    this.log = getLogger('app');
+  }
+
   configureRouter(config, router) {
     config.title = 'Glint Dashboard';
     config.map([
@@ -11,10 +20,11 @@ export class App {
     ]);
 
     this.router = router;
-    this.ws = new WS();
+    this.log.debug('Configured router.');
   }
 
   attached() {
+    this.log.debug('Instantiating bootstrap material.');
     $.material.init();
   }
 }

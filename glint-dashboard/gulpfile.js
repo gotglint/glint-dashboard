@@ -25,8 +25,8 @@ var url = require('url');
 var Builder = require('systemjs-builder');
 
 var paths = {
-  html: 'src/**/*.+(html|js)',
-  scripts: 'src/**/*.es6',
+  html: 'src/**/*.html',
+  scripts: 'src/**/*.js',
   configjs: 'config.js',
   images: 'src/img/**/*',
   scss: {
@@ -107,7 +107,7 @@ gulp.task('serve', ['watch'], function () {
 
   var server = http.createServer(connect);
   server.listen(3000);
-  
+
   gulp.watch(paths.dist).on('change', browserSync.reload);
 });
 

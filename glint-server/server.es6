@@ -1,4 +1,5 @@
 import koala from 'koala';
+import co from 'co';
 import IO from 'koa-socket';
 import {App} from 'horse';
 
@@ -28,54 +29,40 @@ setupRoutes(app, server);
  * The dirty bloody magic that binds Koa to Horse to our routes
  */
 server.use(function *() {
-  yield app.route(this, function () { });
+  yield app.route(this, function () {
+  });
 });
 
-server.server.listen(8080, function(err) {
+server.server.listen(8080, function (err) {
   if (err) {
-    log.error('Could not fire up server: ' , err);
+    log.error('Could not fire up server: ', err);
     throw err;
   }
 
   log.debug('Server listening on port 8080.');
 });
 
-socket.use( function *( ctx, next ) {
-  log.debug( 'Socket middleware' );
+socket.use(co.wrap(function *(ctx, next) {
+  log.debug('Socket middleware');
   const start = new Date();
   yield next();
   const ms = new Date - start;
-  log.debug( `WS ${ ms }ms` );
-});
+  log.debug(`WS ${ ms }ms`);
+}));
 
 /**
  * Socket handlers
  */
-socket.on( 'connection', ctx => {
-  log.debug( 'Join event', ctx.socket.id );
-  socket.broadcast( 'connections', {
-    numConnections: socket.connections.size
-  })
+socket.on('connection', ctx => {
+  log.debug('WS connection initiated: ', ctx.socket.id);
 });
 
-socket.on( 'disconnect', ctx => {
-  log.debug( 'leave event', ctx.socket.id );
-  socket.broadcast( 'connections', {
-    numConnections: socket.connections.size
-  })
-});
-
-socket.on( 'data', ( ctx, data ) => {
-  log.debug( 'data event', data );
-  log.debug( 'ctx:', ctx.event, ctx.data, ctx.socket.id );
-  log.debug( 'ctx.teststring:', ctx.teststring );
-  ctx.socket.emit( 'response', {
-    message: 'response from server'
-  })
-});
-
-socket.on( 'numConnections', packet => {
-  log.debug( `Number of connections: ${ socket.connections.size }` );
+socket.on('repl', (ctx, data) => {
+  log.debug('REPL message received: ', data);
+  if (data && data === 'init') {
+    log.debug('Sending REPL response.');
+    ctx.socket.emit('repl', {message: 'init response'});
+  }
 });
 
 export default app

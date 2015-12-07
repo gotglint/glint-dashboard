@@ -1,15 +1,22 @@
 import io from "socket.io-client";
 
+import {getLogger} from 'aurelia-logging';
+
 export class WS {
   constructor() {
-    this.socket = io('http://localhost:3000/live/');
+    this.log = getLogger('ws');
+    this.socket = io();
 
-    this.socket.on( 'message', function( event ) {
-      console.log( 'chat message:', event )
+    const sock = this.socket;
+    const log = this.log;
+
+    this.socket.on('connect', () => {
+      log.debug('connected.');
     });
   }
 
-  sendMessage(message) {
-    this.socket.emit('data', message);
+  sendMessage(endpoint, message) {
+    this.log.debug('Sending message to ', endpoint, message);
+    this.socket.emit(endpoint, message);
   }
 }
