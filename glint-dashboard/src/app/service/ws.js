@@ -7,7 +7,6 @@ export class WS {
     this.log = getLogger('ws');
     this.socket = io();
 
-    const sock = this.socket;
     const log = this.log;
 
     this.socket.on('connect', () => {
@@ -18,5 +17,11 @@ export class WS {
   sendMessage(endpoint, message) {
     this.log.debug('Sending message to ', endpoint, message);
     this.socket.emit(endpoint, message);
+  }
+
+  subscribe(endpoint, callback) {
+    this.socket.on(endpoint, (ctx, data) => {
+      callback(ctx, data);
+    });
   }
 }

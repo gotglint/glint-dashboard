@@ -1,11 +1,14 @@
 import koala from 'koala';
 import co from 'co';
 import IO from 'koa-socket';
+
 import {App} from 'horse';
 
 import log from 'intel';
 
 import setupRoutes from './lib/routes.es6';
+
+import {REPL} from './lib/repl.es6';
 
 log.basicConfig({
   format: {
@@ -60,8 +63,12 @@ socket.on('connection', ctx => {
 socket.on('repl', (ctx, data) => {
   log.debug('REPL message received: ', data);
   if (data && data === 'init') {
-    log.debug('Sending REPL response.');
-    ctx.socket.emit('repl', {message: 'init response'});
+    let message = {
+      runtime: REPL.getRuntimeInfo()
+    };
+
+    log.debug('Sending REPL response: ', message);
+    ctx.socket.emit('repl', message);
   }
 });
 

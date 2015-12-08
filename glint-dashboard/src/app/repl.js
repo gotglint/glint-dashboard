@@ -11,6 +11,16 @@ export class Repl {
   }
 
   attached() {
+    let parent = this;
+
+    this.ws.subscribe('repl', function(ctx, data) {
+      parent.log.debug('REPL message: ', ctx, data);
+    });
+
+    this.ws.subscribe('data', function(ctx, data) {
+      parent.log.debug('REPL message: ', ctx, data);
+    });
+
     this.ws.sendMessage('repl', 'init');
   }
 
