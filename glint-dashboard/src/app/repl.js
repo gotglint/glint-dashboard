@@ -8,23 +8,22 @@ export class Repl {
   constructor(ws) {
     this.ws = ws;
     this.log = getLogger('repl');
+
+    this.replInput = 'test';
+    this.replOutput = '';
   }
 
   attached() {
-    let parent = this;
+    this.ws.subscribe('repl', data => {
+      this.log.debug('REPL repl message: ', data);
 
-    this.ws.subscribe('repl', function(ctx, data) {
-      parent.log.debug('REPL message: ', ctx, data);
-    });
-
-    this.ws.subscribe('data', function(ctx, data) {
-      parent.log.debug('REPL message: ', ctx, data);
+      this.replOutput += JSON.stringify(data);
     });
 
     this.ws.sendMessage('repl', 'init');
   }
 
   run() {
-    this.log.debug('Executing REPL.');
+    this.log.debug('Executing REPL: ', this.replInput);
   }
 }
