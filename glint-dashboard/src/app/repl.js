@@ -25,5 +25,7 @@ export class Repl {
 
   run() {
     this.log.debug('Executing REPL: ', this.replInput);
+    
+    this.ws.sendMessage('repl', this.replInput);
   }
 }
