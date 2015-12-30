@@ -2,6 +2,7 @@ import executor from './executor.es6';
 
 function setupRoutes(app, server) {
   const log = server.context.log;
+  log.debug('Configuring routes.');
 
   app.router.get('/', function *() {
     log.debug('Handling default route.');

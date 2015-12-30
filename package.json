@@ -1,0 +1,19 @@
+{
+  "name": "glint",
+  "version": "0.0.1",
+  "description": "Got Glint?",
+  "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com)",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mlaccetti/glint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mlaccetti/glint/issues"
+  },
+  "license": "LGPL-2.1",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-hub": "^0.7.1"
+  }
+}
