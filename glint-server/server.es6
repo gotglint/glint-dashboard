@@ -1,4 +1,4 @@
-import koala from 'koala';
+import koa from 'koa';
 import co from 'co';
 import IO from 'koa-socket';
 
@@ -17,28 +17,36 @@ log.basicConfig({
   }
 });
 
-const server = koala();
+const koaApp = koa();
+require('koa-csrf')(koaApp);
+require('koa-body-parsers')(koaApp);
+require('koa-qs')(koaApp);
+koaApp.querystring = require('qs');
+
+koaApp.use(require('koa-response-time')());
+koaApp.use(require('koa-logger')());
+
 const app = new App();
 const socket = new IO();
-socket.attach(server);
+socket.attach(koaApp);
 
 // set stuff into the context for children to access
-server.context.log = log;
+koaApp.context.log = log;
 
 // init the routes/dependencies
-setupRoutes(app, server);
+setupRoutes(app, koaApp);
 
 /**
  * The dirty bloody magic that binds Koa to Horse to our routes
  */
-server.use(function *() {
+koaApp.use(function *() {
   yield app.route(this, function () {
   });
 });
 
-server.server.listen(8080, function (err) {
+koaApp.server.listen(8080, function (err) {
   if (err) {
-    log.error('Could not fire up server: ', err);
+    log.error('Could not fire up koa: ', err);
     throw err;
   }
 
