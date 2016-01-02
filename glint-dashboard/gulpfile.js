@@ -87,7 +87,7 @@ gulp.task('scripts', ['lint'], function () {
 
 gulp.task('build', ['sass', 'html:dev', 'scripts', 'images']);
 
-gulp.task('serve', ['watch'], function () {
+gulp.task('serve', function () {
   var bs = browserSync({logSnippet: false});
 
   var connect = require('connect')();
@@ -111,7 +111,7 @@ gulp.task('serve', ['watch'], function () {
   gulp.watch(paths.dist).on('change', browserSync.reload);
 });
 
-gulp.task('watch', ['build'], function () {
+gulp.task('watch', ['build', 'serve'], function () {
   gulp.watch(paths.scss.all, ['sass']);
   gulp.watch(paths.html, ['html:dev']);
   gulp.watch(paths.scripts, ['scripts']);
