@@ -27,16 +27,14 @@ do
     jspm install
   fi
 
-  if ${run_build}
-  then
-    echo "Running \`gulp dist\` for ${dir}..."
-    gulp dist
-  fi
   cd ..
 done
 
-if [ ${run_build} != "true" ]
+if ${run_build}
 then
+  echo "Running \`gulp dist\` for all projects..."
+  gulp dist
+else
   echo "Running \`gulp watch\` for all projects..."
   gulp watch
 fi
