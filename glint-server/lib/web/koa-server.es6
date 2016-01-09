@@ -4,18 +4,9 @@ import IO from 'koa-socket';
 
 import {App} from 'horse';
 
-import log from 'intel';
+import setupRoutes from './routes.es6';
 
-import setupRoutes from './lib/routes.es6';
-
-import {REPL} from './lib/repl.es6';
-
-log.basicConfig({
-  format: {
-    'format': '[%(date)s] %(name)s.%(levelname)s: %(message)s',
-    'colorize': true
-  }
-});
+import {REPL} from '../util/repl.es6';
 
 const koaApp = koa();
 require('koa-csrf')(koaApp);
@@ -80,4 +71,4 @@ socket.on('repl', (ctx, data) => {
   }
 });
 
-export default app
+export default app;

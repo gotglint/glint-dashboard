@@ -7,4 +7,4 @@ require("babel-core/register")({
   sourceMap: true
 });
 
-require("./server.es6");
+require("./lib/master.es6");

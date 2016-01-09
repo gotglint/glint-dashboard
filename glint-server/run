@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+var colors = require('colors');
+var fs = require('fs');
+var meta = JSON.parse(fs.readFileSync('./package.json'));
+var program = require('commander');
+
+program
+  .version(meta.version);
+
+program
+  .option('-e, --etcd <etcd>', 'IP/port of the etcd server to connect to (optional - defaults to 127.0.0.1:2379).', '127.0.0.1:2379')
+  .option('-f, --force-master [val]', 'Force this node to become the new master; use this option very carefully!', false)
+  .option('-s, --slave <masterIp>', 'Run as a slave; provide the IP of the master node (IP is mandatory).');
+
+program.on('--help', function(){
+  console.log('  By default, this application will fire up a master instance.');
+  console.log('');
+});
+
+program.parse(process.argv);
+
+require("babel-polyfill");
+
+require("babel-core/register")({
+  ignore: false,
+  only: /.+(?:(?:\.es6\.js)|(?:.es6))$/,
+  extensions: ['.js', '.es6.js', '.es6' ],
+  sourceMap: true
+});
+
+if (program.slave) {
+  console.log('Initializing slave, connecting to: %s', program.slave);
+  require('./lib/slave.es6');
+} else {
+  var host = program.etcd.split(':');
+
+  var options = {
+    forceMaster: program.forceMaster,
+    host: host[0],
+    port: host[1]
+  };
+  console.log('Initializing new master; forcing this instance to be the new master: ', program.forceMaster);
+  require('./lib/master.es6')(options);
+}
