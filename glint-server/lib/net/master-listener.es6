@@ -1,6 +1,6 @@
 import axon from 'axon';
 
-export class RequestListener {
+export class MasterListener {
   constructor(host, port) {
     this.sock = axon.socket('req');
 

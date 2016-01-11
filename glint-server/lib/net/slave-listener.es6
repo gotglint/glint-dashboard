@@ -1,6 +1,6 @@
 import axon from 'axon';
 
-export class ResponseListener {
+export class SlaveListener {
   constructor(host, port) {
     this.sock = axon.socket('rep');
 
