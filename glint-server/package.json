@@ -37,7 +37,8 @@
     "koa-socket": "^3.2.0",
     "node-etcd": "^4.2.1",
     "statsd-client": "^0.2.1",
-    "webhdfs": "^0.3.0"
+    "webhdfs": "^0.3.0",
+    "zmq": "^2.14.0"
   },
   "devDependencies": {
     "gulp-nodemon": "^2.0.4",
