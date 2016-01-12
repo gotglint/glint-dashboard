@@ -1,15 +1,22 @@
 import axon from 'axon';
 
+import getLog from '../util/log.es6';
+
 export class MasterListener {
   constructor(host, port) {
-    this.sock = axon.socket('req');
+    this.host = host;
+    this.port = port;
 
-    this.sock.bind(port, host);
+    this.sock = axon.socket('rep');
+    this.log = getLog();
   }
 
-  distribute() {
-    this.sock.send('resize', img, function(res){
+  init() {
+    this.log.debug('Binding listener to %s:%s', this.host, this.port);
+    this.sock.bind(this.port, this.host);
+  }
 
-    });
+  distributeMessage(type, body) {
+    this.sock.send({type: type, body: body});
   }
 }
