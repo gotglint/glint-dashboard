@@ -8,10 +8,10 @@ import { MasterListener } from './net/master-listener.es6';
 
 // hack for us to be able to pull in options
 module.exports = function (options) {
-  log.debug('Kicking off the master - connecting to [ %s:%s ], forceMaster: %s', options.host, options.port, options.forceMaster);
+  log.debug('Kicking off the master - connecting to [ %s:%s ], forceMaster: %s', options.etcdHost, options.etcdPort, options.forceMaster);
 
   async function init() {
-    const etcd = new Etcd(options.host, options.port);
+    const etcd = new Etcd(options.etcdHost, options.etcdPort);
 
     if (options.forceMaster !== true) {
       // check to see if an existing master is there
@@ -34,11 +34,6 @@ module.exports = function (options) {
           process.exit(1);
         }
       }
-
-      // fire up the listener
-      log.debug('Firing up listener.');
-      const listener = new MasterListener('0.0.0.0', 3000);
-      listener.init();
     }
 
     let masterName = os.hostname();
@@ -49,17 +44,32 @@ module.exports = function (options) {
     log.debug('Double checking that the master was set properly.');
 
     let master = await etcd.get('master');
-    log.debug('Double check master: %s', master);
+    log.debug('Double check master from etcd: %s', master);
 
     if (master !== masterName) {
       log.warn('Seems that we couldn\'t set the master name properly, dying.');
       process.exit(1);
     }
 
-    setInterval(function() {
-      // keep alive
-      etcd.set('master', masterName, 10);
-    }, 7500);
+    log.debug('Master initializing - kicking off the listener on %s:%s', options.masterHost, options.masterPort);
+    const masterListener = new MasterListener(options.masterHost, options.masterPort);
+
+    try {
+      log.debug('Master listener created, enabling debug mode.');
+      masterListener.enableDebug();
+
+      log.debug('Master listener debug mode enabled, initializing.');
+      await masterListener.init();
+
+      log.debug('Master listener online, starting heartbeat.');
+      setInterval(function () {
+        // keep alive
+        etcd.set('master', masterName, 10);
+      }, 7500);
+    } catch (exception) {
+      log.error('Could not initialize master listener: ', exception);
+      process.exit(1);
+    }
   }
 
   init();

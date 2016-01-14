@@ -11,7 +11,8 @@ program
 program
   .option('-e, --etcd <etcd>', 'IP/port of the etcd server to connect to (optional - defaults to 127.0.0.1:2379).', '127.0.0.1:2379')
   .option('-f, --force-master [val]', 'Force this node to become the new master; use this option very carefully!', false)
-  .option('-s, --slave <masterIp>', 'Run as a slave; provide the IP of the master node (IP is mandatory).');
+  .option('-m, --master <master>', 'Override the IP/port that the master will listen on; defaults to *:5671.', '*:5671')
+  .option('-s, --slave <master>', 'Run as a slave; provide the IP/port of the master node (mandatory).');
 
 program.on('--help', function(){
   console.log('  By default, this application will fire up a master instance.');
@@ -30,16 +31,26 @@ require("babel-core/register")({
 });
 
 if (program.slave) {
-  console.log('Initializing slave, connecting to: %s', program.slave);
-  require('./lib/slave.es6');
-} else {
-  var host = program.etcd.split(':');
+  var masterToConnectTo = program.slave.split(':');
 
-  var options = {
-    forceMaster: program.forceMaster,
-    host: host[0],
-    port: host[1]
+  var slaveOptions = {
+    masterHost: masterToConnectTo[0],
+    masterPort: masterToConnectTo[1]
   };
-  console.log('Initializing new master; forcing this instance to be the new master: ', program.forceMaster);
-  require('./lib/master.es6')(options);
+
+  console.log('Initializing slave, connecting to: %s', program.slave);
+  require('./lib/slave.es6')(slaveOptions);
+} else {
+  var etcdHost = program.etcd.split(':');
+  var masterHost = program.master.split(':');
+
+  var masterOptions = {
+    forceMaster: program.forceMaster,
+    etcdHost: etcdHost[0],
+    etcdPort: etcdHost[1],
+    masterHost: masterHost[0],
+    masterPort: masterHost[1]
+  };
+  console.log('Initializing new master (binding to %s); forcing this instance to be the new master: %s', program.master, program.forceMaster);
+  require('./lib/master.es6')(masterOptions);
 }

@@ -36,6 +36,7 @@
     "koa-session": "^3.3.1",
     "koa-socket": "^3.2.0",
     "node-etcd": "^4.2.1",
+    "node-uuid": "^1.4.7",
     "statsd-client": "^0.2.1",
     "webhdfs": "^0.3.0",
     "zmq": "^2.14.0"
