@@ -66,8 +66,8 @@ module.exports = function (options) {
         // keep alive
         etcd.set('master', masterName, 10);
       }, 7500);
-    } catch (exception) {
-      log.error('Could not initialize master listener: ', exception);
+    } catch (error) {
+      log.error('Could not initialize master listener: ', error);
       process.exit(1);
     }
   }

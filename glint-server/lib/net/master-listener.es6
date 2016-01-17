@@ -10,49 +10,50 @@ export class MasterListener {
     this.host = host;
     this.port = port;
 
-    log.debug('Creating ZMQ socket.');
+    log.debug('Creating master ZMQ socket.');
     this.broker = zmq.socket('router');
   }
 
   async init() {
-    log.debug('Binding listener to %s:%s', this.host, this.port);
+    log.debug('Binding master listener to %s:%s', this.host, this.port);
     await this.broker.bind('tcp://' + this.host + ':' + this.port);
 
-    this.broker.on('message', () => {
-      var args = Array.apply(null, arguments), identity = args[0], message = args[1].toString('utf8');
-
-      log.debug('Got a message from %s - %s', identity, message);
+    this.broker.on('message', (identity, delimiter, data) => {
+      var asJson = JSON.parse(data);
+      log.debug('Master handling message: %s %s %j', identity, delimiter, asJson);
     });
   }
 
   enableDebug() {
     log.debug('Enabling debug mode in the master listener.');
-    this.broker.on('connect', function(fd, ep) {console.log('connect, endpoint:', ep);});
-    this.broker.on('connect_delay', function(fd, ep) {console.log('connect_delay, endpoint:', ep);});
-    this.broker.on('connect_retry', function(fd, ep) {console.log('connect_retry, endpoint:', ep);});
-    this.broker.on('listen', function(fd, ep) {console.log('listen, endpoint:', ep);});
-    this.broker.on('bind_error', function(fd, ep) {console.log('bind_error, endpoint:', ep);});
-    this.broker.on('accept', function(fd, ep) {console.log('accept, endpoint:', ep);});
-    this.broker.on('accept_error', function(fd, ep) {console.log('accept_error, endpoint:', ep);});
-    this.broker.on('close', function(fd, ep) {console.log('close, endpoint:', ep);});
-    this.broker.on('close_error', function(fd, ep) {console.log('close_error, endpoint:', ep);});
-    this.broker.on('disconnect', function(fd, ep) {console.log('disconnect, endpoint:', ep);});
+    this.broker.on('connect', function(fd, ep) {log.debug('connect, endpoint:', ep);});
+    this.broker.on('connect_delay', function(fd, ep) {log.debug('connect_delay, endpoint:', ep);});
+    this.broker.on('connect_retry', function(fd, ep) {log.debug('connect_retry, endpoint:', ep);});
+    this.broker.on('listen', function(fd, ep) {log.debug('listen, endpoint:', ep);});
+    this.broker.on('bind_error', function(fd, ep) {log.debug('bind_error, endpoint:', ep);});
+    this.broker.on('accept', function(fd, ep) {log.debug('accept, endpoint:', ep);});
+    this.broker.on('accept_error', function(fd, ep) {log.debug('accept_error, endpoint:', ep);});
+    this.broker.on('close', function(fd, ep) {log.debug('close, endpoint:', ep);});
+    this.broker.on('close_error', function(fd, ep) {log.debug('close_error, endpoint:', ep);});
+    this.broker.on('disconnect', function(fd, ep) {log.debug('disconnect, endpoint:', ep);});
 
     this.broker.on('monitor_error', function(err) {
-      console.log('Error in monitoring: %s', err);
+      log.error('Error in master monitoring: %s', err);
     });
 
-    log.debug('Turning on ZMQ monitoring.');
+    log.debug('Turning on master ZMQ monitoring.');
     this.broker.monitor(500, 0);
 
     log.debug('Master listener debug mode enabled.');
   }
 
   distributeMessage(node, type, body) {
-    this.broker.send([identity, '', 'Work harder']);
+    log.debug('Sending message of type %s with content %j to %s', type, body, node);
+    this.broker.send([node, '', 'Work harder']);
   }
 
   shutdown() {
+    log.debug('Shutting down master listener.');
     this.broker.close();
   }
 }
