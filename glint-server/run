@@ -5,12 +5,16 @@ var fs = require('fs');
 var meta = JSON.parse(fs.readFileSync('./package.json'));
 var program = require('commander');
 
+function parseBool(val) {
+  return Boolean(val).valueOf();
+}
+
 program
   .version(meta.version);
 
 program
   .option('-e, --etcd <etcd>', 'IP/port of the etcd server to connect to (optional - defaults to 127.0.0.1:2379).', '127.0.0.1:2379')
-  .option('-f, --force-master [val]', 'Force this node to become the new master; use this option very carefully!', false)
+  .option('-f, --force-master <val>', 'Force this node to become the new master; use this option very carefully!', parseBool, false)
   .option('-m, --master <master>', 'Override the IP/port that the master will listen on; defaults to *:5671.', '*:5671')
   .option('-s, --slave <master>', 'Run as a slave; provide the IP/port of the master node (mandatory).');
 

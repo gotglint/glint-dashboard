@@ -1,0 +1,18 @@
+[
+  {
+    // master
+    "uid": "master",
+    "append": true,
+    "watch": true,
+    "script": "run",
+    "args": ["-f", "true"]
+  },
+  {
+    // slave
+    "uid": "slave",
+    "append": true,
+    "watch": true,
+    "script": "run",
+    "args": ["-s", "127.0.0.1:5671"]
+  }
+]
