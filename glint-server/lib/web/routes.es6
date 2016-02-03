@@ -1,4 +1,4 @@
-import executor from '../util/executor.es6';
+import executor from 't';
 
 function setupRoutes(app, server) {
   const log = server.context.log;
