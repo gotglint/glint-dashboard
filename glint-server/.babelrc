@@ -1,4 +1,8 @@
 {
   "presets": [ "es2015", "stage-0"],
-  "retainLines": true
+  "retainLines": true,
+  "only": [
+    "src/**/*.es6",
+    "test/unit/**/*.es6"
+  ]
 }
