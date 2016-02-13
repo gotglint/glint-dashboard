@@ -1,14 +1,17 @@
-var gulp = require('gulp');
+const gulp = require('gulp');
 
 // plugins
-var nodemon = require('gulp-nodemon');
+const nodemon = require('gulp-nodemon');
 
-gulp.task('watch', function () {
+// testing
+const mocha = require('gulp-mocha');
+
+gulp.task('watch', () => {
   nodemon({
     script: __dirname + '/index.js',
-    cwd: __dirname,
-    ext: 'js html',
-    env: { 'NODE_ENV': 'development' }
+    cwd:    __dirname,
+    ext:    'js html',
+    env:    {'NODE_ENV': 'development'}
   });
 });
 

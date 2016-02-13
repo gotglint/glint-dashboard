@@ -43,7 +43,7 @@ if (program.slave) {
   };
 
   console.log('Initializing slave, connecting to: %s', program.slave);
-  require('./lib/slave.es6')(slaveOptions);
+  require('./src/slave.es6')(slaveOptions);
 } else {
   var etcdHost = program.etcd.split(':');
   var masterHost = program.master.split(':');
@@ -56,5 +56,5 @@ if (program.slave) {
     masterPort: masterHost[1]
   };
   console.log('Initializing new master (binding to %s); forcing this instance to be the new master: %s', program.master, program.forceMaster);
-  require('./lib/master.es6')(masterOptions);
+  require('./src/master.es6')(masterOptions);
 }

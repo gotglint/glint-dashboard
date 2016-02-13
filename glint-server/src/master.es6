@@ -1,7 +1,7 @@
 import getLog from './util/log.es6';
 const log = getLog();
 
-import {GlintManager} from './engine/glint-manager';
+import {GlintManager} from './engine/manager';
 
 // hack for us to be able to pull in options
 module.exports = function (options) {
