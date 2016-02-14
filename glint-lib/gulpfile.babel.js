@@ -2,8 +2,8 @@
 import gulp from 'gulp';
 
 // plugins
+import babel from 'gulp-babel';
 import eslint from 'gulp-eslint';
-import nodemon from 'gulp-nodemon';
 
 // testing
 import mocha from 'gulp-mocha';
@@ -25,13 +25,16 @@ gulp.task('test', ['lint'], () => {
     }));
 });
 
-gulp.task('watch', () => {
-  nodemon({
-    script: __dirname + '/index.js',
-    cwd: __dirname,
-    ext: 'js html',
-    env: {'NODE_ENV': 'development'}
-  });
+gulp.task('build', ['test'], () => {
+  return gulp.src('src/**/*.js')
+    .pipe(babel({
+      presets: ['es2015']
+    }))
+    .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['watch']);
+gulp.task('watch', ['test', 'build'], () => {
+  gulp.watch('src/**/*.js', ['test', 'build']);
+});
+
+gulp.task('default', ['test', 'build']);

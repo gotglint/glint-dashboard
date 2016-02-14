@@ -11,8 +11,18 @@
     "url": "https://github.com/mlaccetti/glint/issues"
   },
   "license": "LGPL-2.1",
-  "dependencies": {
-
-  },
-  "main":"src/index"
+  "dependencies": {},
+  "main": "dist/index",
+  "files": [
+    "dist/**"
+  ],
+  "devDependencies": {
+    "babel-eslint": "^4.1.8",
+    "babel-preset-es2015": "^6.5.0",
+    "eslint": "^2.0.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^2.0.0",
+    "gulp-mocha": "^2.2.0"
+  }
 }
