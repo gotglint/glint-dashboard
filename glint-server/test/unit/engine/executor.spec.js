@@ -1,4 +1,4 @@
-import getLog from '../log';
+import getLog from '../../log';
 const log = getLog();
 
 import {GlintExecutor} from '../../../src/engine/executor';
