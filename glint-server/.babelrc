@@ -1,4 +1,11 @@
 {
   "presets": [ "es2015" ],
-  "sourceMaps": true
+  "sourceMaps": true,
+  "only": [
+    "gulpfile.babel.js",
+    "node_modules/glint-lib/src/**/*.js",
+    "node_modules/horse/**/*.es6.js",
+    "src/**/*.js",
+    "test/**/*.js"
+  ]
 }

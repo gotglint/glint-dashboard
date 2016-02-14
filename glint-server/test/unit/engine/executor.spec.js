@@ -1,6 +1,6 @@
 // import chai from 'chai';
 
-import getLog from '../../log';
+import getLog from '../../../src/util/log';
 const log = getLog();
 
 import {GlintExecutor} from '../../../src/engine/executor';
