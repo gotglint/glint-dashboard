@@ -1,12 +1,15 @@
+import getLog from '../util/log';
+const log = getLog();
+
 import koa from 'koa';
 import co from 'co';
 import IO from 'koa-socket';
 
 import {App} from 'horse';
 
-import setupRoutes from './routes.es6';
+import setupRoutes from './routes';
 
-import {REPL} from '../util/repl.es6';
+import {REPL} from '../util/repl';
 
 const koaApp = koa();
 require('koa-csrf')(koaApp);

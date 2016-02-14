@@ -1,7 +1,7 @@
 import zmq from 'zmq';
 import Promise from 'bluebird';
 
-import getLog from '../util/log.es6';
+import getLog from '../util/log';
 const log = getLog();
 
 export class MasterListener {
@@ -29,16 +29,16 @@ export class MasterListener {
             const data = JSON.parse(_data);
             log.debug('Master handling message: %s %j', identity, data);
 
-            log.debug("Data type: ", data.type);
+            log.debug('Data type: ', data.type);
 
             switch (data.type) {
-              case "online":
+              case 'online':
                 log.debug('Node coming online: ', data);
-                this.distributeMessage(identity, {"test": "hi"});
+                this.distributeMessage(identity, {'test': 'hi'});
                 break;
             }
-          } catch (err) {
-            log.error('Could not process message: ', err);
+          } catch (handlerErr) {
+            log.error('Could not process message: ', handlerErr);
           }
         });
 

@@ -1,4 +1,4 @@
-import getLog from './util/log.es6';
+import getLog from './util/log';
 const log = getLog();
 
 import {GlintManager} from './engine/manager';

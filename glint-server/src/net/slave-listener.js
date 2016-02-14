@@ -2,7 +2,7 @@ import zmq from 'zmq';
 import uuid from 'node-uuid';
 import Promise from 'bluebird';
 
-import getLog from '../util/log.es6';
+import getLog from '../util/log';
 const log = getLog();
 
 export class SlaveListener {
@@ -23,7 +23,7 @@ export class SlaveListener {
   }
 
   async init() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve/*, reject*/) => {
       log.debug('Binding slave %s requester to %s:%s', this.dealer.identity, this.host, this.port);
       this.dealer.connect('tcp://' + this.host + ':' + this.port);
 
@@ -104,7 +104,7 @@ export class SlaveListener {
 
   shutdown() {
     log.debug('Shutting down slave listener.');
-    this.dealer.removeListener('message', onMessage);
+    // this.dealer.removeListener('message', onMessage);
     this.dealer.close();
   }
 }

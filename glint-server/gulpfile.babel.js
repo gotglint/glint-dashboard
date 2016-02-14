@@ -10,7 +10,6 @@ import nodemon from 'gulp-nodemon';
 // testing
 import mocha from 'gulp-mocha';
 
-
 gulp.task('lint', () => {
   return gulp.src(['./src/**/*.js', './test/**/*.js', 'gulpfile.js'])
     .pipe(eslint())
@@ -19,9 +18,9 @@ gulp.task('lint', () => {
 });
 
 gulp.task('test', ['lint'], () => {
-  return gulp.src('./test/unit/**/*.js')
+  return gulp.src('./test/**/*.js')
     .pipe(mocha({
-      reporter: 'html',
+      reporter: 'spec',
       quiet: false,
       colors: true,
       timeout: 10000

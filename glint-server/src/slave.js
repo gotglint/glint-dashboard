@@ -1,9 +1,9 @@
-import getLog from './util/log.es6';
+import getLog from './util/log';
 const log = getLog();
 
 log.debug('Kicking off a slave.');
 
-import { SlaveListener } from './net/slave-listener.es6';
+import { SlaveListener } from './net/slave-listener';
 
 // hack for us to be able to pull in options
 module.exports = function (options) {

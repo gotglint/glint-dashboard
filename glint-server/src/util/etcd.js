@@ -2,12 +2,12 @@ import UEtcd from 'node-etcd';
 
 import bluebird from 'bluebird';
 
-import getLog from './log.es6';
+import getLog from './log';
 const log = getLog();
 
 class Etcd {
   constructor(host, port) {
-    log.debug('Instantiating node-etcd with: %s:%s', host, port)
+    log.debug('Instantiating node-etcd with: %s:%s', host, port);
     this._inst = new UEtcd(host, port);
     bluebird.promisifyAll(this._inst);
   }

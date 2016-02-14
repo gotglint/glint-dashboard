@@ -3,8 +3,8 @@ const log = getLog();
 
 import os from 'os';
 
-import { Etcd } from '../util/etcd.es6';
-import { MasterListener } from '../net/master-listener.es6';
+import { Etcd } from '../util/etcd';
+import { MasterListener } from '../net/master-listener';
 
 export class GlintManager {
   constructor(etcdHost, etcdPort, masterHost, masterPort, forceMaster) {
