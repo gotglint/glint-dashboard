@@ -32,7 +32,7 @@ addons:
     - libzmq3-dev
 
 before_script:
-  - npm install -g gulp jspm
+  - npm install -g gulp jspm node-gyp
   - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
 
 script: ./build.sh
