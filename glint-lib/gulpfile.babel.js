@@ -38,3 +38,5 @@ gulp.task('watch', ['test', 'build'], () => {
 });
 
 gulp.task('default', ['test', 'build']);
+
+gulp.task('dist', ['test', 'build']);

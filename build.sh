@@ -14,7 +14,7 @@ while getopts ":w" opt; do
   esac
 done
 
-for dir in glint-lib glint-server glint-dashboard
+for dir in glint-lib glint-server # glint-dashboard
 do
   echo "Building ${dir}..."
 
@@ -27,14 +27,27 @@ do
     jspm install
   fi
 
+  if [ "${dir}" == "glint-lib" ]
+  then
+    echo "Running \`npm ln\` for ${dir}..."
+    npm ln
+  elif [ "${dir}" == "glint-server" ]
+  then
+    echo "Running \`npm ln glint-lib\` for ${dir}..."
+    npm ln glint-lib
+  fi
+
+  echo "Running \`gulp dist\` for ${dir}..."
+  gulp dist
+
   cd ..
 done
 
-if ${run_build}
-then
-  echo "Running \`gulp dist\` for all projects..."
-  gulp dist
-else
-  echo "Running \`gulp watch\` for all projects..."
-  gulp watch
-fi
+# if ${run_build}
+# then
+#  echo "Running \`gulp dist\` for all projects..."
+#  gulp dist
+#else
+#  echo "Running \`gulp watch\` for all projects..."
+#  gulp watch
+# fi

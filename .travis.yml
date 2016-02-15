@@ -16,10 +16,13 @@ env:
 sudo: false
 
 cache:
-  - apt
+  - apt: true
   - directories:
     - node_modules
-    - jspm_packages
+    - glint-dashboard/node_modules
+    - glint-dashboard/jspm_packages
+    - glint-lib/node_modules
+    - glint-server/node_modules
 
 addons:
   apt:
@@ -27,10 +30,7 @@ addons:
     - build-essential
 
 before_script:
-  - cd glint-dashboard
   - npm install -g gulp jspm
   - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
-  - npm install
-  - jspm install
 
-script: cd glint-dashboard; gulp dist
+script: build.sh
