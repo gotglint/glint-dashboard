@@ -28,6 +28,7 @@ addons:
   apt:
     packages:
     - build-essential
+    - libzmq1
 
 before_script:
   - npm install -g gulp jspm
