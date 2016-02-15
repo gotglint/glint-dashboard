@@ -33,4 +33,4 @@ before_script:
   - npm install -g gulp jspm
   - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
 
-script: build.sh
+script: ./build.sh
