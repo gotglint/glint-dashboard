@@ -26,10 +26,17 @@ cache:
 
 addons:
   apt:
+    sources:
+    - ubuntu-toolchain-r-test
     packages:
     - build-essential
     - libzmq3
     - libzmq3-dev
+    - gcc-4.8
+    - g++-4.8
+
+before_install:
+  - export CXX="g++-4.8" CC="gcc-4.8"
 
 before_script:
   - npm install -g gulp jspm node-gyp
