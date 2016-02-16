@@ -43,11 +43,12 @@ do
   cd ..
 done
 
-# if ${run_build}
-# then
+if ${run_build}
+then
 #  echo "Running \`gulp dist\` for all projects..."
 #  gulp dist
-#else
-#  echo "Running \`gulp watch\` for all projects..."
-#  gulp watch
-# fi
+  echo "Doing nothing."
+else
+  echo "Running \`gulp watch\` for all projects..."
+  gulp watch
+fi

@@ -17,8 +17,10 @@
     "dist/**"
   ],
   "devDependencies": {
-    "babel-eslint": "^4.1.8",
+    "babel-core": "^6.5.2",
+    "babel-eslint": "^5.0.0-beta10",
     "babel-preset-es2015": "^6.5.0",
+    "babel-register": "^6.5.2",
     "eslint": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",

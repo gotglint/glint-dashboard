@@ -1,7 +1,7 @@
 var hub = require('gulp-hub');
 
+// dashboard: 'glint-dashboard/gulpfile.js',
 var projects = {
-  dashboard: 'glint-dashboard/gulpfile.js',
   library: 'glint-lib/gulpfile.babel.js',
   server: 'glint-server/gulpfile.babel.js'
 };
