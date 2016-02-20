@@ -6,7 +6,7 @@ log.debug('Kicking off a slave.');
 import { SlaveListener } from './net/slave-listener';
 
 // hack for us to be able to pull in options
-module.exports = function (options) {
+export default function initSlave(options) {
   async function init() {
     try {
       log.debug('Slave coming online - kicking off the listener on %s:%s', options.masterHost, options.masterPort);

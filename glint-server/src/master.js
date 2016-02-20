@@ -3,21 +3,22 @@ const log = getLog();
 
 import {GlintManager} from './engine/manager';
 
-// hack for us to be able to pull in options
-module.exports = function (options) {
-  log.debug('Kicking off the master - connecting to [ %s:%s ], forceMaster: %s', options.etcdHost, options.etcdPort, options.forceMaster);
+/**
+ * Kick on the master and add a signal handler listener for shutdown.
+ *
+ * @param options The options to pass to the GlintManager
+ *
+ * @returns {Promise} A promise to wait on
+ */
+export default function initMaster(options) {
+  log.debug('Kicking off the master - binding to [ %s ]', options.masterHost);
 
   log.debug('Instantiating Glint manager.');
-  const glintManager = new GlintManager(options.etcdHost, options.etcdPort, options.masterHost, options.masterPort, options.forceMaster);
-
-  async function init() {
-    log.debug('Initializing Glint manager.');
-    glintManager.init();
-  }
+  const glintManager = new GlintManager(options.masterHost);
 
   process.on('SIGINT', () => {
     glintManager.shutdown();
   });
 
-  init();
+  return glintManager.init();
 };
