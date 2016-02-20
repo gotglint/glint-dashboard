@@ -1,3 +1,6 @@
+// polyfill madness
+require('babel-polyfill');
+
 // gulp
 import gulp from 'gulp';
 

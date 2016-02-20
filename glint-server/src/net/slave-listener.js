@@ -6,47 +6,39 @@ import getLog from '../util/log';
 const log = getLog();
 
 export class SlaveListener {
-  constructor(host, port) {
+  constructor(host) {
     log.debug('Slave listener constructor firing.');
     this.host = host;
-    this.port = port;
-
-    this.handlers = new Map();
+    this.connected = false;
 
     log.debug('Creating slave ZMQ socket.');
-    this.dealer = zmq.socket('dealer');
-    this.dealer.setsockopt(zmq.ZMQ_RECONNECT_IVL, 500);
+    this.dealer = zmq.socket('rep');
+    this.dealer.setsockopt(zmq.ZMQ_RECONNECT_IVL, 100);
     this.dealer.setsockopt(zmq.ZMQ_RECONNECT_IVL_MAX, 30000);
     this.dealer.identity = uuid.v4();
 
     log.debug('Slave ZMQ socket created, assigned ID: ', this.dealer.identity);
   }
 
-  async init() {
-    return new Promise((resolve/*, reject*/) => {
+  /**
+   * Initialize the slave connection to the master.
+   *
+   * @return {Promise} A promise to wait for
+   */
+  init() {
+    return new Promise((resolve) => {
       log.debug('Binding slave %s requester to %s:%s', this.dealer.identity, this.host, this.port);
-      this.dealer.connect('tcp://' + this.host + ':' + this.port);
+      this.dealer.connect(this.host);
 
       //  Get workload from broker, until finished
-      this.dealer.on('message', (delimiter, data) => {
+      this.dealer.on('message', (data) => {
         log.debug('Slave handling message: ', data);
 
-        /*if (body && body.type) {
-         // check the handlers
-         const handler = this.handlers.get(body.type);
-         if (handler === undefined) {
-         log.warn('Message for type %s arrived, but no handler registered.  Ignoring.', body.type);
-         } else {
-         log.debug('Processing message of type %s', body.type);
-         handler(body);
-         }
-         }*/
+        this.dealer.send(JSON.stringify({reply: 'done'}));
       });
 
-      //  Tell the broker we're ready for work
-      this.sendMessage({type: 'online'});
-
-      return resolve();
+      this.connected = true;
+      resolve();
     });
   }
 
@@ -93,18 +85,45 @@ export class SlaveListener {
     log.debug('Slave listener debug mode enabled.');
   }
 
-  addMessageHandler(type, handler) {
-    this.handlers.set(type, handler);
-  }
-
   sendMessage(message) {
-    log.debug('Sending message: ', message);
-    this.dealer.send(['', JSON.stringify(message)]);
+    if (this.connected === false) {
+      log.warn('Master listener not connected; cannot send message.');
+      return Promise.reject('Slave listener not connected; cannot send message.');
+    }
+
+    return new Promise((resolve, reject) => {
+      log.debug('Sending message: ', message);
+      this.dealer.send(['', JSON.stringify(message)], null, (err) => {
+        if (err) {
+          log.warn('Could not send message: ', err);
+          return reject(err);
+        }
+
+        log.debug('Message sent.');
+        resolve();
+      });
+    });
   }
 
   shutdown() {
+    if (this.connected === false) {
+      log.warn('Master listener not connected; bypassing shutdown request.');
+      return Promise.reject('Slave listener not connected; bypassing shutdown request.');
+    }
+
     log.debug('Shutting down slave listener.');
-    // this.dealer.removeListener('message', onMessage);
-    this.dealer.close();
+    return new Promise((resolve) => {
+      log.debug('Turning off monitoring.');
+      this.dealer.unmonitor();
+
+      log.debug('Disconnecting dealer.');
+      this.dealer.disconnect(this.host);
+
+      log.debug('Dealer disconnected, closing connection.');
+      this.dealer.close();
+
+      log.debug('Connection closed.');
+      resolve();
+    });
   }
 }

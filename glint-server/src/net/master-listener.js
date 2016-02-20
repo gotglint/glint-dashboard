@@ -5,44 +5,40 @@ import getLog from '../util/log';
 const log = getLog();
 
 export class MasterListener {
-  constructor(host, port) {
+  constructor(host) {
     log.debug('Master listener constructor firing.');
 
     this.host = host;
-    this.port = port;
+    this.connected = false;
 
     log.debug('Creating master ZMQ socket.');
-    this.broker = zmq.socket('router');
+    this.broker = zmq.socket('req');
   }
 
-  async init() {
+  init() {
     return new Promise((resolve, reject) => {
-      log.debug('Binding master listener to %s:%s', this.host, this.port);
-      this.broker.bind('tcp://' + this.host + ':' + this.port, (err) => {
+      log.debug('Binding master listener to %s', this.host);
+      this.broker.bind(this.host, (err) => {
         if (err) {
-          log.warn('Could not bind master listener: ', err);
+          log.error('Could not bind master listener: ', err);
           return reject(err);
         }
 
-        this.broker.on('message', (identity, delimiter, _data) => {
+        log.debug('Master is bound to the broker, creating a listener.');
+        this.connected = true;
+
+        this.broker.on('message', (message) => {
           try {
-            const data = JSON.parse(_data);
-            log.debug('Master handling message: %s %j', identity, data);
-
-            log.debug('Data type: ', data.type);
-
-            switch (data.type) {
-              case 'online':
-                log.debug('Node coming online: ', data);
-                this.distributeMessage(identity, {'test': 'hi'});
-                break;
-            }
+            const data = JSON.parse(message);
+            log.debug('Master handling message: %j', data);
           } catch (handlerErr) {
-            log.error('Could not process message: ', handlerErr);
+            log.warn('Could not process message: ', handlerErr);
           }
         });
 
-        return resolve();
+        log.debug('Listener attached.');
+
+        resolve();
       });
     });
   }
@@ -90,13 +86,50 @@ export class MasterListener {
     log.debug('Master listener debug mode enabled.');
   }
 
-  distributeMessage(node, body) {
-    log.debug('Sending message to %s of type %s with content %j', node, body);
-    this.broker.send([node, '', JSON.stringify(body)]);
+  distributeMessage(message) {
+    if (this.connected === false) {
+      log.warn('Not connected to the broker, cannot send message.');
+      return Promise.reject(new Error('Not connected to the broker.'));
+    }
+
+    return new Promise((resolve, reject) => {
+      log.debug('Sending message: %j', message);
+      this.broker.send(JSON.stringify(message), null, (err) => {
+        if (err) {
+          log.error('Could not send message: ', err);
+          return reject(err);
+        }
+
+        log.debug('Message sent.');
+        resolve();
+      });
+    });
   }
 
   shutdown() {
+    if (this.connected === false) {
+      log.warn('Master listener not connected; shutdown request being bypassed.');
+      return Promise.resolve();
+    }
+
     log.debug('Shutting down master listener.');
-    this.broker.close();
+    return new Promise((resolve, reject) => {
+      log.debug('Turning off monitoring.');
+      this.broker.unmonitor();
+
+      log.debug('Unbinding broker: ', this.host);
+      this.broker.unbind(this.host, (err) => {
+        if (err) {
+          log.error('Could not unbind from host: ', err);
+          return reject(err);
+        }
+
+        log.debug('Broker unbound, closing connection.');
+        this.broker.close();
+
+        log.debug('Connection closed.');
+        resolve();
+      });
+    });
   }
 }
