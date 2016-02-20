@@ -30,8 +30,8 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - build-essential
-    - libzmq3
-    - libzmq3-dev
+    - libzmq5
+    - libzmq5-dev
     - gcc-4.8
     - g++-4.8
 
