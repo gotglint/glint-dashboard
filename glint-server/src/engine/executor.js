@@ -2,11 +2,15 @@ import getLog from '../util/log';
 const log = getLog();
 
 export class GlintExecutor {
-  constructor() {
-    // empty
+  constructor(masterListener) {
+    this.masterListener = masterListener;
   }
 
-  execute(script) {
-    log.debug('Executing: ', script);
+  execute(data) {
+    return new Promise((resolve/*, reject*/) => {
+      log.debug('Executing: ', data);
+
+      resolve();
+    });
   }
 }

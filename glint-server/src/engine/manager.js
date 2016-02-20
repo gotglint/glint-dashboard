@@ -2,11 +2,14 @@ import getLog from '../util/log';
 const log = getLog();
 
 import { MasterListener } from '../net/master-listener';
+import { GlintExecutor } from './executor';
 
 export class GlintManager {
   constructor(masterHost) {
     log.debug('Master initializing; binding to %s', masterHost);
     this.masterListener = new MasterListener(masterHost);
+
+    this.glintExecutor = new GlintExecutor(this.masterListener);
   }
 
   /**
@@ -47,6 +50,6 @@ export class GlintManager {
    * @returns {Promise} A promise to wait on
    */
   processJob(data) {
-    this.masterListener.distributeMessage(data);
+    return this.glintExecutor.execute(data);
   }
 }
