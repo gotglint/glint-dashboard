@@ -1,12 +1,14 @@
+import uuid from 'node-uuid';
+
 /** The way to invoke and interact with Glint */
 export class GlintClient {
   /**
    * Constructor
    */
   constructor() {
-    this.endpoint = null;
+    this.id = uuid.v4();
 
-    this.operations = new Set();
+    this.operations = new Array();
   }
 
   /**
@@ -15,7 +17,7 @@ export class GlintClient {
    * @param {Object} data - The data to spread across a cluster.  Will replace this with something more meaningful so that we don't have to spear a huge amount of data to the server.
    */
   parallelize(data) {
-    this.operations.add({task:'parallelize', data: data});
+    this.operations.push({task: 'parallelize', data: data});
 
     return this;
   }
@@ -26,7 +28,7 @@ export class GlintClient {
    * @param {function} fn - The function to execute to perform the extraction.  Must accept one parameter and return a value.
    */
   map(fn) {
-    this.operations.add({task:'map', data: fn});
+    this.operations.push({task: 'map', data: fn});
 
     return this;
   }
@@ -37,7 +39,7 @@ export class GlintClient {
    * @param {function} fn - The function to perform the sum.  Must accept two parameters (the sum and the data element) and return a value.
    */
   reduce(fn) {
-    this.operations.add({task:'reduce', data: fn});
+    this.operations.push({task: 'reduce', data: fn});
 
     return this;
   }
@@ -48,7 +50,7 @@ export class GlintClient {
    * @param {function} fn - The function to execute to perform the filter.  Must accept one parameter and return a boolean value.
    */
   filter(fn) {
-    this.operations.add({task:'filter', data: fn});
+    this.operations.push({task: 'filter', data: fn});
 
     return this;
   }
@@ -75,9 +77,9 @@ export class GlintClient {
    *
    * // TODO make a test client that simply extends this class and adds getOperations there
    *
-   * @returns {Set}
+   * @returns {Object}
    */
-  getOperations() {
-    return this.operations;
+  getData() {
+    return {id: this.id, operations: this.operations};
   }
 }

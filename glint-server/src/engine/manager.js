@@ -19,11 +19,7 @@ export class GlintManager {
    */
   init() {
     try {
-      log.debug('Master listener created, enabling debug mode.');
-      this.masterListener.enableDebug();
-
-      log.debug('Master listener debug mode enabled, initializing.');
-
+      log.debug('Master listener created, initializing.');
       return this.masterListener.init();
     } catch (error) {
       log.error('Could not initialize master listener: ', error);

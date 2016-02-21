@@ -26,8 +26,8 @@ export class SlaveListener {
    * @return {Promise} A promise to wait for
    */
   init() {
-    return new Promise((resolve) => {
-      log.debug('Binding slave %s requester to %s:%s', this.dealer.identity, this.host, this.port);
+    return new Promise(() => {
+      log.debug('Binding slave %s requester to %s', this.dealer.identity, this.host);
       this.dealer.connect(this.host);
 
       //  Get workload from broker, until finished
@@ -38,7 +38,7 @@ export class SlaveListener {
       });
 
       this.connected = true;
-      resolve();
+      return this.sendMessage(JSON.stringify({start: 'yes'}));
     });
   }
 
@@ -80,7 +80,7 @@ export class SlaveListener {
     });
 
     log.debug('Turning on slave ZMQ monitoring.');
-    this.dealer.monitor(500, 0);
+    this.dealer.monitor(10, 0);
 
     log.debug('Slave listener debug mode enabled.');
   }
@@ -93,7 +93,7 @@ export class SlaveListener {
 
     return new Promise((resolve, reject) => {
       log.debug('Sending message: ', message);
-      this.dealer.send(['', JSON.stringify(message)], null, (err) => {
+      this.dealer.send(JSON.stringify(message), null, (err) => {
         if (err) {
           log.warn('Could not send message: ', err);
           return reject(err);

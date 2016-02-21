@@ -1,5 +1,7 @@
 import chai from 'chai';
 
+import { GlintClient } from 'glint-lib';
+
 import getLog from '../../../src/util/log';
 const log = getLog();
 
@@ -9,13 +11,17 @@ import {SlaveListener} from '../../../src/net/slave-listener';
 describe('Bootstrap the glint cluster', () => {
   const expect = chai.expect;
 
-  let glintManager = new GlintManager('inproc://glint-test');
-  let glintSlave = new SlaveListener('inproc://glint-test');
+  let glintManager = new GlintManager('tcp://localhost:5671');
+  let glintSlave = new SlaveListener('tcp://localhost:5671');
+
+  const pause = new Promise((resolve) => {
+    setTimeout(() => {log.debug('Waiting...'); resolve();}, 2500);
+  });
 
   before(() => {
     log.debug('Doing pre-test configuration/initialization.');
 
-    return [glintManager.init(), glintSlave.init()];
+    return Promise.all([glintManager.init(), glintSlave.init(), pause]);
   });
 
   after(() => {
@@ -25,7 +31,13 @@ describe('Bootstrap the glint cluster', () => {
   });
 
   it('Executes a script', () => {
-    const result = glintManager.processJob({message:'do something'});
+    log.debug('Beginning test.');
+    const gc = new GlintClient();
+    const data = gc.parallelize([1, 2, 3, 4]).map((el) => {
+      return el;
+    }).getData();
+
+    const result = glintManager.processJob(data);
 
     expect(result).not.to.be.null;
   });

@@ -11,8 +11,12 @@ export class MasterListener {
     this.host = host;
     this.connected = false;
 
+    this.connections = 0;
+
     log.debug('Creating master ZMQ socket.');
     this.broker = zmq.socket('req');
+
+    this.enableDebug();
   }
 
   init() {
@@ -45,8 +49,10 @@ export class MasterListener {
 
   enableDebug() {
     log.debug('Enabling debug mode in the master listener.');
-    this.broker.on('connect', function (fd, ep) {
+    this.broker.on('connect', (fd, ep) => {
+      console.log('Connection!');
       log.debug('connect, endpoint:', ep);
+      this.connections++;
     });
     this.broker.on('connect_delay', function (fd, ep) {
       log.debug('connect_delay, endpoint:', ep);
@@ -72,8 +78,9 @@ export class MasterListener {
     this.broker.on('close_error', function (fd, ep) {
       log.debug('close_error, endpoint:', ep);
     });
-    this.broker.on('disconnect', function (fd, ep) {
+    this.broker.on('disconnect', (fd, ep) => {
       log.debug('disconnect, endpoint:', ep);
+      this.connections--;
     });
 
     this.broker.on('monitor_error', function (err) {
@@ -81,9 +88,13 @@ export class MasterListener {
     });
 
     log.debug('Turning on master ZMQ monitoring.');
-    this.broker.monitor(500, 0);
+    this.broker.monitor(10, 0);
 
     log.debug('Master listener debug mode enabled.');
+  }
+
+  getConnections() {
+    return this.connections;
   }
 
   distributeMessage(message) {
