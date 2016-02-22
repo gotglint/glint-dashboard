@@ -5,9 +5,9 @@ import { MasterListener } from '../net/master-listener';
 import { GlintExecutor } from './executor';
 
 export class GlintManager {
-  constructor(masterHost) {
-    log.debug('Master initializing; binding to %s', masterHost);
-    this.masterListener = new MasterListener(masterHost);
+  constructor(host, port) {
+    log.debug('Master initializing; binding to %s:%d', host, port);
+    this.masterListener = new MasterListener(host, port);
 
     this.glintExecutor = new GlintExecutor(this.masterListener);
   }

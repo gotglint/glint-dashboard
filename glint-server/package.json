@@ -29,13 +29,12 @@
     "koa-response-time": "^1.0.2",
     "koa-router": "^5.2.3",
     "koa-session": "^3.3.1",
-    "koa-socket": "^3.2.0",
     "lodash": "^4.1.0",
-    "node-etcd": "^4.2.1",
     "node-uuid": "^1.4.7",
+    "primus": "^4.0.5",
     "statsd-client": "^0.2.1",
     "webhdfs": "^0.3.0",
-    "zmq": "^2.14.0"
+    "ws": "^1.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.5.2",

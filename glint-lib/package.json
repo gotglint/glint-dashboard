@@ -11,7 +11,9 @@
     "url": "https://github.com/mlaccetti/glint/issues"
   },
   "license": "LGPL-2.1",
-  "dependencies": {},
+  "dependencies": {
+    "node-uuid": "^1.4.7"
+  },
   "main": "dist/index",
   "files": [
     "dist/**"
