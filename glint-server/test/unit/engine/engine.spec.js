@@ -38,6 +38,8 @@ describe('Bootstrap the glint cluster', () => {
       return el;
     }).getData();
 
+    log.debug('Job data: ', data);
+
     const result = glintManager.processJob(data);
 
     expect(result).not.to.be.null;

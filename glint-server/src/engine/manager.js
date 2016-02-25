@@ -4,6 +4,8 @@ const log = getLog();
 import { MasterListener } from '../net/master-listener';
 import { GlintExecutor } from './executor';
 
+import { parse } from 'glint-lib';
+
 export class GlintManager {
   constructor(host, port) {
     log.debug('Master initializing; binding to %s:%d', host, port);
@@ -46,6 +48,7 @@ export class GlintManager {
    * @returns {Promise} A promise to wait on
    */
   processJob(data) {
-    return this.glintExecutor.execute(data);
+    const rehydratedData = parse(data);
+    return this.glintExecutor.execute(rehydratedData);
   }
 }

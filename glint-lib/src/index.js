@@ -1,4 +1,7 @@
 import uuid from 'node-uuid';
+import {stringify} from './util/serializer';
+
+export * from './util/serializer';
 
 /** The way to invoke and interact with Glint */
 export class GlintClient {
@@ -8,7 +11,7 @@ export class GlintClient {
   constructor() {
     this.id = uuid.v4();
 
-    this.operations = new Array();
+    this.operations = [];
   }
 
   /**
@@ -80,6 +83,6 @@ export class GlintClient {
    * @returns {Object}
    */
   getData() {
-    return {id: this.id, operations: this.operations};
+    return stringify({id: this.id, operations: this.operations});
   }
 }

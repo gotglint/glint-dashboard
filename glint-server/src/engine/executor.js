@@ -37,6 +37,7 @@ export class GlintExecutor {
       }
 
       log.debug('Data is valid, processing.  Going to split up data of size %d by %d nodes.', payload.data.length, this.masterListener.getConnections());
+
       resolve();
     });
   }
