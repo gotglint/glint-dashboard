@@ -35,26 +35,17 @@ addons:
     - build-essential
 
 before_install:
-  # list docker-engine versions
   - apt-cache madison docker-engine
-
-  # upgrade docker-engine to specific version
   - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION}
-
-
-  # Update docker-compose
   - sudo rm /usr/local/bin/docker-compose
   - sudo curl -LS https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
   - sudo chmod +x /usr/local/bin/docker-compose
-  - which docker-compose
 
 before_script:
   - npm install -g gulp jspm node-gyp
   - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
 
 script:
-  - docker version
-  - docker-compose version
   - docker-compose up -d
   - docker-compose ps
   - ./build.sh
@@ -62,5 +53,3 @@ script:
 after_script:
   - docker-compose stop
   - docker-compose rm -fv
-  - docker stop $(docker ps -a -q)
-  - docker rm $(docker ps -a -q)
