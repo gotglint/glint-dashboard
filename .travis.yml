@@ -14,6 +14,7 @@ deploy:
 
 env:
   global:
+    - DOCKER_VERSION=1.10.3-0~trusty
     - DOCKER_COMPOSE_VERSION: 1.6.2
     - secure: RB969KX5sTbwAIOeF+tqg7EsV8GO5GuyV1mS0mulYuMk8pG/iDAzaImAqkYetFtRruyXe8VaweqimnO7OHX8CmGqPuUIoS1Yis4aeN7CcR502Ug8BKnRjYmHLq6YJckMB0FHue/sTro7vFfSXrhdLa4se8zXUScAfY+3nm9FmsT5tkY1MAsIwPrJqYrAQYfk/a0te1nKC1YPlsapjVSYF9bYgSAlW7QrRvh8AjG6X472MfbD10e9pA2cro5Fj1JFqEt6uk87ZXH6ZzNjCPbDFLdh3wNZCy+gxxAxVTJ/d1XRe0Yo/Hn1Kzt9S/GbLyhJlZ0nqCA1nvQCsBGsH6ED49UHQmJ9kJ3qWkqYAjnn2jC8aY/HUZiZlBHrr7227vxMiPR/pdXIE910VSYc0gMKxAQwIo4SOIZHhRpcCVAHJ/tuuQAxIdUZ/0y74aB2F22nybk1EgkeJxqwPbI8lvf8R4vyzwGgz4+NoW2ebY6wo+r8XZpz1AtoelFSNyGsGBiKAoxlu300FOm8fBKWPFtuw1aIPQjNZUkYVhkGjV5eEP+I4jNsTp9KuxN/KO+8B7B7jTTYVNCQzv3ibMnu8S45JT4VuBjt2PvRtAtAxyQY0U8Oe++6FZnyuAoT44Y22HSLT/XqO9QBuFCq17hQSv7VSzFm0h7/WR7NjQAqbwqv2xs=
   matrix:
@@ -34,6 +35,14 @@ addons:
     - build-essential
 
 before_install:
+  # list docker-engine versions
+  - apt-cache madison docker-engine
+
+  # upgrade docker-engine to specific version
+  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION}
+
+
+  # Update docker-compose
   - sudo rm /usr/local/bin/docker-compose
   - sudo curl -LS https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
   - sudo chmod +x /usr/local/bin/docker-compose
@@ -44,6 +53,8 @@ before_script:
   - jspm config registries.github.auth $JSPM_GITHUB_AUTH_TOKEN
 
 script:
+  - docker version
+  - docker-compose version
   - docker-compose up -d
   - docker-compose ps
   - ./build.sh
