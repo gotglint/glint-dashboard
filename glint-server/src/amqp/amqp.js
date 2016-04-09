@@ -13,29 +13,36 @@ export default class Amqp {
 
   init() {
     log.debug('AMQP is initializing.');
-    return new Promise((resolve, reject) => {
-      const open = amqp.connect('amqp://localhost:5682');
-      open.then((connection) => {
-        log.debug('AMQP connected to queue, now creating channel.');
 
-        this.connection = connection;
-        this.connected = true;
+    return amqp.connect('amqp://localhost:5682').then((connection) => {
+      log.debug('AMQP connected to server, now creating channel.');
 
-        process.once('SIGINT', this.connection.close.bind(this.connection));
+      this.connection = connection;
+      this.connected = true;
 
-        this.connection.createChannel().then((channel) => {
-          log.debug('AMQP channel created, all initialized.');
-          this.channel = channel;
+      process.once('SIGINT', this.connection.close.bind(this.connection));
 
-          resolve();
-        }, (err) => {
-          log.error('Slave listener could not create channel: ', err);
-          reject(err);
-        });
-      }, (err) => {
-        log.error('Slave listener could not connect to RabbitMQ: ', err);
-        reject(err);
+      return this.connection.createChannel().then((channel) => {
+        log.debug('AMQP channel created, all initialized.');
+        this.channel = channel;
+
+        return Promise.resolve(true);
       });
+    });
+  }
+
+  declareQueue(queue, options) {
+    return new Promise((resolve, reject) => {
+      if (this.connected === true) {
+        log.debug('AMQP declaring queue: ', queue);
+        this.channel.assertQueue(queue, options).then((ok) => {
+          log.debug('AMQP declared queue: ', ok);
+          resolve(ok);
+        });
+      } else {
+        log.error('AMQP not connected, cannot declare queue.');
+        reject(new Error('Not connected to RabbitMQ, cannot declare queue.'));
+      }
     });
   }
 
@@ -47,7 +54,11 @@ export default class Amqp {
    *
    */
   registerHandler(queue, fn) {
-    this.channel.consume(queue, fn);
+    if (this.connected === true) {
+      this.channel.consume(queue, fn);
+    } else {
+      throw new Error('Not connected to RabbitMQ, cannot declare queue.');
+    }
   }
 
   /**
@@ -57,7 +68,20 @@ export default class Amqp {
    * @param message The message to publish to the queue
    */
   sendMessage(queue, message) {
-    this.channel.sendToQueue(queue, new Buffer(message));
+    if (this.connected === true) {
+      this.channel.sendToQueue(queue, new Buffer(message));
+    } else {
+      throw new Error('Not connected to RabbitMQ, cannot declare queue.');
+    }
+  }
+
+  /**
+   * Acknowledge the message
+   *
+   * @param message
+   */
+  ackMessage(message) {
+    this.channel.ack(message);
   }
 
   shutdown() {

@@ -18,12 +18,23 @@ export default class SlaveListener {
   init() {
     log.debug('Slave listener connecting to AMQP.');
     this.amqp = new Amqp();
-    return this.amqp.init();
+
+    return this.amqp.init().then(() => {
+      log.debug('Slave listener connected to AMQP, declaring queue.');
+      this.amqp.declareQueue('worker', {durable: true}).then(() => {
+        log.debug('Slave listener declared queue, sending registration message.');
+
+        return this.sendMessage('worker', 'worker online');
+      });
+    }).catch((err) => {
+      log.error('Slave listener could not connect to AMQP: ', err);
+      return Promise.reject(err);
+    });
   }
 
-  sendMessage(message) {
+  sendMessage(queue, message) {
     log.debug('Slave listener sending message.');
-    return this.amqp.sendMessage('glint', message);
+    return this.amqp.sendMessage(queue, message);
   }
 
   shutdown() {

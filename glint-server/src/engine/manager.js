@@ -52,5 +52,7 @@ export default class GlintManager {
 
     const glintExecutor = new GlintExecutor(this.masterListener, rehydratedData);
     this.jobs.add(glintExecutor);
+
+    return glintExecutor.execute();
   }
 }

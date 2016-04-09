@@ -1,4 +1,5 @@
 import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
 import { GlintClient } from 'glint-lib';
 
@@ -9,6 +10,7 @@ import GlintManager from '../../../src/engine/manager';
 import SlaveListener from '../../../src/listener/slave-listener';
 
 describe('Bootstrap the Glint cluster', () => {
+  chai.use(chaiAsPromised);
   const expect = chai.expect;
 
   const glintManager = new GlintManager('localhost', 45468);
@@ -31,7 +33,7 @@ describe('Bootstrap the Glint cluster', () => {
     return [glintManager.shutdown(), glintSlave1.shutdown(), glintSlave2.shutdown()];
   });
 
-  it('Executes a script', () => {
+  it('Executes a script', (done) => {
     log.debug('Beginning test.');
     const gc = new GlintClient();
     const data = gc.parallelize([1, 2, 3, 4]).map((el) => {
@@ -41,7 +43,8 @@ describe('Bootstrap the Glint cluster', () => {
     log.debug('Job data: ', data);
 
     const result = glintManager.processJob(data);
-
-    expect(result).not.to.be.null;
+    expect(result.then((jobResult) => {
+      log.debug('Job result: ', jobResult);
+    })).to.eventually.be.fulfilled.notify(done);
   });
 });
