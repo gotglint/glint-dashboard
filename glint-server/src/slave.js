@@ -3,7 +3,7 @@ const log = getLog();
 
 log.debug('Kicking off a slave.');
 
-import { SlaveListener } from './net/slave-listener';
+import { SlaveListener } from './listener/slave-listener';
 
 // hack for us to be able to pull in options
 export default function initSlave(options) {

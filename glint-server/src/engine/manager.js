@@ -1,12 +1,12 @@
 import getLog from '../util/log';
 const log = getLog();
 
-import { MasterListener } from '../net/master-listener';
-import { GlintExecutor } from './executor';
+import MasterListener from '../listener/master-listener';
+import GlintExecutor from './executor';
 
 import { parse } from 'glint-lib';
 
-export class GlintManager {
+export default class GlintManager {
   constructor(host, port) {
     log.debug('Master initializing; binding to %s:%d', host, port);
     this.masterListener = new MasterListener(host, port);

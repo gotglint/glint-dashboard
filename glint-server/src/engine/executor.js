@@ -1,7 +1,7 @@
 import getLog from '../util/log';
 const log = getLog();
 
-export class GlintExecutor {
+export default class GlintExecutor {
   constructor(masterListener) {
     this.masterListener = masterListener;
   }
