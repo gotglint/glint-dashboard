@@ -58,3 +58,9 @@ script:
   - docker-compose up -d
   - docker-compose ps
   - ./build.sh
+
+after_script:
+  - docker-compose stop
+  - docker-compose rm -fv
+  - docker stop $(docker ps -a -q)
+  - docker rm $(docker ps -a -q)
