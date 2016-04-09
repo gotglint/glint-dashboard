@@ -11,7 +11,7 @@ export default class GlintManager {
     log.debug('Master initializing; binding to %s:%d', host, port);
     this.masterListener = new MasterListener(host, port);
 
-    this.glintExecutor = new GlintExecutor(this.masterListener);
+    this.jobs = new Set();
   }
 
   /**
@@ -49,6 +49,8 @@ export default class GlintManager {
    */
   processJob(data) {
     const rehydratedData = parse(data);
-    return this.glintExecutor.execute(rehydratedData);
+
+    const glintExecutor = new GlintExecutor(this.masterListener, rehydratedData);
+    this.jobs.add(glintExecutor);
   }
 }

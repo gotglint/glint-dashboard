@@ -14,7 +14,7 @@ export default class Amqp {
   init() {
     log.debug('AMQP is initializing.');
     return new Promise((resolve, reject) => {
-      const open = amqp.connect('amqp://localhost');
+      const open = amqp.connect('amqp://localhost:5682');
       open.then((connection) => {
         log.debug('AMQP connected to queue, now creating channel.');
 

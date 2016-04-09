@@ -2,43 +2,63 @@ import getLog from '../util/log';
 const log = getLog();
 
 export default class GlintExecutor {
-  constructor(masterListener) {
+  constructor(masterListener, data) {
     this.masterListener = masterListener;
+    this.data = data;
+
+    this.completed = false;
+    this.status = null;
   }
 
-  execute(data) {
-    return new Promise((resolve, reject) => {
-      log.debug('Executing: ', data);
+  execute() {
+    log.debug('Executing: ', this.data);
 
-      if (data === undefined || data === null) {
-        log.error('No data provided for execution, terminating.');
-        return reject(new Error('No data provided for execution, terminating.'));
-      }
+    if (this.data === undefined || this.data === null) {
+      log.error('No this.data provided for execution, terminating.');
+      this.status = 'TERMINATED';
+      this.completed = true;
+      return;
+    }
 
-      if (!data || !data.id || !data.operations) {
-        log.error('Data provided for execution is not in the expected format, terminating.');
-        return reject(new Error('Data provided for execution is not in the expected format, terminating.'));
-      }
+    if (!this.data || !this.data.id || !this.data.operations) {
+      log.error('this.data provided for execution is not in the expected format, terminating.');
+      this.status = 'BAD_this.data';
+      this.completed = true;
+      return;
+    }
 
-      if (!Array.isArray(data.operations)) {
-        log.warn('Operations data type: ', typeof data.operations);
+    if (!Array.isArray(this.data.operations)) {
+      log.warn('Operations this.data type: ', typeof this.data.operations);
 
-        log.error('Operations provided were not an array, terminating.');
-        return reject(new Error('Operations provided were not an array, terminating.'));
-      }
+      log.error('Operations provided were not an array, terminating.');
 
-      // let's get the actual payload out
-      const operations = data.operations;
-      const payload = operations.shift();
+      this.status = 'BAD_OPS';
+      this.completed = true;
+      return;
+    }
 
-      if (!payload.task || payload.task !== 'parallelize') {
-        log.error('First operation was not the data to work on, terminating.');
-        return reject(new Error('First operation was not the data to work on, terminating.'));
-      }
+    // let's get the actual payload out
+    const operations = this.data.operations;
+    const payload = operations.shift();
 
-      log.debug('Data is valid, processing.  Going to split up data of size %d by %d nodes.', payload.data.length, this.masterListener.getConnections());
+    if (!payload.task || payload.task !== 'parallelize') {
+      log.error('First operation was not the this.data to work on, terminating.');
+      this.status = 'BAD_FIRST_OP';
+      this.completed = true;
+      return;
+    }
 
-      resolve();
-    });
+    log.debug('this.data is valid, processing.  Going to split up this.data of size %d by %d nodes.', payload.this.data.length, this.masterListener.getConnections());
+
+    this.status = 'DONE';
+    this.completed = true;
+  }
+
+  isRunning() {
+    return !this.completed;
+  }
+
+  getStatus() {
+    return this.status;
   }
 }
