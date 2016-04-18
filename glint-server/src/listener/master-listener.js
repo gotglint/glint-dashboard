@@ -1,14 +1,16 @@
-import Amqp from '../amqp/amqp';
-import Promise from 'bluebird';
+import WebSocketServer from '../net/ws-server';
 
 import getLog from '../util/log';
 const log = getLog();
 
 export default class MasterListener {
-  constructor() {
-    log.debug('Master listener constructor firing.');
+  constructor(host, port) {
+    log.debug('Master listener constructor firing, using %s:%s as the host/port to bind to.', host, port);
 
-    this.amqp = null;
+    this.host = host;
+    this.port = port;
+
+    this.wss = null;
   }
 
   /**
@@ -17,34 +19,19 @@ export default class MasterListener {
    * @return {Promise} A promise to wait for
    */
   init() {
-    log.debug('Master listener connecting to AMQP.');
-    this.amqp = new Amqp();
+    log.debug('Master listener instantiating WS server.');
+    this.wss = new WebSocketServer(this.host, this.port);
 
-    return this.amqp.init().then(() => {
-      log.debug('Master listener connected to AMQP, declaring queue.');
-      this.amqp.declareQueue('worker', {durable: true}).then(() => {
-        log.debug('Master listener declared queue, registering handler.');
-        this.amqp.registerHandler('worker', (message) => {
-          log.debug('Worker sent message: ', message);
-
-          this.amqp.ackMessage(message);
-        });
-
-        return Promise.resolve(true);
-      });
-    }).catch((err) => {
-      log.error('Master listener could not connect to AMQP: ', err);
-      return Promise.reject(err);
-    });
+    return this.wss.init();
   }
 
   sendMessage(message) {
     log.debug('Master listener sending message.');
-    return this.amqp.sendMessage('glint', message);
+    return this.wss.sendMessage('glint', message);
   }
 
   shutdown() {
     log.debug('Master listener shutting down.');
-    return this.amqp.shutdown();
+    return this.wss.shutdown();
   }
 }

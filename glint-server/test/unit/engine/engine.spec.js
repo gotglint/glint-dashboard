@@ -15,7 +15,7 @@ describe('Bootstrap the Glint cluster', () => {
 
   const glintManager = new GlintManager('localhost', 45468);
   const glintSlave1 = new SlaveListener('localhost', 45468);
-  const glintSlave2 = new SlaveListener('localhost', 45468);
+  // const glintSlave2 = new SlaveListener('localhost', 45468);
 
   const pause = new Promise((resolve) => {
     setTimeout(() => {log.debug('Waiting...'); resolve();}, 2500);
@@ -24,13 +24,13 @@ describe('Bootstrap the Glint cluster', () => {
   before(() => {
     log.debug('Doing pre-test configuration/initialization.');
 
-    return Promise.all([glintManager.init(), glintSlave1.init(), glintSlave2.init(), pause]);
+    return Promise.all([glintManager.init(), glintSlave1.init(), /*glintSlave2.init(), */pause]);
   });
 
   after(() => {
     log.debug('Cleaning up after test.');
 
-    return [glintManager.shutdown(), glintSlave1.shutdown(), glintSlave2.shutdown()];
+    return [glintManager.shutdown(), glintSlave1.shutdown()/*, glintSlave2.shutdown()*/];
   });
 
   it('Executes a script', (done) => {
