@@ -1,7 +1,5 @@
 import uuid from 'node-uuid';
-import {stringify} from './util/serializer';
-
-export * from './util/serializer';
+import bson from 'bson';
 
 /** The way to invoke and interact with Glint */
 export class GlintClient {
@@ -10,6 +8,7 @@ export class GlintClient {
    */
   constructor() {
     this.id = uuid.v4();
+    this.bson = new bson.BSONPure.BSON();
 
     this.operations = [];
   }
@@ -83,6 +82,6 @@ export class GlintClient {
    * @returns {Object}
    */
   getData() {
-    return stringify({id: this.id, operations: this.operations});
+    return this.bson.serialize({id: this.id, operations: this.operations}, true, false, true);
   }
 }

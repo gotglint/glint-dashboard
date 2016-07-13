@@ -9,3 +9,4 @@ travis
 bower_components
 build/reports
 coverage
+npm-debug.log

@@ -15,7 +15,8 @@ program
 
 program
   .option('-m, --master <master>', 'Override the IP/port that the master will listen on; defaults to localhost:45468.', 'localhost:45468')
-  .option('-s, --slave <master>', 'Run as a slave; provide the IP/port of the master node (mandatory).');
+  .option('-s, --slave <master>', 'Run as a slave; provide the IP/port of the master node (mandatory).')
+  .option('-m --maxmem <mem>', 'Specify the amount of memory for the slave to use (mandatory - defaults to 1024).', parseInt, 1024);
 
 program.on('--help', function(){
   console.log('  By default, this application will fire up a master instance.');
@@ -26,7 +27,8 @@ program.parse(process.argv);
 
 if (program.slave) {
   const slaveOptions = {
-    masterHost: program.slave
+    masterHost: program.slave,
+    maxMem: program.maxmem
   };
 
   log.info('Initializing slave, connecting to master: %s', program.slave);

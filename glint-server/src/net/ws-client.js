@@ -1,10 +1,9 @@
-import Promise from 'bluebird';
-import Primus from 'primus';
+const log = require('../util/log').getLog();
 
-import getLog from '../util/log';
-const log = getLog();
+const Promise = require('bluebird');
+const Primus = require('primus');
 
-export default class WebSocketClient {
+class WebSocketClient {
   constructor(host, port) {
     this.host = host;
     this.port = port;
@@ -73,3 +72,5 @@ export default class WebSocketClient {
     });
   }
 }
+
+module.exports = WebSocketClient;

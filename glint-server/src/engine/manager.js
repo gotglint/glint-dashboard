@@ -1,12 +1,9 @@
-import getLog from '../util/log';
-const log = getLog();
+const log = require('../util/log').getLog();
 
-import MasterListener from '../listener/master-listener';
-import GlintExecutor from './executor';
+const MasterListener = require('../listener/master-listener');
+const GlintExecutor = require('./executor');
 
-import { parse } from 'glint-lib';
-
-export default class GlintManager {
+class GlintManager {
   constructor(host, port) {
     log.debug('Master initializing; binding to %s:%d', host, port);
     this.masterListener = new MasterListener(host, port);
@@ -30,7 +27,7 @@ export default class GlintManager {
   }
 
   /**
-   * Shutdown the Glint Manager; disconnect the master listener from the broker.
+   * Shutdown the Glint Manager; disconnect the master listener = require(the broker.
    *
    * @returns {Promise} A promise to wait on
    */
@@ -48,11 +45,11 @@ export default class GlintManager {
    * @returns {Promise} A promise to wait on
    */
   processJob(data) {
-    const rehydratedData = parse(data);
-
-    const glintExecutor = new GlintExecutor(this.masterListener, rehydratedData);
+    const glintExecutor = new GlintExecutor(this.masterListener, data);
     this.jobs.add(glintExecutor);
 
     return glintExecutor.execute();
   }
 }
+
+module.exports = GlintManager;

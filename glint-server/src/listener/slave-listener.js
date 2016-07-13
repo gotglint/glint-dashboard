@@ -1,14 +1,13 @@
-import WebSocketClient from '../net/ws-client';
+const WebSocketClient = require('../net/ws-client');
+const log = require('../util/log').getLog();
 
-import getLog from '../util/log';
-const log = getLog();
-
-export default class SlaveListener {
-  constructor(host, port) {
-    log.debug(`Slave listener constructor firing, connecting to ${this.host}:${this.port}`);
+class SlaveListener {
+  constructor(host, port, maxMem) {
+    log.debug(`Slave listener constructor firing, connecting to ${host}:${port} - using ${maxMem}m as the memory limit`);
 
     this.host = host;
     this.port = port;
+    this.maxMem = maxMem;
 
     this.ws = null;
   }
@@ -41,3 +40,5 @@ export default class SlaveListener {
     return this.ws.shutdown();
   }
 }
+
+module.exports = SlaveListener;

@@ -1,8 +1,8 @@
-import intel from 'intel';
+const intel = require('intel');
 
 let configured = false;
 
-export default function() {
+function getLog() {
   if (configured === false) {
     intel.basicConfig({
       format: {
@@ -15,4 +15,6 @@ export default function() {
   }
 
   return intel;
-};
+}
+
+module.exports.getLog = getLog;

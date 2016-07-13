@@ -1,9 +1,8 @@
-import WebSocketServer from '../net/ws-server';
+const log = require('../util/log').getLog();
 
-import getLog from '../util/log';
-const log = getLog();
+const WebSocketServer = require('../net/ws-server');
 
-export default class MasterListener {
+class MasterListener {
   constructor(host, port) {
     log.debug('Master listener constructor firing, using %s:%s as the host/port to bind to.', host, port);
 
@@ -35,3 +34,5 @@ export default class MasterListener {
     return this.wss.shutdown();
   }
 }
+
+module.exports = MasterListener;

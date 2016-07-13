@@ -19,23 +19,16 @@ do
   echo "Building ${dir}..."
 
   cd ${dir}
-  echo "Running \`npm install\` for ${dir}..."
-  npm install
 
-  if grep -q \"jspm\" package.json; then
-    echo "Running \`jspm install\` for ${dir}..."
-    jspm install
-  fi
-
-  if [ "${dir}" == "glint-lib" ]
+  if [ "${dir}" == "glint-server" ]
   then
     echo "Running \`npm ln\` for ${dir}..."
-    npm ln
-  elif [ "${dir}" == "glint-server" ]
-  then
-    echo "Running \`npm ln glint-lib\` for ${dir}..."
-    npm ln glint-lib
+    npm ln ../glint-lib
   fi
+
+
+  echo "Running \`npm install\` for ${dir}..."
+  npm install
 
   echo "Running \`gulp dist\` for ${dir}..."
   gulp dist

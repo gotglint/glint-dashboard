@@ -10,7 +10,7 @@ export default function initSlave(options) {
   async function init() {
     try {
       log.debug('Slave coming online - kicking off the listener on %s:%s', options.masterHost, options.masterPort);
-      const slaveListener = new SlaveListener(options.masterHost, options.masterPort);
+      const slaveListener = new SlaveListener(options.masterHost, options.masterPort, options.maxMem);
 
       log.debug('Slave listener created, enabling debug mode.');
       slaveListener.enableDebug();
@@ -18,7 +18,7 @@ export default function initSlave(options) {
       log.debug('Slave listener debug mode enabled, initializing.');
       await slaveListener.init();
 
-      log.debug('Slave listener online, starting heartbeat.');
+      log.debug('Slave listener online, ready for work.');
     } catch (error) {
       log.error('Could not initialize slave listener: ', error);
       process.exit(1);

@@ -1,14 +1,11 @@
-// polyfill madness
-require('babel-polyfill');
-
 // gulp
-import gulp from 'gulp';
+const gulp = require('gulp');
 
 // plugins
-import eslint from 'gulp-eslint';
+const eslint = require('gulp-eslint');
 
 // testing
-import mocha from 'gulp-mocha';
+const mocha = require('gulp-mocha');
 
 gulp.task('lint', () => {
   return gulp.src(['src/**/*.js', 'test/**/*.js', 'gulpfile.babel.js'])

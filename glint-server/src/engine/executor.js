@@ -1,10 +1,13 @@
-import getLog from '../util/log';
-const log = getLog();
+const log = require('../util/log').getLog();
 
-export default class GlintExecutor {
+const bson = require('bson');
+
+class GlintExecutor {
   constructor(masterListener, data) {
+    const BSON = new bson.BSONPure.BSON();
+
     this.masterListener = masterListener;
-    this.data = data;
+    this.data = BSON.deserialize(data, {evalFunctions: true, cacheFunctions: true});
 
     this.completed = false;
     this.status = null;
@@ -65,3 +68,5 @@ export default class GlintExecutor {
     return this.status;
   }
 }
+
+module.exports = GlintExecutor;
