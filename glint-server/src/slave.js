@@ -1,29 +1,17 @@
-import getLog from './util/log';
-const log = getLog();
+const log = require('./util/log');
 
-log.debug('Kicking off a slave.');
-
-import { SlaveListener } from './listener/slave-listener';
+const SlaveListener = require('./listener/slave-listener');
 
 // hack for us to be able to pull in options
-export default function initSlave(options) {
-  async function init() {
-    try {
-      log.debug('Slave coming online - kicking off the listener on %s:%s', options.masterHost, options.masterPort);
-      const slaveListener = new SlaveListener(options.masterHost, options.masterPort, options.maxMem);
+function initSlave(options) {
+  log.debug('Slave coming online - kicking off the listener on %s:%s', options.masterHost, options.masterPort);
+  const slaveListener = new SlaveListener(options.masterHost, options.masterPort, options.maxMem);
 
-      log.debug('Slave listener created, enabling debug mode.');
-      slaveListener.enableDebug();
+  log.debug('Slave listener created, initializing.');
 
-      log.debug('Slave listener debug mode enabled, initializing.');
-      await slaveListener.init();
+  return slaveListener.init().then(() => {
+    log.debug('Slave listener online, ready for work.');
+  });
+}
 
-      log.debug('Slave listener online, ready for work.');
-    } catch (error) {
-      log.error('Could not initialize slave listener: ', error);
-      process.exit(1);
-    }
-  }
-
-  init();
-};
+module.exports = initSlave;

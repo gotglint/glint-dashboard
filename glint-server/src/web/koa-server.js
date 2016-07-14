@@ -1,15 +1,14 @@
-import getLog from '../util/log';
-const log = getLog();
+const log = require('../util/log');
 
-import koa from 'koa';
-import co from 'co';
-import IO from 'koa-socket';
+const koa = require('koa');
+const co = require('co');
+const IO = require('koa-socket');
 
-import {App} from 'horse';
+const App = require('horse');
 
-import setupRoutes from './routes';
+const setupRoutes = require('./routes');
 
-import {REPL} from '../util/repl';
+const REPL = require('../util/repl');
 
 const koaApp = koa();
 require('koa-csrf')(koaApp);
@@ -74,4 +73,4 @@ socket.on('repl', (ctx, data) => {
   }
 });
 
-export default app;
+module.exports = app;

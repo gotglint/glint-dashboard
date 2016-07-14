@@ -1,5 +1,5 @@
 const WebSocketClient = require('../net/ws-client');
-const log = require('../util/log').getLog();
+const log = require('../util/log');
 
 class SlaveListener {
   constructor(host, port, maxMem) {

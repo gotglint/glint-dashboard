@@ -1,9 +1,9 @@
 {
   "name": "glint",
   "version": "0.0.1",
-  "description": "Got Glint?",
+  "description": "Got Glint? A JavaScript Apache Spark-like system for RDDs",
   "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com)",
-  "private": true,
+  "homepage": "https://github.com/mlaccetti/glint/",
   "repository": {
     "type": "git",
     "url": "https://github.com/mlaccetti/glint.git"
@@ -13,10 +13,8 @@
   },
   "license": "LGPL-2.1",
   "devDependencies": {
-    "babel-core": "^6.5.2",
-    "babel-register": "^6.5.2",
-    "gulp": "^3.9.1",
-    "gulp-hub": "^0.7.1"
+    "gulp": "3.9.1",
+    "gulp-hub": "0.8.0"
   },
   "dependencies": {
   }

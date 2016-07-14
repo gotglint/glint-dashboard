@@ -1,4 +1,4 @@
-const log = require('../util/log').getLog();
+const log = require('../util/log');
 
 const Promise = require('bluebird');
 const Primus = require('primus');

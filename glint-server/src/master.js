@@ -1,7 +1,6 @@
-import getLog from './util/log';
-const log = getLog();
+const log = require('./util/log');
 
-import {GlintManager} from './engine/manager';
+const GlintManager = require('./engine/manager');
 
 /**
  * Kick on the master and add a signal handler listener for shutdown.
@@ -10,7 +9,7 @@ import {GlintManager} from './engine/manager';
  *
  * @returns {Promise} A promise to wait on
  */
-export default function initMaster(options) {
+function initMaster(options) {
   log.debug('Kicking off the master - binding to [ %d:%d ]', options.masterHost, options.masterPort);
 
   log.debug('Instantiating Glint manager.');
@@ -21,4 +20,6 @@ export default function initMaster(options) {
   });
 
   return glintManager.init();
-};
+}
+
+module.exports = initMaster;

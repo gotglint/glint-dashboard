@@ -1,5 +1,4 @@
 {
-  "parser": "babel-eslint",
   "env": {
     "node": true,
     "builtin": true,
@@ -58,7 +57,7 @@
       "single"
     ],
     "semi": [2, "always"],
-    "strict": [2, "global"],
+    "strict": [0, "global"],
     "valid-typeof": 2,
     "wrap-iife": [
       2,

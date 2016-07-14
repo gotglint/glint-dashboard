@@ -1,4 +1,4 @@
-const log = require('../util/log').getLog();
+const log = require('../util/log');
 
 const WebSocketServer = require('../net/ws-server');
 

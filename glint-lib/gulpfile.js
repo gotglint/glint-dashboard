@@ -1,12 +1,11 @@
 // gulp
-import gulp from 'gulp';
+const gulp = require('gulp');
 
 // plugins
-import babel from 'gulp-babel';
-import eslint from 'gulp-eslint';
+const eslint = require('gulp-eslint');
 
 // testing
-import mocha from 'gulp-mocha';
+const mocha = require('gulp-mocha');
 
 gulp.task('lint', () => {
   return gulp.src(['src/**/*.js', 'test/**/*.js', 'gulpfile.babel.js'])
@@ -27,9 +26,6 @@ gulp.task('test', ['lint'], () => {
 
 gulp.task('build', ['test'], () => {
   return gulp.src('src/**/*.js')
-    .pipe(babel({
-      presets: ['es2015']
-    }))
     .pipe(gulp.dest('dist'));
 });
 

@@ -1,4 +1,4 @@
-import executor from 't';
+const executor = require('t');
 
 function setupRoutes(app, server) {
   const log = server.context.log;
@@ -31,4 +31,4 @@ function setupRoutes(app, server) {
   });
 }
 
-export default setupRoutes;
+module.exports = setupRoutes;

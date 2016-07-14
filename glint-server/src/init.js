@@ -1,12 +1,11 @@
-import 'colors';
-import fs from 'fs';
-import program from 'commander';
+require('colors');
+const fs = require('fs');
+const program = require('commander');
 
-import master from './master';
-import slave from './slave';
+const master = require('./master');
+const slave = require('./slave');
 
-import getLog from './util/log';
-const log = getLog();
+const log = require('./util/log');
 
 const meta = JSON.parse(fs.readFileSync('./package.json'));
 

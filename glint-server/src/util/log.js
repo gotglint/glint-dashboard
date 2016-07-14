@@ -1,20 +1,12 @@
 const intel = require('intel');
 
-let configured = false;
-
-function getLog() {
-  if (configured === false) {
-    intel.basicConfig({
-      format: {
-        'format': '[%(date)s] %(name)s.%(levelname)s: %(message)s',
-        'colorize': true
-      }
-    });
-
-    configured = true;
+intel.basicConfig({
+  format: {
+    'format': '[%(date)s] %(name)s.%(levelname)s: %(message)s',
+    'colorize': true
   }
+});
 
-  return intel;
-}
+intel.debug('Logging configured.');
 
-module.exports.getLog = getLog;
+module.exports = intel;
