@@ -39,6 +39,10 @@ class GlintExecutor {
       const data = this[_job].data;
       log.debug(`Job is valid, processing.  Going to split up data of size ${data.length}`);
 
+      // let's see how big this shit is
+      const rowSize = this[_job].getProjectedSize();
+      log.debug(`Row size: ${rowSize}`);
+
       this[_status] = 'DONE';
       this[_completed] = true;
       resolve(true);
