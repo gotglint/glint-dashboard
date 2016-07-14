@@ -21,5 +21,5 @@ Run `./build.sh` to build everything.
     * Using sizeof for the inline data
     * Reading a row from the file and using sizeof on the row
     * Reading a row from the DB and using sizeof on the row
-* With the size of the dataset ascertained, the master will ramp up the amount of data sent to each slave via a fractional growth algorithm where the fraction decreases as memory usage approaches 100%
+* With the size of the dataset ascertained, the master will ramp up the amount of data sent to each slave via a saturation algorithm where the amount of data being processed decreases as memory usage approaches 100%
 * The master keeps track of exactly what portion of the dataset has been sent out to the various workers and keeps track of the results from the operations that the slaves perform

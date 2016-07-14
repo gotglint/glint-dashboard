@@ -32,7 +32,7 @@ describe('Bootstrap the Glint cluster', () => {
     return [glintManager.shutdown(), glintSlave1.shutdown(), glintSlave2.shutdown()];
   });
 
-  it('Executes a script', (done) => {
+  it('Executes a script', () => {
     log.debug('Beginning test.');
     const gc = new GlintClient();
     const data = gc.parallelize([1, 2, 3, 4]).map((el) => {
@@ -42,8 +42,7 @@ describe('Bootstrap the Glint cluster', () => {
     log.debug('Job data composed, submitting for processing.');
 
     const result = glintManager.processJob(data);
-    expect(result.then((jobResult) => {
-      log.debug('Job result: ', jobResult);
-    })).to.eventually.be.fulfilled.notify(done);
+    expect(result).to.not.be.null;
+    log.debug('Job result: ', result);
   });
 });
