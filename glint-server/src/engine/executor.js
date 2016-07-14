@@ -19,7 +19,7 @@ class GlintExecutor {
   }
 
   execute() {
-    log.debug('Executing: ', this[_job]);
+    log.debug(`Executing: ${this[_job]}`);
 
     return new Promise((resolve, reject) => {
       if (this[_job] === undefined || this[_job] === null) {
@@ -39,9 +39,17 @@ class GlintExecutor {
       const data = this[_job].data;
       log.debug(`Job is valid, processing.  Going to split up data of size ${data.length}`);
 
-      // let's see how big this shit is
+      // let's see how big the data is
       const rowSize = this[_job].getProjectedSize();
       log.debug(`Row size: ${rowSize}`);
+
+      // okay, now to see how many listeners we have, and how much data each can consume, and then spread across
+      const clients = this[_master].clients;
+      log.debug(`Spreading job across ${clients.size} slaves.`);
+
+      clients.forEach((client) => {
+        log.debug(`Client: ${client.spark.id} - ${client.maxMem}`);
+      });
 
       this[_status] = 'DONE';
       this[_completed] = true;

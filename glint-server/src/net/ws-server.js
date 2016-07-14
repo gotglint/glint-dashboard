@@ -3,59 +3,71 @@ const log = require('../util/log');
 const Promise = require('bluebird');
 const Primus = require('primus');
 
+const _host = Symbol('host');
+const _port = Symbol('port');
+const _primus = Symbol('primus');
+const _connected = Symbol('connected');
+const _clients = Symbol('clients');
+const _master = Symbol('master');
+
 class WebSocketServer {
   constructor(host, port) {
-    this.host = host;
-    this.port = port;
+    this[_host] = host;
+    this[_port] = port;
 
-    this.primus = null;
-    this.connected = false;
+    this[_primus] = null;
+    this[_connected] = false;
 
-    this.clients = new WeakMap();
-    this.handlers = [];
+    this[_clients] = new WeakMap();
+    this[_master] = null;
   }
 
   init() {
-    log.debug(`WS server is initializing, binding to: ${this.host}:${this.port}`);
+    log.debug(`WS server is initializing, binding to: ${this[_host]}:${this[_port]}`);
 
     return new Promise((resolve) => {
-      this.primus = Primus.createServer({
-        hostname:           this.host,
-        port:               this.port,
+      this[_primus] = Primus.createServer({
+        hostname:           this[_host],
+        port:               this[_port],
         transformer:        'websockets',
         iknowhttpsisbetter: true
       });
 
-      this.primus.on('connection', (spark) => {
+      this[_primus].on('connection', (spark) => {
         log.debug('WS server client connected: ', spark);
 
-        spark.on('data', (data) => {
-          log.debug('Client sent a data: ', data);
+        spark.on('data', (message) => {
+          log.debug('Client sent message: ', message);
+
+          if (message && message.type && message.type === 'online') {
+            const maxMem = message.data.maxMem;
+
+            if (this[_master]) {
+              this[_master].clientConnected(spark, maxMem);
+            }
+          }
         });
       });
 
-      this.primus.on('disconnection', (deets) => {
-        log.debug('Client disconnected: ', deets);
+      this[_primus].on('disconnection', (spark) => {
+        log.debug('Client disconnected: ', spark);
+
+        if (this[_master]) {
+          this[_master].clientDisconnected(spark.id);
+        }
       });
 
-      this.primus.on('error', function (err) {
+      this[_primus].on('error', function (err) {
         log.debug('WS server error: ', err);
       });
 
-      this.connected = true;
+      this[_connected] = true;
       resolve();
     });
   }
 
-  /**
-   * Register a function to handle messages for a given type
-   *
-   * @param command The command to listen for
-   * @param fn The function to fire for messages for the specified command
-   *
-   */
-  registerHandler(command, fn) {
-    this.handlers.push(command, fn);
+  registerMaster(master) {
+    this[_master] = master;
   }
 
   /**
@@ -65,8 +77,8 @@ class WebSocketServer {
    * @param message The message to send to the client
    */
   sendMessage(client, message) {
-    if (this.connected === true) {
-      const ws = this.clients.get(client);
+    if (this[_connected] === true) {
+      const ws = this[_clients].get(client);
       if (ws === undefined) {
         log.error('No client with ID %s found.', client);
         throw new Error(`No client with ID ${client} found`);
@@ -79,17 +91,16 @@ class WebSocketServer {
   }
 
   shutdown() {
-    if (this.connected === false) {
+    if (this[_connected] === false) {
       log.warn('WS server not online; bypassing shutdown request.');
       return Promise.resolve('WS server not online; bypassing shutdown request.');
     }
 
     log.debug('Shutting down WS server.');
     return new Promise((resolve) => {
-      this.primus.destroy({ timeout: 500 }, () => {
+      this[_primus].destroy({ timeout: 500 }, () => {
         log.debug('WS server destroyed.');
-        this.connected = false;
-        this.handlers = [];
+        this[_connected] = false;
 
         resolve();
       });

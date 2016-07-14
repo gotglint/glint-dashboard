@@ -2,14 +2,21 @@ const log = require('../util/log');
 
 const WebSocketServer = require('../net/ws-server');
 
+const _host = Symbol('host');
+const _port = Symbol('port');
+const _wss = Symbol('wss');
+
+const _clients = Symbol('clients');
+
 class MasterListener {
   constructor(host, port) {
     log.debug('Master listener constructor firing, using %s:%s as the host/port to bind to.', host, port);
 
-    this.host = host;
-    this.port = port;
+    this[_host] = host;
+    this[_port] = port;
 
-    this.wss = null;
+    this[_wss] = null;
+    this[_clients] = new Map();
   }
 
   /**
@@ -19,19 +26,38 @@ class MasterListener {
    */
   init() {
     log.debug('Master listener instantiating WS server.');
-    this.wss = new WebSocketServer(this.host, this.port);
+    this[_wss] = new WebSocketServer(this[_host], this[_port]);
+    this[_wss].registerMaster(this);
 
-    return this.wss.init();
+    return this[_wss].init();
+  }
+
+  clientConnected(spark, maxMem) {
+    log.debug(`Spark connected: ${spark.id}`);
+    this[_clients].set(spark.id, {spark: spark, maxMem: maxMem});
+  }
+
+  clientDisconnected(sparkId) {
+    log.debug(`Spark disconnected: ${sparkId}`);
+    this[_clients].delete(sparkId);
+  }
+
+  get clientCount() {
+    return this[_clients].size;
+  }
+
+  get clients() {
+    return this[_clients];
   }
 
   sendMessage(message) {
     log.debug('Master listener sending message.');
-    return this.wss.sendMessage('glint', message);
+    return this[_wss].sendMessage('glint', message);
   }
 
   shutdown() {
     log.debug('Master listener shutting down.');
-    return this.wss.shutdown();
+    return this[_wss].shutdown();
   }
 }
 
