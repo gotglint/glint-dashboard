@@ -41,6 +41,23 @@ class GlintJob {
   }
 
   /**
+   * Act as a pointer to the specific place in the dataset
+   */
+  getNextBlock(maxMem) {
+    log.debug(`Getting next block with max size ${maxMem}`);
+    return this[_dataSource].getNextBlock(maxMem);
+  }
+
+  /**
+   * Tell us how much data is left to process
+   */
+  get hasMoreBlocks() {
+    const hasNextBlock = this[_dataSource].hasNextBlock();
+    log.debug(`Checking to see if there is another block of data for this job: ${hasNextBlock}`);
+    return hasNextBlock;
+  }
+
+  /**
    * Make sure that we can actually run this job
    */
   validate() {

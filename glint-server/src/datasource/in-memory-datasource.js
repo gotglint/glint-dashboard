@@ -3,6 +3,9 @@ const sizeof = require('object-sizeof');
 
 const Datasource = require('./datasource');
 
+const _pointer = Symbol('pointer');
+const _rowSize = Symbol('rowSize');
+
 class InMemoryDatasource extends Datasource {
   constructor(data) {
     if (!(data instanceof Array)) {
@@ -16,10 +19,37 @@ class InMemoryDatasource extends Datasource {
     }
 
     super(data);
+
+    this[_rowSize] = sizeof(this.data[0]);
+    this[_pointer] = 0;
   }
 
   getSize() {
-    return sizeof(this.data[0]) * this.data.length;
+    return this[_rowSize] * this.data.length;
+  }
+
+  getCurrentLocation() {
+    return this[_pointer];
+  }
+
+  getDataLeftToProcess() {
+    // something
+  }
+
+  getNextBlock(maxMem) {
+    const blockSize = maxMem / this[_rowSize];
+    const block = [];
+
+    while (sizeof(block) < blockSize) {
+      block.push(this.data[this[_pointer]]);
+      this[_pointer] = this[_pointer] + 1;
+    }
+
+    return block;
+  }
+
+  hasNextBlock() {
+    return this[_pointer] < this.data.length;
   }
 }
 

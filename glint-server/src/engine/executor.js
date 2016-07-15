@@ -33,30 +33,20 @@ class GlintExecutor {
     }
 
     log.debug(`Executing: ${this[_job].id}`);
+    this[_status] = 'PROCESSING';
 
-    // let's get the actual payload out
-    const data = this[_job].data;
-    log.debug(`Job is valid, processing.  Going to split up data of size ${data.length}`);
-
-    // let's see how big the data is
-    const jobSize = this[_job].getProjectedSize();
-    log.debug(`Job size: ${jobSize}`);
-
-    // okay, now to see how many listeners we have, and how much data each can consume, and then spread across
+    // send the initial packets out; if the job size is smaller than the number of workers,
+    // we're good, let one node do all the work
     const clients = this[_master].clients;
-    log.debug(`Spreading job across ${clients.size} slaves.`);
-
-    clients.forEach((client) => {
-      log.debug(`Client: ${client.spark.id} - ${client.maxMem}`);
-
-      if (jobSize < client.maxMem) {
-        // no need to split it up
-        
+    for (const client of clients.values()) {
+      if (this[_job].hasMoreBlocks === true) {
+        log.debug(`Sending a block to client: ${client.spark.id} - ${client.maxMem}`);
+        client.spark.write({job:this[_job].id, block: this[_job].getNextBlock(client.maxMem)});
+      } else {
+        log.debug('No more blocks to process, job distribution completed.');
+        break;
       }
-    });
-
-    this[_status] = 'DONE';
-    this[_completed] = true;
+    }
   }
 
   isRunning() {
