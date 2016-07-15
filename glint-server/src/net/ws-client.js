@@ -29,8 +29,8 @@ class WebSocketClient {
         resolve('Connection opened.');
       });
 
-      this.ws.on('message', (message) => {
-        log.debug(`WS client received a message: ${message}`);
+      this.ws.on('data', (data) => {
+        log.debug(`WS client received a message: ${data}`);
       });
 
       this.ws.on('error', (err) => {

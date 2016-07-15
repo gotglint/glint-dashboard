@@ -18,7 +18,7 @@ class WebSocketServer {
     this[_primus] = null;
     this[_connected] = false;
 
-    this[_clients] = new WeakMap();
+    this[_clients] = new Map();
     this[_master] = null;
   }
 
@@ -43,7 +43,9 @@ class WebSocketServer {
             const maxMem = message.data.maxMem;
 
             if (this[_master]) {
-              this[_master].clientConnected(spark, maxMem);
+              this[_master].clientConnected(spark.id, maxMem);
+
+              this[_clients].set(spark.id, spark);
             }
           }
         });
@@ -73,18 +75,19 @@ class WebSocketServer {
   /**
    * Send a message to a specified client
    *
-   * @param client The client to send a message to
+   * @param clientId The client to send a message to
    * @param message The message to send to the client
    */
-  sendMessage(client, message) {
+  sendMessage(clientId, message) {
     if (this[_connected] === true) {
-      const ws = this[_clients].get(client);
+      const ws = this[_clients].get(clientId);
       if (ws === undefined) {
-        log.error('No client with ID %s found.', client);
-        throw new Error(`No client with ID ${client} found`);
+        log.error('No clientId with ID %s found.', clientId);
+        throw new Error(`No client with ID ${clientId} found`);
       }
 
-      ws.send(message);
+      log.debug(`WS server sending message to ${clientId}`);
+      ws.write(message);
     } else {
       throw new Error('WS server not online, cannot send message.');
     }

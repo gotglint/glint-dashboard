@@ -32,9 +32,9 @@ class MasterListener {
     return this[_wss].init();
   }
 
-  clientConnected(spark, maxMem) {
-    log.debug(`Spark connected: ${spark.id}`);
-    this[_clients].set(spark.id, {spark: spark, maxMem: maxMem});
+  clientConnected(sparkId, maxMem) {
+    log.debug(`Spark connected: ${sparkId}`);
+    this[_clients].set(sparkId, {sparkId: sparkId, maxMem: maxMem});
   }
 
   clientDisconnected(sparkId) {
@@ -50,9 +50,9 @@ class MasterListener {
     return this[_clients];
   }
 
-  sendMessage(message) {
+  sendMessage(clientId, message) {
     log.debug('Master listener sending message.');
-    return this[_wss].sendMessage('glint', message);
+    return this[_wss].sendMessage(clientId, message);
   }
 
   shutdown() {
