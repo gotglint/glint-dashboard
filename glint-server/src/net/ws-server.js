@@ -1,12 +1,17 @@
 const log = require('../util/log');
 
 const Promise = require('bluebird');
+const bson = require('bson');
 const Primus = require('primus');
 
 const _host = Symbol('host');
 const _port = Symbol('port');
+
+const _bson = Symbol('bson');
 const _primus = Symbol('primus');
+
 const _connected = Symbol('connected');
+
 const _clients = Symbol('clients');
 const _master = Symbol('master');
 
@@ -20,6 +25,8 @@ class WebSocketServer {
 
     this[_clients] = new Map();
     this[_master] = null;
+
+    this[_bson] = new bson.BSONPure.BSON();
   }
 
   init() {
@@ -30,23 +37,21 @@ class WebSocketServer {
         hostname:           this[_host],
         port:               this[_port],
         transformer:        'websockets',
-        iknowhttpsisbetter: true
+        iknowhttpsisbetter: true,
+        parser:             'binary'
       });
 
       this[_primus].on('connection', (spark) => {
         log.debug('WS server client connected: ', spark);
 
         spark.on('data', (message) => {
-          log.debug('Client sent message: ', message);
+          const deserialized = this[_bson].deserialize(message, {evalFunctions: true, cacheFunctions: true});
+          log.debug('WS server received a message: ', deserialized);
 
-          if (message && message.type && message.type === 'online') {
-            const maxMem = message.data.maxMem;
+          this[_clients].set(spark.id, spark);
 
-            if (this[_master]) {
-              this[_master].clientConnected(spark.id, maxMem);
-
-              this[_clients].set(spark.id, spark);
-            }
+          if (this[_master]) {
+            this[_master].handleMessage(spark.id, deserialized);
           }
         });
       });
@@ -80,14 +85,14 @@ class WebSocketServer {
    */
   sendMessage(clientId, message) {
     if (this[_connected] === true) {
-      const ws = this[_clients].get(clientId);
-      if (ws === undefined) {
-        log.error('No clientId with ID %s found.', clientId);
+      const spark = this[_clients].get(clientId);
+      if (spark === undefined) {
+        log.error('No client with ID %s found.', clientId);
         throw new Error(`No client with ID ${clientId} found`);
       }
 
       log.debug(`WS server sending message to ${clientId}`);
-      ws.write(message);
+      spark.write(message);
     } else {
       throw new Error('WS server not online, cannot send message.');
     }
@@ -101,7 +106,7 @@ class WebSocketServer {
 
     log.debug('Shutting down WS server.');
     return new Promise((resolve) => {
-      this[_primus].destroy({ timeout: 500 }, () => {
+      this[_primus].destroy({timeout: 500}, () => {
         log.debug('WS server destroyed.');
         this[_connected] = false;
 

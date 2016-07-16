@@ -45,7 +45,9 @@ class GlintJob {
    */
   getNextBlock(maxMem) {
     log.debug(`Getting next block with max size ${maxMem}`);
-    return this[_dataSource].getNextBlock(maxMem);
+    let block =  this[_dataSource].getNextBlock(maxMem);
+    block = block.filter((e) => { return e === 0 || e; });
+    return block;
   }
 
   /**

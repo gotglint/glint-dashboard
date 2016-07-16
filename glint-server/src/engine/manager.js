@@ -61,11 +61,17 @@ class GlintManager {
     const glintExecutor = new GlintExecutor(this[_master], job);
 
     const jobId = glintExecutor.getId();
-    log.debug(`Job ID: ${jobId}`);
+    log.debug(`Processing job: ${jobId}`);
 
     this[_jobs].set(jobId, glintExecutor);
 
-    return glintExecutor.execute();
+    glintExecutor.execute();
+
+    return jobId;
+  }
+
+  isJobRunning(jobId) {
+    return this[_jobs].get(jobId).isRunning();
   }
 }
 

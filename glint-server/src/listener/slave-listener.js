@@ -25,6 +25,7 @@ class SlaveListener {
   init() {
     log.debug('Slave listener connecting to WS server.');
     this[_ws] = new WebSocketClient(this[_host], this[_port]);
+    this[_ws].registerSlave(this);
 
     return this[_ws].init().then(() => {
       log.debug('Slave listener created WS client.');
@@ -33,6 +34,14 @@ class SlaveListener {
       log.error(`Slave listener could not connect to WS server: ${err}`);
       return Promise.reject(err);
     });
+  }
+
+  handleMessage(data) {
+    log.debug('Slave listener handling message: ', data);
+
+    if (data && data.type && data.type === 'job') {
+      log.debug('Handling job request.');
+    }
   }
 
   sendMessage(type, data) {

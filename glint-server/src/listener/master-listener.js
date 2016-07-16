@@ -32,9 +32,11 @@ class MasterListener {
     return this[_wss].init();
   }
 
-  clientConnected(sparkId, maxMem) {
-    log.debug(`Spark connected: ${sparkId}`);
-    this[_clients].set(sparkId, {sparkId: sparkId, maxMem: maxMem});
+  handleMessage(sparkId, message) {
+    if (message && message.type === 'online') {
+      log.debug(`Spark connected: ${sparkId}`);
+      this[_clients].set(sparkId, {sparkId: sparkId, maxMem: message.data.maxMem});
+    }
   }
 
   clientDisconnected(sparkId) {
@@ -42,16 +44,12 @@ class MasterListener {
     this[_clients].delete(sparkId);
   }
 
-  get clientCount() {
-    return this[_clients].size;
-  }
-
   get clients() {
     return this[_clients];
   }
 
   sendMessage(clientId, message) {
-    log.debug('Master listener sending message.');
+    log.debug('Master listener sending message: ', message);
     return this[_wss].sendMessage(clientId, message);
   }
 

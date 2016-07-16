@@ -41,7 +41,9 @@ class GlintExecutor {
     for (const client of clients.values()) {
       if (this[_job].hasMoreBlocks === true) {
         log.debug(`Sending a block to client: ${client.sparkId} - ${client.maxMem}`);
-        this[_master].sendMessage(client.sparkId, {job:this[_job].id, block: this[_job].getNextBlock(client.maxMem)});
+        this[_master].sendMessage(client.sparkId, {type: 'job', job:this[_job].id, block: this[_job].getNextBlock(client.maxMem), operations: this[_job].operations});
+
+        setTimeout(() => {this[_completed] = true;}, 2500);
       } else {
         log.debug('No more blocks to process, job distribution completed.');
         break;
