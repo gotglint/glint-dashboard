@@ -1,11 +1,10 @@
 const log = require('../util/log');
-const bson = require('bson');
+const Promise = require('bluebird');
 
 const MasterListener = require('../listener/master-listener');
 const GlintExecutor = require('./executor');
 const GlintJob = require('./job');
 
-const _bson = Symbol('bson');
 const _jobs = Symbol('jobs');
 const _master = Symbol('master');
 
@@ -17,7 +16,6 @@ class GlintManager {
     log.debug('Master initializing; binding to %s:%d', host, port);
     this[_master] = new MasterListener(host, port);
 
-    this[_bson] = new bson.BSONPure.BSON();
     this[_jobs] = new Map();
   }
 
@@ -55,8 +53,7 @@ class GlintManager {
    * @returns {Promise} A promise to wait on
    */
   processJob(data) {
-    const deserialized = this[_bson].deserialize(data, {evalFunctions: true, cacheFunctions: true});
-    const job = new GlintJob(this, this[_master], deserialized);
+    const job = new GlintJob(this, this[_master], data);
 
     const glintExecutor = new GlintExecutor(this[_master], job);
 
@@ -70,8 +67,8 @@ class GlintManager {
     return jobId;
   }
 
-  isJobRunning(jobId) {
-    return this[_jobs].get(jobId).isRunning();
+  waitForJob(jobId) {
+    return this[_jobs].get(jobId).getPromise();
   }
 }
 

@@ -9,7 +9,7 @@ const _port = Symbol('port');
 
 const _bson = Symbol('bson');
 
-const _ws = Symbol('ws');
+const _client = Symbol('client');
 const _connected = Symbol('connected');
 
 const _slave = Symbol('slave');
@@ -19,7 +19,7 @@ class WebSocketClient {
     this[_host] = host;
     this[_port] = port;
 
-    this[_ws] = null;
+    this[_client] = null;
     this[_connected] = false;
 
     this[_slave] = null;
@@ -35,29 +35,30 @@ class WebSocketClient {
       log.debug(`Connecting to ${wsServer}`);
 
       const Socket = Primus.createSocket({transformer: 'websockets', parser: 'binary'});
-      this[_ws] = new Socket(wsServer);
+      this[_client] = new Socket(wsServer);
 
-      this[_ws].on('open', () => {
+      this[_client].on('data', (data) => {
+        const deserialized = this[_bson].deserialize(data, {evalFunctions: true, cacheFunctions: true});
+        log.debug('WS client received a message: ', deserialized);
+
+        if (this[_slave]) {
+          this[_slave].handleMessage(deserialized);
+        }
+      });
+
+      this[_client].on('error', (err) => {
+        log.error(`WS client threw an error: ${err}`);
+      });
+
+      this[_client].on('close', () => {
+        log.debug('WS client closed connection.');
+      });
+
+      this[_client].on('open', () => {
         log.debug('WS client is connected.');
 
         this[_connected] = true;
         resolve('Connection opened.');
-      });
-
-      this[_ws].on('data', (data) => {
-        log.debug(`WS client received a message: ${data}`);
-
-        if (this[_slave]) {
-          this[_slave].handleMessage(data);
-        }
-      });
-
-      this[_ws].on('error', (err) => {
-        log.error(`WS client threw an error: ${err}`);
-      });
-
-      this[_ws].on('close', () => {
-        log.debug('WS client closed connection.');
       });
     });
   }
@@ -74,7 +75,7 @@ class WebSocketClient {
   sendMessage(message) {
     if (this[_connected] === true) {
       const serializedMessage = this[_bson].serialize(message, true, false, true);
-      this[_ws].write(serializedMessage);
+      this[_client].write(serializedMessage);
     } else {
       throw new Error('WS server not online, cannot send message.');
     }
@@ -88,7 +89,7 @@ class WebSocketClient {
 
     log.debug('Shutting down WS client.');
     return new Promise((resolve) => {
-      this[_ws].destroy({ timeout: 500 }, () => {
+      this[_client].destroy({ timeout: 500 }, () => {
         log.debug('WS client destroyed.');
         this[_connected] = false;
         resolve();

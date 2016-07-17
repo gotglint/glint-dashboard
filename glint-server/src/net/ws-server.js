@@ -91,8 +91,9 @@ class WebSocketServer {
         throw new Error(`No client with ID ${clientId} found`);
       }
 
-      log.debug(`WS server sending message to ${clientId}`);
-      spark.write(message);
+      log.debug(`WS server sending message to ${clientId}: `, message);
+      const serializedMessage = this[_bson].serialize(message, true, false, true);
+      spark.write(serializedMessage);
     } else {
       throw new Error('WS server not online, cannot send message.');
     }

@@ -34,13 +34,13 @@ class MasterListener {
 
   handleMessage(sparkId, message) {
     if (message && message.type === 'online') {
-      log.debug(`Spark connected: ${sparkId}`);
+      log.debug(`Client connected: ${sparkId}`);
       this[_clients].set(sparkId, {sparkId: sparkId, maxMem: message.data.maxMem});
     }
   }
 
   clientDisconnected(sparkId) {
-    log.debug(`Spark disconnected: ${sparkId}`);
+    log.debug(`Client disconnected: ${sparkId}`);
     this[_clients].delete(sparkId);
   }
 

@@ -88,7 +88,7 @@ class GlintClient {
    * @returns {Object}
    */
   getData() {
-    return this[_bson].serialize({id: this[_id], operations: this[_operations], data: this[_data]}, true, false, true);
+    return {id: this[_id], operations: this[_operations], data: this[_data]};
   }
 }
 

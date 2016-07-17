@@ -10,3 +10,5 @@ bower_components
 build/reports
 coverage
 npm-debug.log
+isolate*.log
+processed.txt

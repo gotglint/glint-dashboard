@@ -10,6 +10,7 @@ const SlaveListener = require('../../../src/listener/slave-listener');
 
 describe('Bootstrap the Glint cluster', function() {
   chai.use(chaiAsPromised);
+  chai.should();
   const expect = chai.expect;
 
   const glintManager = new GlintManager('localhost', 45468);
@@ -32,7 +33,7 @@ describe('Bootstrap the Glint cluster', function() {
     return [glintManager.shutdown(), glintSlave1.shutdown(), glintSlave2.shutdown()];
   });
 
-  it('Executes a script', function(done) {
+  it('Executes a script', function() {
     this.timeout(60000);
 
     log.debug('Beginning test.');
@@ -47,32 +48,6 @@ describe('Bootstrap the Glint cluster', function() {
     expect(jobId).to.not.be.null;
     log.debug(`Job ID: ${jobId}`);
 
-    // wait a minute for the job to finish
-    //  let jobTestCount = 0;
-    // let isRunning = true;
-
-    /*function checkJob() {
-      log.debug(`Checking to see if job ${jobId} is still running.`);
-      if (glintManager.isJobRunning(jobId)) {
-        jobTestCount++;
-      } else {
-        isRunning = false;
-      }
-    }
-
-    while (jobTestCount < 120) {
-      if (isRunning) {
-        setTimeout(checkJob, 500);
-      } else {
-        done();
-      }
-    }
-
-    done(new Error('Waiting 60s for the job to finish, but it did not.'));*/
-
-    setTimeout(() => {
-      log.debug('Waiting...');
-      done();
-    }, 30000);
+    return glintManager.waitForJob(jobId).should.be.fulfilled;
   });
 });
