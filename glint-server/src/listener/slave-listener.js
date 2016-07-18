@@ -36,17 +36,19 @@ class SlaveListener {
     });
   }
 
-  handleMessage(data) {
-    log.debug('Slave listener handling message: ', data);
+  handleMessage(message) {
+    log.debug('Slave listener handling message: ', message);
 
-    if (data && data.type && data.type === 'job') {
+    if (message && message.type && message.type === 'job') {
       log.debug('Handling job request.');
+
+      this.sendMessage('block', {blockId: message.blockId, jobId: message.jobId});
     }
   }
 
-  sendMessage(type, data) {
+  sendMessage(type, message) {
     log.debug('Slave listener sending message.');
-    return this[_ws].sendMessage({type: type, data: data});
+    return this[_ws].sendMessage({type: type, data: message});
   }
 
   shutdown() {

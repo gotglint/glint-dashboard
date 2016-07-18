@@ -44,8 +44,8 @@ class WebSocketServer {
       this[_primus].on('connection', (spark) => {
         log.debug('WS server client connected: ', spark);
 
-        spark.on('data', (message) => {
-          const deserialized = this[_bson].deserialize(message, {evalFunctions: true, cacheFunctions: true});
+        spark.on('data', (data) => {
+          const deserialized = this[_bson].deserialize(data, {evalFunctions: true, cacheFunctions: true});
           log.debug('WS server received a message: ', deserialized);
 
           this[_clients].set(spark.id, spark);

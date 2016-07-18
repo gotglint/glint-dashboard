@@ -22,6 +22,8 @@ describe('Bootstrap the Glint cluster', function() {
   });
 
   before(function() {
+    this.timeout(30000);
+
     log.debug('Doing pre-test configuration/initialization.');
 
     return Promise.all([glintManager.init(), glintSlave1.init(), glintSlave2.init(), pause]);

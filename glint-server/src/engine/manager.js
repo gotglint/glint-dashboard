@@ -15,6 +15,7 @@ class GlintManager {
   constructor(host, port) {
     log.debug('Master initializing; binding to %s:%d', host, port);
     this[_master] = new MasterListener(host, port);
+    this[_master].registerManager(this);
 
     this[_jobs] = new Map();
   }
@@ -65,6 +66,15 @@ class GlintManager {
     glintExecutor.execute();
 
     return jobId;
+  }
+
+  handleMessage(message) {
+    log.debug('Manager handling message.');
+    if (message && message.data) {
+      log.debug('Manager propagating message up to executor.');
+      const data = message.data;
+      this[_jobs].get(data.jobId).handleMessage(data);
+    }
   }
 
   waitForJob(jobId) {

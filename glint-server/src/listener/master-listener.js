@@ -7,6 +7,7 @@ const _port = Symbol('port');
 const _wss = Symbol('wss');
 
 const _clients = Symbol('clients');
+const _manager = Symbol('manager');
 
 class MasterListener {
   constructor(host, port) {
@@ -16,7 +17,9 @@ class MasterListener {
     this[_port] = port;
 
     this[_wss] = null;
+
     this[_clients] = new Map();
+    this[_manager] = null;
   }
 
   /**
@@ -32,10 +35,19 @@ class MasterListener {
     return this[_wss].init();
   }
 
+  registerManager(manager) {
+    this[_manager] = manager;
+  }
+
   handleMessage(sparkId, message) {
-    if (message && message.type === 'online') {
-      log.debug(`Client connected: ${sparkId}`);
-      this[_clients].set(sparkId, {sparkId: sparkId, maxMem: message.data.maxMem});
+    if (message) {
+      if (message.type === 'online') {
+        log.debug(`Client connected: ${sparkId}`);
+        this[_clients].set(sparkId, {sparkId: sparkId, maxMem: message.data.maxMem});
+      } else if(this[_manager]) {
+        log.debug('Propagating message up to the manager.');
+        this[_manager].handleMessage(message);
+      }
     }
   }
 
