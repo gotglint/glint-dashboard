@@ -1,5 +1,6 @@
 const log = require('../util/log');
 const uuid = require('node-uuid');
+const operationUtils = require('../util/operation-utils');
 
 const _master = Symbol('master');
 const _job = Symbol('job');
@@ -7,6 +8,7 @@ const _job = Symbol('job');
 const _status = Symbol('status');
 
 const _blocks = Symbol('blocks');
+const _steps = Symbol('steps');
 
 const _promise = Symbol('promise');
 const _resolve = Symbol('resolve');
@@ -28,6 +30,7 @@ class GlintExecutor {
     });
 
     this[_blocks] = new Set();
+    this[_steps] = [];
   }
 
   execute() {
@@ -45,17 +48,10 @@ class GlintExecutor {
     log.debug(`Executing: ${this[_job].id}`);
     this[_status] = 'PROCESSING';
 
-    // the list of operations that we can perform in parallel
-    const fullOpList = this[_job].operations;
-    const subset = [];
-    for (const op of fullOpList) {
-      if (op.task === 'reduce') {
-        break;
-      }
-
-      subset.push(op);
-      fullOpList.shift();
-    }
+    // split the job up into steps based on where reductions occur
+    const operations = this[_job].operations;
+    this[_steps] = operationUtils.splitOperations(operations);
+    log.debug('Operations split up into proper chunks: ', this[_steps]);
 
     // send the initial packets out; if the job size is smaller than the number of workers,
     // we're good, let one node do all the work
@@ -64,10 +60,10 @@ class GlintExecutor {
       if (this[_job].hasMoreBlocks === true) {
         const blockId = uuid.v4();
         log.debug(`Sending block ${blockId} to client: ${client.sparkId} - ${client.maxMem}`);
-        this[_master].sendMessage(client.sparkId, {blockId: blockId, type: 'job', jobId: this[_job].id, block: this[_job].getNextBlock(client.maxMem), operations: subset});
+        this[_master].sendMessage(client.sparkId, {blockId: blockId, type: 'job', jobId: this[_job].id, block: this[_job].getNextBlock(client.maxMem), operations: this[_steps][0]});
         this[_blocks].add(blockId);
       } else {
-        log.debug('No more blocks to process, job distribution completed.');
+        log.debug('No more blocks to process, initial job distribution completed.');
         break;
       }
     }

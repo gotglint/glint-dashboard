@@ -41,7 +41,7 @@ describe('Bootstrap the Glint cluster', function() {
     log.debug('Beginning test.');
     const gc = new GlintClient();
     const data = gc.parallelize([1, 2, 3, 4]).map((el) => {
-      return el;
+      return el + 324;
     }).getData();
 
     log.debug('Job data composed, submitting for processing.');

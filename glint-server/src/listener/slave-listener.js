@@ -42,7 +42,28 @@ class SlaveListener {
     if (message && message.type && message.type === 'job') {
       log.debug('Handling job request.');
 
-      this.sendMessage('block', {blockId: message.blockId, jobId: message.jobId});
+      const block = message.block;
+
+      const operations = message.operations;
+      for (const op of operations) {
+        switch (op.task) {
+          case 'map':
+            log.debug('Slave running map.');
+            const retVal = block.map(op.data);
+            log.debug('Map results: ', retVal);
+            break;
+          case 'filter':
+            log.debug('Slave running filter.');
+            break;
+          case 'reduce':
+            log.debug('Slave running reduce.');
+            break;
+          default:
+            log.warn(`Slave provided unknown task (${op.task}), ignoring.`);
+        }
+      }
+
+      this.sendMessage('block-response', {blockId: message.blockId, jobId: message.jobId});
     }
   }
 

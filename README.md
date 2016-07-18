@@ -1,6 +1,6 @@
 # Glint
 
-Distributed processing using RDDs, done right and/or better!
+Real-time distributed processing using RDDs, done right and/or better!
 
 ## Building
 

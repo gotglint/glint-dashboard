@@ -15,7 +15,7 @@ class GlintClient {
     this[_id] = uuid.v4();
     this[_bson] = new bson.BSONPure.BSON();
 
-    this[_data] = {};
+    this[_data] = null;
     this[_operations] = [];
   }
 
