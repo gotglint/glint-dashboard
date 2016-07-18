@@ -14,8 +14,8 @@ describe('Bootstrap the Glint cluster', function() {
   const expect = chai.expect;
 
   const glintManager = new GlintManager('localhost', 45468);
-  const glintSlave1 = new SlaveListener('localhost', 45468, 1024);
-  const glintSlave2 = new SlaveListener('localhost', 45468, 1024);
+  const glintSlave1 = new SlaveListener('localhost', 45468, 1);
+  const glintSlave2 = new SlaveListener('localhost', 45468, 1);
 
   const pause = new Promise((resolve) => {
     setTimeout(() => {log.debug('Waiting...'); resolve();}, 2500);
@@ -42,6 +42,10 @@ describe('Bootstrap the Glint cluster', function() {
     const gc = new GlintClient();
     const data = gc.parallelize([1, 2, 3, 4]).map((el) => {
       return el + 324;
+    }).filter((el, idx) => {
+      const retVal =  !!(el === 325 || idx === 2);
+      console.log('Filter results: ', retVal);
+      return retVal;
     }).getData();
 
     log.debug('Job data composed, submitting for processing.');
