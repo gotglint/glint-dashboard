@@ -46,6 +46,7 @@ describe('two step job engine test', function() {
     }).filter((el, idx) => {
       return !!(el === 325 || idx === 2);
     }).reduce((a, b) => {
+      console.log(`Reducing: ${a} :: ${b}`);
       return a + b;
     }, 'zzz').getData();
 
@@ -58,7 +59,10 @@ describe('two step job engine test', function() {
     glintManager.waitForJob(jobId).then((results) => {
       log.info('Job passed.');
       log.debug('Job results: ', results);
-      return done();
+      expect(results).to.eql(['zzz325327']);
+      done();
+    }).catch((err) => {
+      done(err ? err : new Error());
     });
   });
 
@@ -75,6 +79,7 @@ describe('two step job engine test', function() {
     }).filter((el, idx) => {
       return !!(el === 325 || idx === 2);
     }).reduce((a, b) => {
+      console.log(`Reducing: ${a} :: ${b}`);
       return a + b;
     }, 0).getData();
 
@@ -87,7 +92,10 @@ describe('two step job engine test', function() {
     glintManager.waitForJob(jobId).then((results) => {
       log.info('Job passed.');
       log.debug('Job results: ', results);
-      return done();
+      expect(results).to.eql([652]);
+      done();
+    }).catch((err) => {
+      done(err ? err : new Error());
     });
   });
 });
