@@ -8,7 +8,7 @@ const _ws = Symbol('ws');
 
 class SlaveListener {
   constructor(host, port, maxMem) {
-    log.debug(`Slave listener constructor firing, connecting to ${host}:${port} - using ${maxMem}m as the memory limit`);
+    log.debug(`Slave listener constructor firing, connecting to ${host}:${port} - using ${maxMem} as the memory limit`);
 
     this[_host] = host;
     this[_port] = port;
@@ -68,7 +68,7 @@ class SlaveListener {
       }
 
       log.debug('Sending message back to server: ', block);
-      this.sendMessage('block-response', {blockId: message.blockId, block:block, jobId: message.jobId, step: message.step});
+      this.sendMessage('block-response', {clientId: this[_ws].id, blockId: message.blockId, block:block, jobId: message.jobId, step: message.step});
     }
   }
 

@@ -53,24 +53,39 @@ class GlintExecutor {
           break;
         }
       }
+
+      // check to see if we still have blocks left and try again in a bit
+      if (this[_job].hasMoreBlocks()) {
+        log.debug('More blocks to go, rescheduling.');
+        setTimeout(() => { this[_emitter].emit('block:added'); }, 250);
+      }
     });
 
     this[_emitter].on('block:completed', (block) => {
       log.debug('Block completed, processing.');
       this[_job].blockCompleted(block);
 
+      log.debug(`Freeing up ${block.clientId}`);
+      this[_master].freeClient(block.clientId);
+
       if (this[_job].hasMoreBlocks()) {
         log.debug('Job has more blocks to process.');
         this[_emitter].emit('block:added');
       } else {
-        log.debug('Job has no more blocks to complete, notifying.');
+        log.debug('Job has no more blocks to complete.');
         this[_emitter].emit('job:completed');
       }
     });
 
     this[_emitter].on('job:completed', () => {
-      log.debug('Job completed!');
-      this[_resolve](true);
+      log.debug('Job completed - checking to see if any slaves are still working.');
+      if (this[_job].isProcessing()) {
+        log.debug('Job still has outstanding blocks, waiting.');
+        return;
+      }
+
+      log.debug('No more blocks outstanding, resolving.');
+      this[_resolve](this[_job].getResults());
     });
   }
 

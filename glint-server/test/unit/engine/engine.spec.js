@@ -3,12 +3,12 @@ const chaiAsPromised = require('chai-as-promised');
 
 const GlintClient = require('glint-lib');
 
-const log = require('../../../src/util/log');
+const log = require('../../../src/util/log').getLogger('engine.spec');
 
 const GlintManager = require('../../../src/engine/manager');
 const SlaveListener = require('../../../src/listener/slave-listener');
 
-describe('Bootstrap the Glint cluster', function() {
+describe('test the engine', function() {
   chai.use(chaiAsPromised);
   chai.should();
   const expect = chai.expect;
@@ -18,29 +18,33 @@ describe('Bootstrap the Glint cluster', function() {
   const glintSlave2 = new SlaveListener('localhost', 45468, 1024);
 
   const pause = new Promise((resolve) => {
-    setTimeout(() => {log.debug('Waiting...'); resolve();}, 2500);
+    setTimeout(() => {log.info('Waiting...'); resolve();}, 2500);
   });
 
   before(function() {
     this.timeout(30000);
 
-    log.debug('Doing pre-test configuration/initialization.');
+    log.info('Doing pre-test configuration/initialization.');
 
     return Promise.all([glintManager.init(), glintSlave1.init(), glintSlave2.init(), pause]);
   });
 
   after(function() {
-    log.debug('Cleaning up after test.');
+    log.info('Cleaning up after test.');
 
     return [glintManager.shutdown(), glintSlave1.shutdown(), glintSlave2.shutdown()];
   });
 
-  it('Executes a script', function() {
+  it('runs a simple map operation', function(done) {
     this.timeout(60000);
 
-    log.debug('Beginning test.');
+    log.info('Beginning test.');
+
+    const input = [...new Array(5).keys()].slice(1);
+
     const gc = new GlintClient();
-    const data = gc.parallelize([1, 2, 3, 4]).map((el) => {
+    const data = gc.parallelize(input).map((el) => {
+      console.log('Running map on: ', el);
       return el + 324;
     }).filter((el, idx) => {
       const retVal =  !!(el === 325 || idx === 2);
@@ -48,12 +52,43 @@ describe('Bootstrap the Glint cluster', function() {
       return retVal;
     }).getData();
 
-    log.debug('Job data composed, submitting for processing.');
+    log.info('Job data composed, submitting for processing.');
 
     const jobId = glintManager.processJob(data);
     expect(jobId).to.not.be.null;
-    log.debug(`Job ID: ${jobId}`);
+    log.info(`Job ID: ${jobId}`);
 
-    return glintManager.waitForJob(jobId).should.be.fulfilled;
+    return glintManager.waitForJob(jobId).then((results) => {
+      log.info('Job results: ', results);
+      expect(results).to.have.lengthOf(2);
+      expect(results).to.eql([325, 327]);
+      done();
+    });
+  });
+
+  it('runs a big map operation', function(done) {
+    this.timeout(60000);
+
+    log.info('Beginning test.');
+
+    const input = [...new Array(50001).keys()].slice(1);
+
+    const gc = new GlintClient();
+    const data = gc.parallelize(input).map((el) => {
+      return el + 324;
+    }).filter((el) => {
+      return el % 5 === 0;
+    }).getData();
+
+    log.info('Job data composed, submitting for processing.');
+
+    const jobId = glintManager.processJob(data);
+    expect(jobId).to.not.be.null;
+    log.info(`Job ID: ${jobId}`);
+
+    return glintManager.waitForJob(jobId).then((results) => {
+      log.info('Job results: ', results);
+      done();
+    });
   });
 });

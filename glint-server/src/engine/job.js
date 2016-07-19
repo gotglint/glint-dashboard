@@ -16,6 +16,7 @@ const _dataSource = Symbol('dataSource');
 const _stepResults = Symbol('stepResults');
 
 const _blocks = Symbol('blocks');
+const _results = Symbol('results');
 
 class GlintJob {
   constructor(manager, master, jobData) {
@@ -32,6 +33,7 @@ class GlintJob {
     this[_stepResults] = [];
 
     this[_blocks] = new Map();
+    this[_results] = [];
   }
 
   get id() {
@@ -85,7 +87,14 @@ class GlintJob {
   hasMoreBlocks() {
     const hasNextBlock = this[_dataSource].hasNextBlock();
     log.debug(`Checking to see if there is another block of data for this job: ${hasNextBlock}`);
-    return hasNextBlock;
+
+    if (!hasNextBlock) {
+      log.debug('Datasource has no more blocks, checking to see if we have step results to process.');
+      return this[_stepResults].length > 0;
+    } else {
+      log.debug('Datasource has more blocks.');
+      return true;
+    }
   }
 
   /**
@@ -106,6 +115,7 @@ class GlintJob {
       if (step === this[_steps].length - 1) {
         // we're done
         log.debug('Block was at the end of a chain, nothing more to do.');
+        this[_results] = this[_results].concat(block.block);
         return;
       }
 
@@ -115,6 +125,14 @@ class GlintJob {
     } else {
       log.warn(`No block with ID ${blockId} exists in the system.`);
     }
+  }
+
+  isProcessing() {
+    return this[_blocks].size > 0;
+  }
+
+  getResults() {
+    return this[_results];
   }
 
   /**

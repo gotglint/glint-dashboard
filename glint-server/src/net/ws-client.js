@@ -4,6 +4,8 @@ const Primus = require('primus');
 
 const log = require('../util/log').getLogger('ws-client');
 
+const _id = Symbol('id');
+
 const _host = Symbol('host');
 const _port = Symbol('port');
 
@@ -16,6 +18,8 @@ const _slave = Symbol('slave');
 
 class WebSocketClient {
   constructor(host, port) {
+    this[_id] = null;
+
     this[_host] = host;
     this[_port] = port;
 
@@ -60,7 +64,15 @@ class WebSocketClient {
         this[_connected] = true;
         resolve('Connection opened.');
       });
+
+      this[_client].id((id) => {
+        this[_id] = id;
+      });
     });
+  }
+
+  get id() {
+    return this[_id];
   }
 
   registerSlave(slave) {

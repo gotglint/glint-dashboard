@@ -45,7 +45,7 @@ class MasterListener {
       if (message.type === 'online') {
         log.debug(`Client connected: ${sparkId}`);
         this[_clients].push({sparkId: sparkId, maxMem: message.data.maxMem, free: true});
-      } else if(this[_manager]) {
+      } else if (this[_manager]) {
         log.debug('Propagating message up to the manager.');
         this[_manager].handleMessage(message);
       }
@@ -59,16 +59,28 @@ class MasterListener {
     });
   }
 
-  getFreeClient() {
-    return _.find(this[_clients], (client) => { return client.free === true; });
+  freeClient(clientId) {
+    for (const client of this[_clients]) {
+      if (client.sparkId === clientId) {
+        log.debug(`Setting client ${clientId} as free.`);
+        client.free = true;
+      }
+    }
   }
 
   getFreeClients() {
-    return _.filter(this[_clients], (client) => { return client.free === true; });
+    return this[_clients].filter((client) => {
+      return client.free === true;
+    });
   }
 
-  setClientBusy(client) {
-    client.free = false;
+  setClientBusy(clientId) {
+    for (const client of this[_clients]) {
+      if (client.sparkId === clientId) {
+        log.debug(`Setting client ${clientId} as busy.`);
+        client.free = false;
+      }
+    }
   }
 
   sendMessage(clientId, message) {
