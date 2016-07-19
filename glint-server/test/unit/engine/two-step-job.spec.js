@@ -9,8 +9,6 @@ const GlintManager = require('../../../src/engine/manager');
 const SlaveListener = require('../../../src/listener/slave-listener');
 
 describe('two step job engine test', function() {
-  chai.use(chaiAsPromised);
-  chai.should();
   const expect = chai.expect;
 
   const glintManager = new GlintManager('localhost', 45468);
@@ -35,7 +33,7 @@ describe('two step job engine test', function() {
     return [glintManager.shutdown(), glintSlave1.shutdown(), glintSlave2.shutdown()];
   });
 
-  it('runs a simple map-reduce operation', function(done) {
+  it('runs a simple map-reduce operation that returns a string', function(done) {
     this.timeout(60000);
 
     log.info('Beginning test.');
@@ -48,7 +46,6 @@ describe('two step job engine test', function() {
     }).filter((el, idx) => {
       return !!(el === 325 || idx === 2);
     }).reduce((a, b) => {
-      console.log(`Reducing: ${a} :: ${b}`);
       return a + b;
     }, 'zzz').getData();
 
@@ -58,10 +55,39 @@ describe('two step job engine test', function() {
     expect(jobId).to.not.be.null;
     log.info(`Job ID: ${jobId}`);
 
-    return glintManager.waitForJob(jobId).then((results) => {
+    glintManager.waitForJob(jobId).then((results) => {
       log.info('Job passed.');
       log.debug('Job results: ', results);
-      done();
+      return done();
+    });
+  });
+
+  it('runs a simple map-reduce operation that sums', function(done) {
+    this.timeout(60000);
+
+    log.info('Beginning test.');
+
+    const input = [...new Array(5).keys()].slice(1);
+
+    const gc = new GlintClient();
+    const data = gc.parallelize(input).map((el) => {
+      return el + 324;
+    }).filter((el, idx) => {
+      return !!(el === 325 || idx === 2);
+    }).reduce((a, b) => {
+      return a + b;
+    }, 0).getData();
+
+    log.info('Job data composed, submitting for processing.');
+
+    const jobId = glintManager.processJob(data);
+    expect(jobId).to.not.be.null;
+    log.info(`Job ID: ${jobId}`);
+
+    glintManager.waitForJob(jobId).then((results) => {
+      log.info('Job passed.');
+      log.debug('Job results: ', results);
+      return done();
     });
   });
 });
