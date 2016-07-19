@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const sizeof = require('object-sizeof');
 const uuid = require('node-uuid');
 
@@ -30,7 +31,7 @@ class GlintJob {
     this[_stepResults] = [];
 
     this[_blocks] = new Map();
-    this[_results] = [];
+    this[_results] = null;
   }
 
   setExecutor(executor) {
@@ -137,7 +138,32 @@ class GlintJob {
       if (blockStep === this[_steps].length - 1) {
         // we're done
         log.debug('Block was at the end of a chain, nothing more to do.');
-        this[_results] = this[_results].concat(blockData);
+        if (blockStep === 0) {
+          if (this[_results] === null) {
+            log.debug('Results type not set yet - creating array.');
+            this[_results] = [];
+          }
+
+          this[_results] = this[_results].concat(blockData);
+        } else {
+          if (this[_results] === null) {
+            log.debug('Results type not set yet.');
+            if (_.isNumber(blockData)) {
+              this[_results] = 0;
+              log.debug('Set results type to numeric.');
+            } else if (_.isString(blockData)) {
+              this[_results] = '';
+              log.debug('Set results type to alphabetic.');
+            } else if (_.isArray(blockData)) {
+              this[_results] = [];
+              log.debug('Set results type to an array.');
+            } else {
+              log.warn('Unknown datatype for block data, assuming everything is a String.');
+              this[_results] = '';
+            }
+          }
+          this[_results] = this[_results] + blockData;
+        }
       } else {
         // let's add the data that came back as a new block
         log.debug('Block had results, adding it to the results for further processing.');
