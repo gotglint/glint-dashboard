@@ -1,6 +1,6 @@
-const log = require('../util/log');
 const Promise = require('bluebird');
 
+const log = require('../util/log').getLogger('manager');
 const MasterListener = require('../listener/master-listener');
 const GlintExecutor = require('./executor');
 const GlintJob = require('./job');
@@ -57,6 +57,7 @@ class GlintManager {
     const job = new GlintJob(this, this[_master], data);
 
     const glintExecutor = new GlintExecutor(this[_master], job);
+    glintExecutor.init();
 
     const jobId = glintExecutor.getId();
     log.debug(`Processing job: ${jobId}`);

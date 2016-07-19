@@ -1,5 +1,6 @@
-const log = require('../util/log');
+const _ = require('lodash');
 
+const log = require('../util/log').getLogger('master');
 const WebSocketServer = require('../net/ws-server');
 
 const _host = Symbol('host');
@@ -18,7 +19,7 @@ class MasterListener {
 
     this[_wss] = null;
 
-    this[_clients] = new Map();
+    this[_clients] = [];
     this[_manager] = null;
   }
 
@@ -43,7 +44,7 @@ class MasterListener {
     if (message) {
       if (message.type === 'online') {
         log.debug(`Client connected: ${sparkId}`);
-        this[_clients].set(sparkId, {sparkId: sparkId, maxMem: message.data.maxMem});
+        this[_clients].push({sparkId: sparkId, maxMem: message.data.maxMem, free: true});
       } else if(this[_manager]) {
         log.debug('Propagating message up to the manager.');
         this[_manager].handleMessage(message);
@@ -53,11 +54,21 @@ class MasterListener {
 
   clientDisconnected(sparkId) {
     log.debug(`Client disconnected: ${sparkId}`);
-    this[_clients].delete(sparkId);
+    _.remove(this[_clients], (client) => {
+      return client.sparkId === sparkId;
+    });
   }
 
-  get clients() {
-    return this[_clients];
+  getFreeClient() {
+    return _.find(this[_clients], (client) => { return client.free === true; });
+  }
+
+  getFreeClients() {
+    return _.filter(this[_clients], (client) => { return client.free === true; });
+  }
+
+  setClientBusy(client) {
+    client.free = false;
   }
 
   sendMessage(clientId, message) {

@@ -1,5 +1,5 @@
+const log = require('../util/log').getLogger('slave');
 const WebSocketClient = require('../net/ws-client');
-const log = require('../util/log');
 
 const _host = Symbol('host');
 const _port = Symbol('port');
@@ -68,7 +68,7 @@ class SlaveListener {
       }
 
       log.debug('Sending message back to server: ', block);
-      this.sendMessage('block-response', {blockId: message.blockId, block:block, jobId: message.jobId});
+      this.sendMessage('block-response', {blockId: message.blockId, block:block, jobId: message.jobId, step: message.step});
     }
   }
 

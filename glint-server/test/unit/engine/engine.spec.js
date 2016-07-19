@@ -14,8 +14,8 @@ describe('Bootstrap the Glint cluster', function() {
   const expect = chai.expect;
 
   const glintManager = new GlintManager('localhost', 45468);
-  const glintSlave1 = new SlaveListener('localhost', 45468, 1);
-  const glintSlave2 = new SlaveListener('localhost', 45468, 1);
+  const glintSlave1 = new SlaveListener('localhost', 45468, 1024);
+  const glintSlave2 = new SlaveListener('localhost', 45468, 1024);
 
   const pause = new Promise((resolve) => {
     setTimeout(() => {log.debug('Waiting...'); resolve();}, 2500);

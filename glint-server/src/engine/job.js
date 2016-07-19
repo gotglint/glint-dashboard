@@ -1,13 +1,21 @@
-const log = require('../util/log');
-
-const dataSourceFactory = require ('../datasource/datasource-factory');
 const uuid = require('node-uuid');
 
+const log = require('../util/log').getLogger('job');
+const dataSourceFactory = require ('../datasource/datasource-factory');
+const operationUtils = require('../util/operation-utils');
+
 const _id = Symbol('id');
+
 const _manager = Symbol('manager');
 const _master = Symbol('master');
+
 const _jobData = Symbol('jobData');
+const _steps = Symbol('steps');
+
 const _dataSource = Symbol('dataSource');
+const _stepResults = Symbol('stepResults');
+
+const _blocks = Symbol('blocks');
 
 class GlintJob {
   constructor(manager, master, jobData) {
@@ -17,7 +25,13 @@ class GlintJob {
     this[_master] = master;
 
     this[_jobData] = jobData;
+    this[_steps] = operationUtils.splitOperations(jobData.operations);
+    log.debug('Operations split up into proper chunks: ', this[_steps]);
+
     this[_dataSource] = dataSourceFactory.getDataSource(this[_jobData]);
+    this[_stepResults] = [];
+
+    this[_blocks] = new Map();
   }
 
   get id() {
@@ -40,23 +54,67 @@ class GlintJob {
     return this[_dataSource].getSize();
   }
 
+  _createBlock(block, step) {
+    const newBlockId = uuid.v4();
+    const fullBlock = {blockId: newBlockId, type: 'job', jobId: this[_id], block: block, operations: this[_steps][step], step: step};
+    this[_blocks].set(newBlockId, fullBlock);
+    return fullBlock;
+  }
+
   /**
    * Act as a pointer to the specific place in the dataset
    */
   getNextBlock(maxMem) {
     log.debug(`Getting next block with max size ${maxMem}`);
-    let block =  this[_dataSource].getNextBlock(maxMem);
-    block = block.filter((e) => { return e === 0 || e; });
-    return block;
+
+    if (this[_dataSource].hasNextBlock()) {
+      log.debug('Consuming block from data source.');
+      let block = this[_dataSource].getNextBlock(maxMem);
+      block = block.filter((e) => {
+        return e === 0 || e;
+      });
+      return this._createBlock(block, 0);
+    } else if (this[_stepResults].length > 0) {
+      log.debug('Consuming block from prior step.');
+    }
   }
 
   /**
    * Tell us how much data is left to process
    */
-  get hasMoreBlocks() {
+  hasMoreBlocks() {
     const hasNextBlock = this[_dataSource].hasNextBlock();
     log.debug(`Checking to see if there is another block of data for this job: ${hasNextBlock}`);
     return hasNextBlock;
+  }
+
+  /**
+   * A block (data + set of operations) finished being processed somewhere
+   * @param block
+   */
+  blockCompleted(block) {
+    const blockId = block.blockId;
+    const blockExists = this[_blocks].has(blockId);
+    if (blockExists === true) {
+      log.debug(`Block ${blockId} came back from a slave.`);
+
+      this[_blocks].delete(blockId);
+      log.debug(`Removed ${blockId} from the list of outstanding blocks.`);
+
+      // check to see if there were more steps
+      const step = block.step;
+      if (step === this[_steps].length - 1) {
+        // we're done
+        log.debug('Block was at the end of a chain, nothing more to do.');
+        return;
+      }
+
+      // let's add the data that came back as a new block
+      log.debug('Block had results, adding it to the results for further processing.');
+      this[_stepResults].push({step: block.step, data: block.block});
+    } else {
+      log.warn(`No block with ID ${blockId} exists in the system.`);
+    }
   }
 
   /**

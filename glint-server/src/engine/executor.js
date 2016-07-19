@@ -1,18 +1,17 @@
-const log = require('../util/log');
-const uuid = require('node-uuid');
-const operationUtils = require('../util/operation-utils');
+const EventEmitter = require('events');
+
+const log = require('../util/log').getLogger('executor');
 
 const _master = Symbol('master');
 const _job = Symbol('job');
 
 const _status = Symbol('status');
 
-const _blocks = Symbol('blocks');
-const _steps = Symbol('steps');
-
 const _promise = Symbol('promise');
 const _resolve = Symbol('resolve');
 const _reject = Symbol('reject');
+
+const _emitter = Symbol('emitter');
 
 /**
  * Encapsulation layer that corresponds to running an entire job
@@ -29,8 +28,50 @@ class GlintExecutor {
       this[_reject] = reject;
     });
 
-    this[_blocks] = new Set();
-    this[_steps] = [];
+    this[_emitter] = new EventEmitter();
+  }
+
+  init() {
+    this[_emitter].on('block:added', () => {
+      log.debug('Performing sanity check, to ensure that there are actually blocks to process.');
+      if (!this[_job].hasMoreBlocks()) {
+        log.debug('Job has no more blocks, nothing to add.');
+        return;
+      }
+
+      log.debug('Distributing blocks to free clients.');
+      const clients = this[_master].getFreeClients();
+      for (const client of clients) {
+        if (this[_job].hasMoreBlocks()) {
+          const block = this[_job].getNextBlock(client.maxMem);
+
+          log.debug(`Sending block ${block.blockId} to client: ${client.sparkId} - ${client.maxMem}`);
+          this[_master].setClientBusy(client);
+          this[_master].sendMessage(client.sparkId, block);
+        } else {
+          log.debug('No more blocks queued up, wrapping up current iteration.');
+          break;
+        }
+      }
+    });
+
+    this[_emitter].on('block:completed', (block) => {
+      log.debug('Block completed, processing.');
+      this[_job].blockCompleted(block);
+
+      if (this[_job].hasMoreBlocks()) {
+        log.debug('Job has more blocks to process.');
+        this[_emitter].emit('block:added');
+      } else {
+        log.debug('Job has no more blocks to complete, notifying.');
+        this[_emitter].emit('job:completed');
+      }
+    });
+
+    this[_emitter].on('job:completed', () => {
+      log.debug('Job completed!');
+      this[_resolve](true);
+    });
   }
 
   execute() {
@@ -48,25 +89,8 @@ class GlintExecutor {
     log.debug(`Executing: ${this[_job].id}`);
     this[_status] = 'PROCESSING';
 
-    // split the job up into steps based on where reductions occur
-    const operations = this[_job].operations;
-    this[_steps] = operationUtils.splitOperations(operations);
-    log.debug('Operations split up into proper chunks: ', this[_steps]);
-
-    // send the initial packets out; if the job size is smaller than the number of workers,
-    // we're good, let one node do all the work
-    const clients = this[_master].clients;
-    for (const client of clients.values()) {
-      if (this[_job].hasMoreBlocks === true) {
-        const blockId = uuid.v4();
-        log.debug(`Sending block ${blockId} to client: ${client.sparkId} - ${client.maxMem}`);
-        this[_master].sendMessage(client.sparkId, {blockId: blockId, type: 'job', jobId: this[_job].id, block: this[_job].getNextBlock(client.maxMem), operations: this[_steps][0]});
-        this[_blocks].add(blockId);
-      } else {
-        log.debug('No more blocks to process, initial job distribution completed.');
-        break;
-      }
-    }
+    // start the job
+    this[_emitter].emit('block:added');
   }
 
   getId() {
@@ -78,27 +102,8 @@ class GlintExecutor {
   }
 
   handleMessage(message) {
-    log.debug('Executor handling message: ', message);
-    if (message && message.blockId) {
-      this.handleBlockProcessed(message.blockId);
-    }
-  }
-
-  handleBlockProcessed(blockId) {
-    log.debug(`Processing block ${blockId}`);
-    if (this[_blocks].has(blockId)) {
-      log.debug(`Block ${blockId} came back from a slave.`);
-
-      this[_blocks].delete(blockId);
-      log.debug(`Removed ${blockId} from the list of outstanding blocks.`);
-
-      if (this[_blocks].size === 0) {
-        log.debug('All blocks processed.');
-        this[_resolve]('All done.');
-      } else {
-        log.debug(`There are still ${this[_blocks].size} blocks to process.`);
-      }
-    }
+    log.debug(`Processing block ${message}`);
+    this[_emitter].emit('block:completed', message);
   }
 }
 

@@ -1,8 +1,8 @@
-const log = require('../util/log');
-
 const Promise = require('bluebird');
 const bson = require('bson');
 const Primus = require('primus');
+
+const log = require('../util/log').getLogger('ws-server');
 
 const _host = Symbol('host');
 const _port = Symbol('port');
