@@ -1,3 +1,4 @@
+const sizeof = require('object-sizeof');
 const uuid = require('node-uuid');
 
 const log = require('../util/log').getLogger('job');
@@ -78,7 +79,27 @@ class GlintJob {
       return this._createBlock(block, 0);
     } else if (this[_stepResults].length > 0) {
       log.debug('Consuming block from prior step.');
+      return this._createBlock(this._getStepBlock(maxMem), 1);
     }
+  }
+
+  _getStepBlock(maxMem) {
+    const results = this[_stepResults];
+    log.debug('Results: ', results);
+    const blockSize = maxMem / sizeof(results[0]); // the (1)[0] is a dirty hack based on us only allowing one reduction
+    const block = [];
+
+    while (sizeof(block) < blockSize) {
+      const stepBlock = this[_stepResults].shift();
+      if (stepBlock === undefined) {
+        log.debug('No more step blocks left, removing step.');
+        break;
+      } else {
+        block.push(stepBlock);
+      }
+    }
+
+    return block;
   }
 
   /**
@@ -111,15 +132,17 @@ class GlintJob {
       log.debug(`Removed ${blockId} from the list of outstanding blocks.`);
 
       // check to see if there were more steps
-      const step = block.step;
-      if (step === this[_steps].length - 1) {
+      const blockStep = block.step;
+      var blockData = block.block;
+      if (blockStep === this[_steps].length - 1) {
         // we're done
         log.debug('Block was at the end of a chain, nothing more to do.');
-        this[_results] = this[_results].concat(block.block);
+        this[_results] = this[_results].concat(blockData);
       } else {
         // let's add the data that came back as a new block
         log.debug('Block had results, adding it to the results for further processing.');
-        this[_stepResults].push({step: block.step, data: block.block});
+        this[_stepResults] = this[_stepResults].concat(blockData);
+        log.debug(`Added result for step ${blockStep}`);
       }
     } else {
       log.warn(`No block with ID ${blockId} exists in the system.`);
@@ -136,7 +159,7 @@ class GlintJob {
   }
 
   isProcessing() {
-    return this[_blocks].size > 0;
+    return this[_blocks].size > 0 || this[_stepResults].length > 0;
   }
 
   getResults() {

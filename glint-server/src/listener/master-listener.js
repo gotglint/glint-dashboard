@@ -85,7 +85,7 @@ class MasterListener {
 
   sendMessage(clientId, message) {
     log.debug('Master sending message to slave.');
-    log.trace('Master listener sending message: ', message);
+    log.verbose('Master listener sending message: ', message);
     return this[_wss].sendMessage(clientId, message);
   }
 

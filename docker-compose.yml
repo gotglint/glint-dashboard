@@ -1,8 +1,0 @@
-version: '2'
-services:
-  queue:
-    image: rabbitmq:3-management
-    ports:
-      - 5681:5671
-      - 5682:5672
-      - 15682:15672

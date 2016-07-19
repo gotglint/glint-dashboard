@@ -46,8 +46,8 @@ class GlintClient {
    *
    * @param {function} fn - The function to perform the sum.  Must accept two parameters (the sum and the data element) and return a value.
    */
-  reduce(fn) {
-    this[_operations].push({task: 'reduce', data: fn});
+  reduce(fn, start) {
+    this[_operations].push({task: 'reduce', data: fn, start: start});
 
     return this;
   }

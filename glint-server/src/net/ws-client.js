@@ -43,7 +43,7 @@ class WebSocketClient {
 
       this[_client].on('data', (data) => {
         const deserialized = this[_bson].deserialize(data, {evalFunctions: true, cacheFunctions: true});
-        log.trace('WS client received a message: ', deserialized);
+        log.verbose('WS client received a message: ', deserialized);
 
         if (this[_slave]) {
           this[_slave].handleMessage(deserialized);
@@ -87,7 +87,7 @@ class WebSocketClient {
   sendMessage(message) {
     if (this[_connected] === true) {
       const serializedMessage = this[_bson].serialize(message, true, false, true);
-      log.trace('WS client sending message to server: ', message);
+      log.verbose('WS client sending message to server: ', message);
       this[_client].write(serializedMessage);
     } else {
       throw new Error('WS server not online, cannot send message.');

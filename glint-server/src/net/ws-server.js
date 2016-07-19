@@ -46,7 +46,7 @@ class WebSocketServer {
 
         spark.on('data', (data) => {
           const deserialized = this[_bson].deserialize(data, {evalFunctions: true, cacheFunctions: true});
-          log.trace('WS server received a message: ', deserialized);
+          log.verbose('WS server received a message: ', deserialized);
 
           this[_clients].set(spark.id, spark);
 
@@ -91,7 +91,7 @@ class WebSocketServer {
         throw new Error(`No client with ID ${clientId} found`);
       }
 
-      log.trace(`WS server sending message to ${clientId}: `, message);
+      log.verbose(`WS server sending message to ${clientId}: `, message);
       const serializedMessage = this[_bson].serialize(message, true, false, true);
       spark.write(serializedMessage);
     } else {
