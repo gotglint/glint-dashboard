@@ -1,5 +1,7 @@
 # Glint
 
+[![Build Status](https://travis-ci.com/mlaccetti/glint.svg?branch=develop&token=uhktqkjJc6E4FeVC4kmW)](https://travis-ci.com/mlaccetti/glint)
+
 Real-time distributed processing using RDDs, done right and/or better!
 
 ## Building
