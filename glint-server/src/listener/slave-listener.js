@@ -37,37 +37,40 @@ class SlaveListener {
   }
 
   handleMessage(message) {
-    log.debug('Slave listener handling message: ', message);
+    log.debug('Slave listener handling message.');
+    log.trace('Message: ', message);
 
     if (message && message.type && message.type === 'job') {
-      log.debug('Handling job request.');
-
       let block = message.block;
 
       const operations = message.operations;
       for (const op of operations) {
         switch (op.task) {
           case 'map':
-            log.debug('Slave running map - input: ', block);
+            log.debug('Slave running map.');
+            log.trace('Map input: ', block);
             block = block.map(op.data);
-            log.debug('Map results: ', block);
+            log.trace('Map results: ', block);
             break;
           case 'filter':
-            log.debug('Slave running filter - input: ', block);
+            log.debug('Slave running filter.');
+            log.trace('Filter input: ', block);
             block = block.filter(op.data);
-            log.debug('Filter results: ', block);
+            log.trace('Filter results: ', block);
             break;
           case 'reduce':
-            log.debug('Slave running reduce - input: ', block);
+            log.debug('Slave running reduce.');
+            log.trace('Reduce input: ', block);
             block = block.reduce(op.data);
-            log.debug('Reduce results: ', block);
+            log.trace('Reduce results: ', block);
             break;
           default:
             log.warn(`Slave provided unknown task (${op.task}), ignoring.`);
         }
       }
 
-      log.debug('Sending message back to server: ', block);
+      log.debug('Sending response back to master.');
+      log.trace('Response message: ', block);
       this.sendMessage('block-response', {clientId: this[_ws].id, blockId: message.blockId, block:block, jobId: message.jobId, step: message.step});
     }
   }

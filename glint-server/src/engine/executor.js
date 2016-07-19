@@ -20,6 +20,7 @@ class GlintExecutor {
   constructor(master, job) {
     this[_master] = master;
     this[_job] = job;
+    this[_job].setExecutor(this);
 
     this[_status] = null;
 
@@ -73,17 +74,10 @@ class GlintExecutor {
         this[_emitter].emit('block:added');
       } else {
         log.debug('Job has no more blocks to complete.');
-        this[_emitter].emit('job:completed');
       }
     });
 
     this[_emitter].on('job:completed', () => {
-      log.debug('Job completed - checking to see if any slaves are still working.');
-      if (this[_job].isProcessing()) {
-        log.debug('Job still has outstanding blocks, waiting.');
-        return;
-      }
-
       log.debug('No more blocks outstanding, resolving.');
       this[_resolve](this[_job].getResults());
     });
@@ -119,6 +113,11 @@ class GlintExecutor {
   handleMessage(message) {
     log.debug(`Processing block ${message}`);
     this[_emitter].emit('block:completed', message);
+  }
+
+  jobCompleted() {
+    log.debug('Job is complete, triggering completion.');
+    this[_emitter].emit('job:completed');
   }
 }
 

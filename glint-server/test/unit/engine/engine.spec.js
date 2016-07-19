@@ -14,8 +14,8 @@ describe('test the engine', function() {
   const expect = chai.expect;
 
   const glintManager = new GlintManager('localhost', 45468);
-  const glintSlave1 = new SlaveListener('localhost', 45468, 1024);
-  const glintSlave2 = new SlaveListener('localhost', 45468, 1024);
+  const glintSlave1 = new SlaveListener('localhost', 45468, 125000);
+  const glintSlave2 = new SlaveListener('localhost', 45468, 125000);
 
   const pause = new Promise((resolve) => {
     setTimeout(() => {log.info('Waiting...'); resolve();}, 2500);
@@ -44,12 +44,9 @@ describe('test the engine', function() {
 
     const gc = new GlintClient();
     const data = gc.parallelize(input).map((el) => {
-      console.log('Running map on: ', el);
       return el + 324;
     }).filter((el, idx) => {
-      const retVal =  !!(el === 325 || idx === 2);
-      console.log('Filter results: ', retVal);
-      return retVal;
+      return !!(el === 325 || idx === 2);
     }).getData();
 
     log.info('Job data composed, submitting for processing.');
@@ -59,7 +56,8 @@ describe('test the engine', function() {
     log.info(`Job ID: ${jobId}`);
 
     return glintManager.waitForJob(jobId).then((results) => {
-      log.info('Job results: ', results);
+      log.info('Job passed.');
+      log.debug('Job results: ', results);
       expect(results).to.have.lengthOf(2);
       expect(results).to.eql([325, 327]);
       done();
@@ -77,17 +75,20 @@ describe('test the engine', function() {
     const data = gc.parallelize(input).map((el) => {
       return el + 324;
     }).filter((el) => {
-      return el % 5 === 0;
+      return el % 137 === 0;
     }).getData();
 
     log.info('Job data composed, submitting for processing.');
 
+    console.time('glint-job');
     const jobId = glintManager.processJob(data);
     expect(jobId).to.not.be.null;
     log.info(`Job ID: ${jobId}`);
 
     return glintManager.waitForJob(jobId).then((results) => {
-      log.info('Job results: ', results);
+      console.timeEnd('glint-job');
+      log.info(`Job passed, result size: ${results.length}`);
+      log.debug('Job results: ', results);
       done();
     });
   });

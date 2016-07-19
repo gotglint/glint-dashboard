@@ -54,7 +54,7 @@ class GlintManager {
    * @returns {Promise} A promise to wait on
    */
   processJob(data) {
-    const job = new GlintJob(this, this[_master], data);
+    const job = new GlintJob(data);
 
     const glintExecutor = new GlintExecutor(this[_master], job);
     glintExecutor.init();

@@ -6,9 +6,6 @@ const operationUtils = require('../util/operation-utils');
 
 const _id = Symbol('id');
 
-const _manager = Symbol('manager');
-const _master = Symbol('master');
-
 const _jobData = Symbol('jobData');
 const _steps = Symbol('steps');
 
@@ -18,12 +15,11 @@ const _stepResults = Symbol('stepResults');
 const _blocks = Symbol('blocks');
 const _results = Symbol('results');
 
-class GlintJob {
-  constructor(manager, master, jobData) {
-    this[_id] = uuid.v4();
+const _executor = Symbol('executor');
 
-    this[_manager] = manager;
-    this[_master] = master;
+class GlintJob {
+  constructor(jobData) {
+    this[_id] = uuid.v4();
 
     this[_jobData] = jobData;
     this[_steps] = operationUtils.splitOperations(jobData.operations);
@@ -34,6 +30,10 @@ class GlintJob {
 
     this[_blocks] = new Map();
     this[_results] = [];
+  }
+
+  setExecutor(executor) {
+    this[_executor] = executor;
   }
 
   get id() {
@@ -116,14 +116,22 @@ class GlintJob {
         // we're done
         log.debug('Block was at the end of a chain, nothing more to do.');
         this[_results] = this[_results].concat(block.block);
-        return;
+      } else {
+        // let's add the data that came back as a new block
+        log.debug('Block had results, adding it to the results for further processing.');
+        this[_stepResults].push({step: block.step, data: block.block});
       }
-
-      // let's add the data that came back as a new block
-      log.debug('Block had results, adding it to the results for further processing.');
-      this[_stepResults].push({step: block.step, data: block.block});
     } else {
       log.warn(`No block with ID ${blockId} exists in the system.`);
+    }
+
+    // if we have no more blocks to be processed, notify
+    log.debug('Block completed - checking to see if any slaves are still working.');
+    if (this.isProcessing() === false) {
+      log.info('Job has no more blocks to complete, notifying.');
+      this[_executor].jobCompleted();
+    } else {
+      log.debug('Blocks still being processed, proceeding apace.');
     }
   }
 
