@@ -10,6 +10,8 @@ const _wss = Symbol('wss');
 const _clients = Symbol('clients');
 const _manager = Symbol('manager');
 
+const _pendingJobs = Symbol('pendingJobs');
+
 class MasterListener {
   constructor(host, port) {
     log.debug('Master listener constructor firing, using %s:%s as the host/port to bind to.', host, port);
@@ -21,6 +23,8 @@ class MasterListener {
 
     this[_clients] = [];
     this[_manager] = null;
+
+    this[_pendingJobs] = new Map();
   }
 
   /**
@@ -45,7 +49,20 @@ class MasterListener {
       if (message.type === 'online') {
         log.debug(`Client connected: ${sparkId}`);
         this[_clients].push({sparkId: sparkId, maxMem: message.data.maxMem, free: true});
-      } else if (this[_manager]) {
+      } else if (message.type === 'job-request') {
+        log.debug('Received a job request from a client, adding to the queue.');
+        const jobId = this[_manager].processJob(message);
+        this.sendMessage(sparkId, {type: 'job-response', jobId: jobId});
+
+        this[_pendingJobs].set(jobId, new Promise(() => {
+          log.debug(`Tracking pending job ${jobId}.`);
+          this[_manager].waitForJob(jobId).then((result) => {
+            log.debug('Job complete - sending message back to requesting client.');
+            this.sendMessage(sparkId, {type: 'job-complete', data: result});
+            this[_pendingJobs].delete(jobId);
+          });
+        }));
+      } else if (message.type === 'block-response') {
         log.debug('Propagating message up to the manager.');
         this[_manager].handleMessage(message);
       }

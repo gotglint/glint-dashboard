@@ -1,6 +1,9 @@
 const bson = require('bson');
-const Primus = require('./primus-glint');
+const intel = require('intel');
+const Primus = require('primus');
 const uuid = require('node-uuid');
+
+const _log = Symbol('log');
 
 const _host = Symbol('host');
 const _port = Symbol('port');
@@ -23,6 +26,15 @@ class GlintClient {
   constructor(host, port) {
     this[_id] = uuid.v4();
 
+    intel.basicConfig({
+      format: {
+        'format': '[%(date)s] %(name)s.%(levelname)s: %(message)s',
+        'colorize': true,
+      }
+    });
+
+    this[_log] = intel.getLogger('glint client');
+
     this[_bson] = new bson.BSONPure.BSON();
     this[_data] = null;
     this[_operations] = [];
@@ -34,35 +46,44 @@ class GlintClient {
   }
 
   init() {
-    this[_client] = new Primus(`http://${this[_host]}:${this[_port]}`);
+    const wsServer = `http://${this[_host]}:${this[_port]}`;
+    const Socket = Primus.createSocket({transformer: 'websockets', parser: 'binary'});
+    this[_client] = new Socket(wsServer);
 
-    return new Promise((resolve, reject) => {
-      this[_client].on('open', () => {
-        this[_connected] = true;
-        resolve();
-      });
-
-      this[_client].on('timeout', (err) => {
-        this[_connected] = false;
-        console.error('Client timeout while trying to connect: ', err);
-        reject(err);
-      });
-
-      this[_client].on('error', (err) => {
-        this[_connected] = false;
-        console.error('Client error while trying to connect: ', err);
-        reject(err);
-      });
-
-      this[_client].on('data', (data) => {
-        console.info('Client received data: ', data);
-      });
-
-      this[_client].on('end', () => {
-        this[_connected] = false;
-        console.info('Client disconnected.');
-      });
+    let resolve, reject;
+    const promise = new Promise((rslv, rjct) => {
+      resolve = rslv;
+      reject = rjct;
     });
+
+    this[_client].on('open', () => {
+      this[_log].info('Glint client connected to the server.');
+      this[_connected] = true;
+      resolve();
+    });
+
+    this[_client].on('timeout', (err) => {
+      this[_connected] = false;
+      this[_log].error('Client timeout while trying to connect: ', err);
+      reject(err);
+    });
+
+    this[_client].on('error', (err) => {
+      this[_connected] = false;
+      this[_log].error('Client error while trying to connect: ', err);
+      reject(err);
+    });
+
+    this[_client].on('data', (data) => {
+      this[_log].info('Client received data: ', data);
+    });
+
+    this[_client].on('end', () => {
+      this[_connected] = false;
+      this[_log].info('Client disconnected.');
+    });
+
+    return promise;
   }
 
   /**
@@ -125,10 +146,23 @@ class GlintClient {
 
     // submit the info to the server, return a promise?  an ID?
     if (this[_connected] === true) {
-      this[_client].write('blah');
+      this[_log].debug('Sending job request to the master.');
+      const message = this.getData();
+      message.type = 'job-request';
+      const serializedMessage = this[_bson].serialize(message, true, false, true);
+      this[_client].write(serializedMessage);
     } else {
       throw new Error('Glint is not connected to the server; try to fire off `init` first?');
     }
+  }
+
+  waitForJob() {
+    return new Promise((resolve/*, reject*/) => {
+      setTimeout(() => {
+        this[_log].debug('Job wait complete - returning.');
+        resolve({status:'complete'});
+      }, 30000);
+    });
   }
 
   /**

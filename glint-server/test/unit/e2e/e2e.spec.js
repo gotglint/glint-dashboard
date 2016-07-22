@@ -11,7 +11,6 @@ const SlaveListener = require('../../../src/listener/slave-listener');
 describe('e2e test', function() {
   chai.use(chaiAsPromised);
   chai.should();
-  const expect = chai.expect;
 
   const glintManager = new GlintManager('localhost', 45468);
   const glintSlave1 = new SlaveListener('localhost', 45468, 125000);
@@ -44,26 +43,19 @@ describe('e2e test', function() {
 
     const input = [...new Array(5).keys()].slice(1);
 
-    const gc = new GlintClient();
-    gc.parallelize(input).map((el) => {
+    glintClient.parallelize(input).map((el) => {
       return el + 324;
     }).filter((el, idx) => {
       return !!(el === 325 || idx === 2);
     });
-    gc.run();
+    glintClient.run();
 
-    log.info('Job data composed, submitting for processing.');
-
-    const jobId = glintManager.processJob(data);
-    expect(jobId).to.not.be.null;
-    log.info(`Job ID: ${jobId}`);
-
-    return glintManager.waitForJob(jobId).then((results) => {
-      log.info('Job passed.');
-      log.debug('Job results: ', results);
-      expect(results).to.have.lengthOf(2);
-      expect(results).to.eql([325, 327]);
+    glintClient.waitForJob().then((result) => {
+      log.debug('Job result: ', result);
       done();
+    }).catch((err) => {
+      log.error('Error while waiting for job: ', err);
+      done(err ? err : new Error());
     });
   });
 });
