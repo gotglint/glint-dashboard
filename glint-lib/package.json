@@ -19,14 +19,24 @@
   "engines": {
     "node": ">=6.0.0"
   },
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "files": [
-    "src/index.js"
+    "dist/index.js"
   ],
   "devDependencies": {
-    "eslint": "3.0.1",
+    "babel-core": "6.11.4",
+    "babel-eslint": "6.1.2",
+    "babel-loader": "6.2.4",
+    "babel-preset-es2015": "6.9.0",
+    "binary-pack": "1.0.2",
+    "del": "2.2.1",
+    "eslint": "3.1.1",
     "gulp": "3.9.1",
     "gulp-eslint": "3.0.1",
-    "gulp-mocha": "2.2.0"
+    "gulp-mocha": "2.2.0",
+    "primus": "5.2.2",
+    "run-sequence": "1.2.2",
+    "webpack-stream": "3.2.0",
+    "ws": "1.1.1"
   }
 }
