@@ -1,5 +1,5 @@
-const bson = require('bson');
 const intel = require('intel');
+const JSONfn = require('jsonfn').JSONfn;
 const Primus = require('primus');
 const uuid = require('node-uuid');
 
@@ -10,7 +10,6 @@ const _port = Symbol('port');
 
 const _id = Symbol('id');
 
-const _bson = Symbol('bson');
 const _data = Symbol('_data');
 const _operations = Symbol('operations');
 
@@ -35,7 +34,6 @@ class GlintClient {
 
     this[_log] = intel.getLogger('glint client');
 
-    this[_bson] = new bson.BSONPure.BSON();
     this[_data] = null;
     this[_operations] = [];
 
@@ -75,7 +73,7 @@ class GlintClient {
     });
 
     this[_client].on('data', (data) => {
-      this[_log].info('Client received data: ', data);
+      this[_log].info('Client received data.');
     });
 
     this[_client].on('end', () => {
@@ -149,7 +147,7 @@ class GlintClient {
       this[_log].debug('Sending job request to the master.');
       const message = this.getData();
       message.type = 'job-request';
-      const serializedMessage = this[_bson].serialize(message, true, false, true);
+      const serializedMessage = JSONfn.stringify(message);
       this[_client].write(serializedMessage);
     } else {
       throw new Error('Glint is not connected to the server; try to fire off `init` first?');

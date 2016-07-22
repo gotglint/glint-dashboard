@@ -1,5 +1,5 @@
+const JSONfn = require('jsonfn').JSONfn;
 const Promise = require('bluebird');
-const bson = require('bson');
 const Primus = require('primus');
 
 const log = require('../util/log').getLogger('ws-client');
@@ -8,8 +8,6 @@ const _id = Symbol('id');
 
 const _host = Symbol('host');
 const _port = Symbol('port');
-
-const _bson = Symbol('bson');
 
 const _client = Symbol('client');
 const _connected = Symbol('connected');
@@ -27,8 +25,6 @@ class WebSocketClient {
     this[_connected] = false;
 
     this[_slave] = null;
-
-    this[_bson] = new bson.BSONPure.BSON();
   }
 
   init() {
@@ -42,7 +38,8 @@ class WebSocketClient {
       this[_client] = new Socket(wsServer);
 
       this[_client].on('data', (data) => {
-        const deserialized = this[_bson].deserialize(data, {evalFunctions: true, cacheFunctions: true});
+        log.verbose('WS client raw data: ', data);
+        const deserialized = JSONfn.parse(data);
         log.verbose('WS client received a message: ', deserialized);
 
         if (this[_slave]) {
@@ -86,7 +83,7 @@ class WebSocketClient {
    */
   sendMessage(message) {
     if (this[_connected] === true) {
-      const serializedMessage = this[_bson].serialize(message, true, false, true);
+      const serializedMessage = JSONfn.stringify(message);
       log.verbose('WS client sending message to server: ', message);
       this[_client].write(serializedMessage);
     } else {

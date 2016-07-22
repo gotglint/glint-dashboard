@@ -1,5 +1,5 @@
+const JSONfn = require('jsonfn').JSONfn;
 const Promise = require('bluebird');
-const bson = require('bson');
 const Primus = require('primus');
 
 const log = require('../util/log').getLogger('ws-server');
@@ -7,7 +7,6 @@ const log = require('../util/log').getLogger('ws-server');
 const _host = Symbol('host');
 const _port = Symbol('port');
 
-const _bson = Symbol('bson');
 const _primus = Symbol('primus');
 
 const _connected = Symbol('connected');
@@ -25,8 +24,6 @@ class WebSocketServer {
 
     this[_clients] = new Map();
     this[_master] = null;
-
-    this[_bson] = new bson.BSONPure.BSON();
   }
 
   init() {
@@ -45,7 +42,7 @@ class WebSocketServer {
         log.debug('WS server client connected: ', spark);
 
         spark.on('data', (data) => {
-          const deserialized = this[_bson].deserialize(data, {evalFunctions: true, cacheFunctions: true});
+          const deserialized = JSONfn.parse(data);
           log.verbose('WS server received a message: ', deserialized);
 
           this[_clients].set(spark.id, spark);
@@ -92,7 +89,7 @@ class WebSocketServer {
       }
 
       log.verbose(`WS server sending message to ${clientId}: `, message);
-      const serializedMessage = this[_bson].serialize(message, true, false, true);
+      const serializedMessage = JSONfn.stringify(message);
       spark.write(serializedMessage);
     } else {
       throw new Error('WS server not online, cannot send message.');

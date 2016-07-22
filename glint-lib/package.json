@@ -15,6 +15,7 @@
   "dependencies": {
     "binary-pack": "1.0.2",
     "bson": "0.5.2",
+    "jsonfn": "^0.31.0",
     "node-uuid": "1.4.7",
     "primus": "5.2.2",
     "ws": "1.1.1"

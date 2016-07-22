@@ -43,14 +43,14 @@ describe('e2e test', function() {
 
     const input = [...new Array(5).keys()].slice(1);
 
-    glintClient.parallelize(input).map((el) => {
+    glintClient.parallelize(input).map(function(el) {
       return el + 324;
-    }).filter((el, idx) => {
+    }).filter(function(el, idx) {
       return !!(el === 325 || idx === 2);
     });
     glintClient.run();
 
-    glintClient.waitForJob().then((result) => {
+    glintClient.waitForJob().then(function(result) {
       log.debug('Job result: ', result);
       done();
     }).catch((err) => {
