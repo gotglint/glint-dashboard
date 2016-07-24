@@ -26,6 +26,8 @@ do
     npm ln ../glint-lib
   fi
 
+  echo "Running \`npm prune\` for ${dir}..."
+  npm prune
 
   echo "Running \`npm install\` for ${dir}..."
   npm install

@@ -1,5 +1,4 @@
 const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
 
 const GlintClient = require('glint-lib');
 

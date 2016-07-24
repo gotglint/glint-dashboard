@@ -29,8 +29,9 @@ gulp.task('test', ['lint'], () => {
 });
 
 gulp.task('build', ['test'], () => {
-  return gulp.src('src/**/*.js')
-    .pipe(gulp.dest('dist'));
+  // commented out, since we don't do any transpilation or concatenation or minification or whatever (yet)
+  // return gulp.src('src/**/*.js')
+  //  .pipe(gulp.dest('dist'));
 });
 
 gulp.task('clean', () => {

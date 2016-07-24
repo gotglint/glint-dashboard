@@ -1,3 +1,4 @@
+const EventEmitter = require('events');
 const intel = require('intel');
 const JSONfn = require('jsonfn').JSONfn;
 const Primus = require('primus');
@@ -16,6 +17,8 @@ const _operations = Symbol('operations');
 const _client = Symbol('client');
 
 const _connected = Symbol('connected');
+
+const _emitter = Symbol('emitter');
 
 /** The way to invoke and interact with Glint */
 class GlintClient {
@@ -41,6 +44,8 @@ class GlintClient {
     this[_port] = port;
 
     this[_connected] = false;
+
+    this[_emitter] = new EventEmitter();
   }
 
   init() {
@@ -74,6 +79,19 @@ class GlintClient {
 
     this[_client].on('data', (data) => {
       this[_log].info('Client received data.');
+      this[_log].verbose('Data received: ', data);
+
+      const deserializedData = JSONfn.parse(data);
+
+      if (deserializedData && deserializedData.type && deserializedData.type === 'job-response') {
+        // we currently don't do anything with this, though it should be used to confirm the job submission
+        // const jobId = deserializedData.jobId;
+      }
+
+      if (deserializedData && deserializedData.type && deserializedData.type === 'job-complete') {
+        this[_log].debug('Job completed, emitting event.');
+        this[_emitter].emit('job-complete', deserializedData.data);
+      }
     });
 
     this[_client].on('end', () => {
@@ -156,10 +174,10 @@ class GlintClient {
 
   waitForJob() {
     return new Promise((resolve/*, reject*/) => {
-      setTimeout(() => {
+      this[_emitter].on('job-complete', (data) => {
         this[_log].debug('Job wait complete - returning.');
-        resolve({status:'complete'});
-      }, 30000);
+        resolve({status:'complete', data: data});
+      });
     });
   }
 
