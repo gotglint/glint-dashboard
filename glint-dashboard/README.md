@@ -1,2 +1,0 @@
-# glint
-Got Glint?

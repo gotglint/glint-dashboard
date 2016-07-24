@@ -1,4 +1,4 @@
-const log = require('../util/log');
+const log = require('../util/log').getLogger('glint-web-server');
 
 const koa = require('koa');
 const co = require('co');
@@ -7,8 +7,6 @@ const IO = require('koa-socket');
 const App = require('horse');
 
 const setupRoutes = require('./routes');
-
-const REPL = require('../util/repl');
 
 const koaApp = koa();
 require('koa-csrf')(koaApp);
@@ -34,6 +32,7 @@ setupRoutes(app, koaApp);
  */
 koaApp.use(function *() {
   yield app.route(this, function () {
+    // empty
   });
 });
 
