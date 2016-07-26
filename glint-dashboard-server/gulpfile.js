@@ -2,13 +2,17 @@
 const gulp = require('gulp');
 
 // plugins
+const babel = require('gulp-babel');
 const eslint = require('gulp-eslint');
+const nodemon = require('gulp-nodemon');
+const sourcemaps = require('gulp-sourcemaps');
+
+// utils
+const del = require('del');
+const runSequence = require('run-sequence');
 
 // testing
 const mocha = require('gulp-mocha');
-
-// utilities
-const del = require('del');
 
 gulp.task('clean', () => {
   return del(['dist/**']);
@@ -31,13 +35,24 @@ gulp.task('test', ['lint'], () => {
     }));
 });
 
-gulp.task('build', ['test'], () => {
-  // commented out, since we don't do any transpilation or concatenation or minification or whatever (yet)
-  // return gulp.src('src/**/*.js')
-  //  .pipe(gulp.dest('dist'));
+gulp.task('build', ['lint'], () => {
+  return gulp.src('src/**/*.js')
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('dist'));
 });
 
-gulp.task('watch', () => {
+gulp.task('server', ['build'], () => {
+  nodemon({
+    cwd: 'dist',
+    script: 'app.js',
+    ext: 'js html',
+    env: { 'NODE_ENV': 'development' }
+  });
+});
+
+gulp.task('watch', ['test', 'server'], () => {
   gulp.watch('src/**/*.js', ['build']);
 });
 
