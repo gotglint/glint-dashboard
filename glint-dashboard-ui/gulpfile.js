@@ -2,9 +2,7 @@
 const gulp = require('gulp');
 
 // plugins
-const debug = require('gulp-debug');
 const eslint = require('gulp-eslint');
-const gutil = require('gulp-util');
 
 // testing
 const mocha = require('gulp-mocha');
@@ -36,19 +34,8 @@ gulp.task('test', ['lint'], () => {
 });
 
 gulp.task('build', ['test'], () => {
-  return gulp.src('src/**/*.js')
-    .pipe(debug())
-    .pipe(webpack({
-      devtool: 'source-map'
-    }, null, (err, stats) => {
-      if (err) {
-        gutil.log('Error while running webpack: ', err);
-      }
-
-      if (stats) {
-        gutil.log('webpack stats: ', stats);
-      }
-    }))
+  return gulp.src('src/app/app.js')
+    .pipe(webpack(require('./webpack.config.js')))
     .pipe(gulp.dest('dist/'));
 });
 
