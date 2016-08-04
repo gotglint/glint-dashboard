@@ -7,11 +7,12 @@ import {inject, bindable} from 'aurelia-framework';
 import {ObserverLocator} from 'aurelia-binding';
 
 @inject(ObserverLocator)
+@bindable('value')
 export class Ace {
-  @bindable value = '';
-  editor = null;
-
   constructor(observerLocator) {
+    this.value = '';
+    this.editor = null;
+
     this.subscriptions = [
       observerLocator
         .getObserver(this, 'value')
