@@ -1,17 +1,13 @@
 import {LogManager} from 'aurelia-framework';
 import {ConsoleAppender} from 'aurelia-logging-console';
 
-// import 'bootstrap';
-// import 'font-awesome';
+import 'font-awesome/css/font-awesome.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap';
 
-// import 'bootstrap/css/bootstrap.min.css!';
-// import 'font-awesome/css/font-awesome.min.css!';
-
-// import 'uzairfarooq/arrive';
-
-// import 'bootstrap-material-design/dist/css/material-fullpalette.min.css!';
-// import 'bootstrap-material-design/dist/css/ripples.min.css!';
-// import 'bootstrap-material-design/dist/css/roboto.min.css!';
+// comment out if you don't want a Promise polyfill (remove also from webpack.common.js)
+import * as Bluebird from 'bluebird';
+Bluebird.config({ warnings: false });
 
 LogManager.addAppender(new ConsoleAppender());
 LogManager.setLevel(LogManager.logLevel.debug);
@@ -23,6 +19,8 @@ export function configure(aurelia) {
     .history()
     .router()
     .eventAggregator();
+
+  aurelia.use.plugin('aurelia-animator-css');
 
   aurelia.start().then(() => aurelia.setRoot('app/app', document.body));
 }

@@ -24,6 +24,10 @@ const paths = {
   sass: ['./src/scss/**/*.scss']
 };
 
+gulp.task('clean:webpack', () => {
+  return del(['dist/js/*.js', 'dist/js/*.js.map', 'dist/index.html', 'dist/*.ico', 'dist/*.svg']);
+});
+
 gulp.task('clean', () => {
   return del(['dist/**']);
 });
@@ -47,7 +51,7 @@ gulp.task('build:sass', (done) => {
     .on('end', done);
 });
 
-gulp.task('build:js', () => {
+gulp.task('build:js', ['clean:webpack'], () => {
   return gulp.src('src/app/app.js')
     .pipe(webpack(require('./webpack.config.js')))
     .pipe(gulp.dest('dist/'));

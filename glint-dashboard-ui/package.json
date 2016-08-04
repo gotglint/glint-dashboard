@@ -13,6 +13,7 @@
   },
   "license": "LGPL-2.1",
   "dependencies": {
+    "aurelia-animator-css": "^1.0.0",
     "aurelia-bootstrapper-webpack": "^1.0.0",
     "aurelia-framework": "^1.0.1",
     "aurelia-history-browser": "^1.0.0",
@@ -26,6 +27,7 @@
     "babel-runtime": "^6.11.6",
     "bluebird": "^3.4.1",
     "bootstrap-material-design": "^0.5.10",
+    "brace": "^0.8.0",
     "font-awesome": "^4.6.3",
     "node-bourbon": "^4.2.8",
     "regenerator-runtime": "^0.9.5",
@@ -56,7 +58,9 @@
     "gulp-sass": "^2.3.2",
     "html-loader": "^0.4.3",
     "html-webpack-plugin": "^2.22.0",
+    "ignore-loader": "^0.1.1",
     "proxy-middleware": "^0.15.0",
+    "raw-loader": "^0.5.1",
     "run-sequence": "1.2.2",
     "webpack-stream": "^3.2.0"
   }

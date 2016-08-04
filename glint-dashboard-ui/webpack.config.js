@@ -1,57 +1,24 @@
 const webpack = require('webpack');
+const path = require('path');
 
 const AureliaWebpackPlugin = require('aurelia-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const path = require('path');
-
-const coreBundles = {
-  bootstrap: [
-    'aurelia-bootstrapper-webpack',
-    'aurelia-polyfills',
-    'aurelia-pal',
-    'aurelia-pal-browser',
-    'regenerator-runtime',
-    'bluebird'
-  ],
-  aurelia: [
-    'aurelia-bootstrapper-webpack',
-    'aurelia-binding',
-    'aurelia-dependency-injection',
-    'aurelia-event-aggregator',
-    'aurelia-framework',
-    'aurelia-history',
-    'aurelia-history-browser',
-    'aurelia-loader',
-    'aurelia-loader-webpack',
-    'aurelia-logging',
-    'aurelia-logging-console',
-    'aurelia-metadata',
-    'aurelia-pal',
-    'aurelia-pal-browser',
-    'aurelia-path',
-    'aurelia-polyfills',
-    'aurelia-route-recognizer',
-    'aurelia-router',
-    'aurelia-task-queue',
-    'aurelia-templating',
-    'aurelia-templating-binding',
-    'aurelia-templating-router',
-    'aurelia-templating-resources'
-  ]
-};
-
 module.exports = {
   context: __dirname,
   entry: {
-    'app': [/* this is filled by the aurelia-webpack-plugin */],
-    'aurelia-bootstrap': coreBundles.bootstrap,
-    'aurelia': coreBundles.aurelia.filter(pkg => coreBundles.bootstrap.indexOf(pkg) === -1)
+    app: './src/app/main.js',
+    bootstrap: ["aurelia-bootstrapper-webpack", "aurelia-polyfills", "aurelia-pal", "aurelia-pal-browser", "regenerator-runtime", "bluebird"],
+    aurelia: ["aurelia-binding", "aurelia-dependency-injection", "aurelia-event-aggregator", "aurelia-framework", "aurelia-history", "aurelia-history-browser", "aurelia-loader", "aurelia-loader-webpack", "aurelia-logging", "aurelia-logging-console", "aurelia-metadata", "aurelia-path", "aurelia-route-recognizer", "aurelia-router", "aurelia-task-queue", "aurelia-templating", "aurelia-templating-binding", "aurelia-templating-router", "aurelia-templating-resources"]
   },
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'main-[hash].js', // no hash in main.js because index.html is a static page
+    path: "./dist",
+    filename: "js/[name].bundle.js",
+    sourceMapFilename: "js/[name].bundle.map",
+    chunkFilename: "js/[id].chunk.js"
   },
+  debug: true,
+  devtool: "cheap-module-inline-source-map",
   module: {
     loaders: [
       { test: /\.html$/,   loader: 'html' },
@@ -61,26 +28,24 @@ module.exports = {
       { test: /\.eot$/,    loader: 'file-loader?prefix=font/' },
       { test: /\.ttf$/,    loader: 'file-loader?prefix=font/' },
       { test: /\.svg$/,    loader: 'file-loader?prefix=font/' },
+      { test: /\.ico/,     loader: 'file-loader' },
+      { test: /\.css$/,    loader: 'ignore-loader' },
+      { test: /\.scss$/,   loader: 'ignore-loader' },
       { test: require.resolve('jquery'), loader: 'expose?$!expose?jQuery' }
     ]
   },
   plugins: [
     new AureliaWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: 'src/index.html',
-      inject: 'body'
-    }),
+      template: './src/index.html',
+      chunksSortMode: 'dependency'
+      }),
     new webpack.ProvidePlugin({
       '$': 'jquery',
       'jQuery': 'jquery',
-      'window.jQuery': 'jquery' // this doesn't expose jQuery property for window, but exposes it to every module
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: [
-        'aurelia-bootstrap',
-        ...Object.keys(this.entry || {}).filter(entry => entry !== 'aurelia-bootstrap' && entry !== 'app')
-      ].reverse()
+      'window.jQuery': 'jquery',
+      'Promise': 'bluebird',
+      'regeneratorRuntime': 'regenerator-runtime'
     })
-  ],
-  devtool: 'source-map'
+  ]
 };
