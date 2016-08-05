@@ -7,9 +7,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   context: __dirname,
   entry: {
-    app: './src/app/main.js',
+    app: ['./src/app/main'],
     bootstrap: ["aurelia-bootstrapper-webpack", "aurelia-polyfills", "aurelia-pal", "aurelia-pal-browser", "regenerator-runtime", "bluebird"],
-    aurelia: ["aurelia-binding", "aurelia-dependency-injection", "aurelia-event-aggregator", "aurelia-framework", "aurelia-history", "aurelia-history-browser", "aurelia-loader", "aurelia-loader-webpack", "aurelia-logging", "aurelia-logging-console", "aurelia-metadata", "aurelia-path", "aurelia-route-recognizer", "aurelia-router", "aurelia-task-queue", "aurelia-templating", "aurelia-templating-binding", "aurelia-templating-router", "aurelia-templating-resources"]
+    aurelia: ["aurelia-binding", "aurelia-dependency-injection", "aurelia-event-aggregator", "aurelia-framework", "aurelia-history", "aurelia-history-browser", "aurelia-loader", "aurelia-loader-webpack", "aurelia-logging", "aurelia-logging-console", "aurelia-metadata", "aurelia-path", "aurelia-polyfills", "aurelia-route-recognizer", "aurelia-router", "aurelia-task-queue", "aurelia-templating", "aurelia-templating-binding", "aurelia-templating-router", "aurelia-templating-resources"]
   },
   output: {
     path: "./dist",
@@ -18,7 +18,7 @@ module.exports = {
     chunkFilename: "js/[id].chunk.js"
   },
   debug: true,
-  devtool: "cheap-module-inline-source-map",
+  devtool: "source-map",
   module: {
     loaders: [
       { test: /\.html$/,   loader: 'html' },

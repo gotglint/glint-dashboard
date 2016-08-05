@@ -15,6 +15,7 @@
   "dependencies": {
     "aurelia-animator-css": "^1.0.0",
     "aurelia-bootstrapper-webpack": "^1.0.0",
+    "aurelia-event-aggregator": "^1.0.0",
     "aurelia-framework": "^1.0.1",
     "aurelia-history-browser": "^1.0.0",
     "aurelia-loader-webpack": "^1.0.2",
@@ -22,8 +23,11 @@
     "aurelia-logging-console": "^1.0.0",
     "aurelia-pal-browser": "^1.0.0",
     "aurelia-polyfills": "^1.0.0",
+    "aurelia-route-recognizer": "^1.0.0",
+    "aurelia-router": "^1.0.2",
     "aurelia-templating-binding": "^1.0.0",
     "aurelia-templating-resources": "^1.0.0",
+    "aurelia-templating-router": "^1.0.0",
     "babel-runtime": "^6.11.6",
     "bluebird": "^3.4.1",
     "bootstrap-material-design": "^0.5.10",
@@ -62,6 +66,7 @@
     "proxy-middleware": "^0.15.0",
     "raw-loader": "^0.5.1",
     "run-sequence": "1.2.2",
+    "webpack": "^2.1.0-beta.20",
     "webpack-stream": "^3.2.0"
   }
 }
