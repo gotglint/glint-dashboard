@@ -1,26 +1,24 @@
-import io from 'socket.io-client';
-
 import {getLogger} from 'aurelia-logging';
 
 export class WS {
   constructor() {
     this.log = getLogger('ws');
-    this.socket = io();
+    this.primus = new Primus();
 
     const log = this.log;
 
-    this.socket.on('connect', () => {
-      log.debug('connected.');
+    this.primus.on('data', (data) => {
+      log.debug('data: ', data);
     });
   }
 
   sendMessage(endpoint, message) {
     this.log.debug('Sending message to ', endpoint, message);
-    this.socket.emit(endpoint, message);
+    this.primus.emit(endpoint, message);
   }
 
   subscribe(endpoint, callback) {
-    this.socket.on(endpoint, (ctx, data) => {
+    this.primus.on(endpoint, (ctx, data) => {
       callback(ctx, data);
     });
   }

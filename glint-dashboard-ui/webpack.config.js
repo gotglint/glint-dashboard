@@ -72,7 +72,7 @@ config = generateConfig(
   ({root: rootDir, src: srcDir}),
 
   require('@easy-webpack/config-babel')(),
-  require('@easy-webpack/config-html')({exclude: './src/index.html'}),
+  require('@easy-webpack/config-html')(), //({exclude: './src/index.html'}),
 
   require('@easy-webpack/config-css')
   ({ filename: 'bundle.css', allChunks: true, sourceMap: false }),

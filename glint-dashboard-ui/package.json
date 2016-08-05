@@ -34,8 +34,7 @@
     "brace": "^0.8.0",
     "font-awesome": "^4.6.3",
     "node-bourbon": "^4.2.8",
-    "regenerator-runtime": "^0.9.5",
-    "socket.io-client": "^1.4.8"
+    "regenerator-runtime": "^0.9.5"
   },
   "engines": {
     "node": ">=6.0.0"

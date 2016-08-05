@@ -22,9 +22,8 @@ const proxy = require('http-proxy-middleware');
 
 // variables
 const paths = {
-  css: ['./dist/css/**/*.css'],
-  js: ['./dist/js/**/*.js'],
-  html: ['./dist/index.html'],
+  js: ['./src/**/*.js'],
+  html: ['./src/**/*.html'],
   sass: ['./src/scss/**/*.scss']
 };
 
@@ -72,9 +71,10 @@ gulp.task('server', () => {
     livereload: true,
     middleware: () => {
       return [
-        proxy('/socket.io', {
+        proxy('/primus', {
           target: 'http://localhost:9080',
-          changeOrigin: true
+          changeOrigin: true,
+          ws: true
         })
       ];
     }
@@ -84,6 +84,7 @@ gulp.task('server', () => {
 gulp.task('watch', ['build', 'server'], () => {
   gulp.watch(paths.sass, ['build:sass']);
   gulp.watch(paths.js, ['build:js']);
+  gulp.watch(paths.html, ['build:js']);
 });
 
 gulp.task('test', ['lint'], () => {
