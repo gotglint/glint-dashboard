@@ -1,7 +1,5 @@
 'use strict';
 
-const log = require('intel');
-
 const easyWebpack = require('@easy-webpack/core');
 const generateConfig = easyWebpack.default;
 const path = require('path');
@@ -59,8 +57,7 @@ const baseConfig = {
   },
   module: {
     loaders: [
-      { test: /\.scss$/,   loader: 'ignore-loader' },
-      { test: /\.css$/,   loader: 'ignore-loader' }
+      { test: /\.scss$/,   loader: 'ignore-loader' }
     ]
   }
 };
@@ -77,6 +74,9 @@ config = generateConfig(
   require('@easy-webpack/config-babel')(),
   require('@easy-webpack/config-html')({exclude: './src/index.html'}),
 
+  require('@easy-webpack/config-css')
+  ({ filename: 'bundle.css', allChunks: true, sourceMap: false }),
+
   require('@easy-webpack/config-fonts-and-images')(),
   require('@easy-webpack/config-global-bluebird')(),
   require('@easy-webpack/config-global-jquery')(),
@@ -85,12 +85,10 @@ config = generateConfig(
   ({minify: false, overrideOptions: {template: './src/index.html'}}),
 
   require('@easy-webpack/config-copy-files')
-  ({patterns: [{ from: 'favicon.ico', to: 'favicon.ico' }]}),
+  ({patterns: [{ from: './src/favicon.ico', to: 'favicon.ico' }]}),
 
   require('@easy-webpack/config-common-chunks-simple')
   ({appChunkName: 'app', firstChunk: 'aurelia-bootstrap'})
 );
-
-log.debug('Config: ', config);
 
 module.exports = config;

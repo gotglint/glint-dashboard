@@ -14,7 +14,11 @@ const mocha = require('gulp-mocha');
 // utilities
 const del = require('del');
 const runSequence = require('run-sequence');
-const webpack = require('webpack-stream');
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
+
+// proxy middleware
+const proxy = require('http-proxy-middleware');
 
 // variables
 const paths = {
@@ -53,7 +57,7 @@ gulp.task('build:sass', (done) => {
 
 gulp.task('build:js', ['clean:webpack'], () => {
   return gulp.src('src/app/app.js')
-    .pipe(webpack(require('./webpack.config.js')))
+    .pipe(webpackStream(require('./webpack.config.js'), webpack))
     .pipe(gulp.dest('dist/'));
 });
 
@@ -64,17 +68,16 @@ gulp.task('build', ['lint'], (callback) => {
 gulp.task('server', () => {
   connect.server({
     root: ['dist'],
-    port: 9000/*,
-    livereload: true
-    middleware: function(connect, o) {
-      return [ (function() {
-        var url = require('url');
-        var proxy = require('proxy-middleware');
-        var options = url.parse('http://beta.rhinobird.tv/api');
-        options.route = '/api';
-        return proxy(options);
-      })() ];
-    }*/
+    port: 9000,
+    livereload: true,
+    middleware: () => {
+      return [
+        proxy('/socket.io', {
+          target: 'http://localhost:9080',
+          changeOrigin: true
+        })
+      ];
+    }
   });
 });
 
