@@ -1,51 +1,96 @@
-const webpack = require('webpack');
+'use strict';
+
+const log = require('intel');
+
+const easyWebpack = require('@easy-webpack/core');
+const generateConfig = easyWebpack.default;
 const path = require('path');
+let config;
 
-const AureliaWebpackPlugin = require('aurelia-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// basic configuration:
+const rootDir = path.resolve();
+const srcDir = path.resolve('src');
+const outDir = path.resolve('dist');
 
-module.exports = {
-  context: __dirname,
-  entry: {
-    app: ['./src/app/main'],
-    bootstrap: ["aurelia-bootstrapper-webpack", "aurelia-polyfills", "aurelia-pal", "aurelia-pal-browser", "regenerator-runtime", "bluebird"],
-    aurelia: ["aurelia-binding", "aurelia-dependency-injection", "aurelia-event-aggregator", "aurelia-framework", "aurelia-history", "aurelia-history-browser", "aurelia-loader", "aurelia-loader-webpack", "aurelia-logging", "aurelia-logging-console", "aurelia-metadata", "aurelia-path", "aurelia-polyfills", "aurelia-route-recognizer", "aurelia-router", "aurelia-task-queue", "aurelia-templating", "aurelia-templating-binding", "aurelia-templating-router", "aurelia-templating-resources"]
-  },
-  output: {
-    path: "./dist",
-    filename: "js/[name].bundle.js",
-    sourceMapFilename: "js/[name].bundle.map",
-    chunkFilename: "js/[id].chunk.js"
-  },
-  debug: true,
-  devtool: "source-map",
-  module: {
-    loaders: [
-      { test: /\.html$/,   loader: 'html' },
-      { test: /\.js$/,     loader: 'babel', exclude: /(node_modules|bower_components)/, query: { presets: ['es2015'], plugins: ['transform-decorators-legacy', 'transform-runtime'] } },
-      { test: /\.json$/,   loader: 'json-loader' },
-      { test: /\.woff$/,   loader: 'url-loader?prefix=font/&limit=5000' },
-      { test: /\.eot$/,    loader: 'file-loader?prefix=font/' },
-      { test: /\.ttf$/,    loader: 'file-loader?prefix=font/' },
-      { test: /\.svg$/,    loader: 'file-loader?prefix=font/' },
-      { test: /\.ico/,     loader: 'file-loader' },
-      { test: /\.css$/,    loader: 'ignore-loader' },
-      { test: /\.scss$/,   loader: 'ignore-loader' },
-      { test: require.resolve('jquery'), loader: 'expose?$!expose?jQuery' }
-    ]
-  },
-  plugins: [
-    new AureliaWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-      chunksSortMode: 'dependency'
-      }),
-    new webpack.ProvidePlugin({
-      '$': 'jquery',
-      'jQuery': 'jquery',
-      'window.jQuery': 'jquery',
-      'Promise': 'bluebird',
-      'regeneratorRuntime': 'regenerator-runtime'
-    })
+const coreBundles = {
+  bootstrap: [
+    'aurelia-bootstrapper-webpack',
+    'aurelia-polyfills',
+    'aurelia-pal',
+    'aurelia-pal-browser',
+    'regenerator-runtime',
+    'bluebird'
+  ],
+  aurelia: [
+    'aurelia-bootstrapper-webpack',
+    'aurelia-binding',
+    'aurelia-dependency-injection',
+    'aurelia-event-aggregator',
+    'aurelia-framework',
+    'aurelia-history',
+    'aurelia-history-browser',
+    'aurelia-loader',
+    'aurelia-loader-webpack',
+    'aurelia-logging',
+    'aurelia-logging-console',
+    'aurelia-metadata',
+    'aurelia-pal',
+    'aurelia-pal-browser',
+    'aurelia-path',
+    'aurelia-polyfills',
+    'aurelia-route-recognizer',
+    'aurelia-router',
+    'aurelia-task-queue',
+    'aurelia-templating',
+    'aurelia-templating-binding',
+    'aurelia-templating-router',
+    'aurelia-templating-resources'
   ]
 };
+
+const baseConfig = {
+  entry: {
+    'app': [],
+    'aurelia-bootstrap': coreBundles.bootstrap,
+    'aurelia': coreBundles.aurelia.filter(pkg => coreBundles.bootstrap.indexOf(pkg) === -1)
+  },
+  output: {
+    path: outDir,
+  },
+  module: {
+    loaders: [
+      { test: /\.scss$/,   loader: 'ignore-loader' },
+      { test: /\.css$/,   loader: 'ignore-loader' }
+    ]
+  }
+};
+
+process.env.NODE_ENV = 'development';
+config = generateConfig(
+  baseConfig,
+
+  require('@easy-webpack/config-env-development')(),
+
+  require('@easy-webpack/config-aurelia')
+  ({root: rootDir, src: srcDir}),
+
+  require('@easy-webpack/config-babel')(),
+  require('@easy-webpack/config-html')({exclude: './src/index.html'}),
+
+  require('@easy-webpack/config-fonts-and-images')(),
+  require('@easy-webpack/config-global-bluebird')(),
+  require('@easy-webpack/config-global-jquery')(),
+  require('@easy-webpack/config-global-regenerator')(),
+  require('@easy-webpack/config-generate-index-html')
+  ({minify: false, overrideOptions: {template: './src/index.html'}}),
+
+  require('@easy-webpack/config-copy-files')
+  ({patterns: [{ from: 'favicon.ico', to: 'favicon.ico' }]}),
+
+  require('@easy-webpack/config-common-chunks-simple')
+  ({appChunkName: 'app', firstChunk: 'aurelia-bootstrap'})
+);
+
+log.debug('Config: ', config);
+
+module.exports = config;
