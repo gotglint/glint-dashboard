@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "description": "Got Glint?",
   "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com)",
-  "private": true,
+  "homepage": "https://github.com/gotglint/glint-dashboard/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mlaccetti/glint.git"
+    "url": "https://github.com/gotglint/glint-dashboard.git"
   },
   "bugs": {
-    "url": "https://github.com/mlaccetti/glint/issues"
+    "url": "https://github.com/gotglint/glint-dashboard/issues"
   },
   "license": "LGPL-2.1",
   "dependencies": {

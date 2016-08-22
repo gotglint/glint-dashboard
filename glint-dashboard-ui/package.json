@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "description": "Glint Dashboard UI",
   "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com)",
-  "homepage": "https://github.com/mlaccetti/glint/",
+  "homepage": "https://github.com/gotglint/glint-dashboard/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mlaccetti/glint.git"
+    "url": "https://github.com/gotglint/glint-dashboard.git"
   },
   "bugs": {
-    "url": "https://github.com/mlaccetti/glint/issues"
+    "url": "https://github.com/gotglint/glint-dashboard/issues"
   },
   "license": "LGPL-2.1",
   "dependencies": {
@@ -70,7 +70,7 @@
     "babel-preset-es2015-loose-native-modules": "^1.0.0",
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.11.6",
-    "del": "2.2.1",
+    "del": "2.2.2",
     "eslint": "^3.2.2",
     "eslint-plugin-babel": "^3.3.0",
     "expose-loader": "^0.7.1",
@@ -79,7 +79,7 @@
     "gulp-connect": "^5.0.0",
     "gulp-eslint": "3.0.1",
     "gulp-minify-css": "^1.2.4",
-    "gulp-mocha": "3.0.0",
+    "gulp-mocha": "3.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.3.2",
     "html-loader": "^0.4.3",

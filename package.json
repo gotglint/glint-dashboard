@@ -1,0 +1,21 @@
+{
+  "name": "glint-dashboard",
+  "version": "0.0.1",
+  "description": "Got Glint? A JavaScript Apache Spark-like system for RDDs",
+  "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com)",
+  "homepage": "https://github.com/gotglint/glint-dashboard/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gotglint/glint-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gotglint/glint-dashboard/issues"
+  },
+  "license": "LGPL-2.1",
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-hub": "0.8.0"
+  },
+  "dependencies": {
+  }
+}
