@@ -12,10 +12,8 @@
     "url": "https://github.com/gotglint/glint-dashboard/issues"
   },
   "license": "LGPL-2.1",
-  "devDependencies": {
-    "gulp": "3.9.1",
-    "gulp-hub": "0.8.0"
-  },
-  "dependencies": {
+  "scripts": {
+    "build": "./build.sh",
+    "watch": "./build.sh -w"
   }
 }
