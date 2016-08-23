@@ -30,6 +30,7 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-eslint": "^1.1.1",
+    "gulp-istanbul": "^1.1.0",
     "gulp-mocha": "^2.2.0",
     "gulp-nodemon": "^2.1.0",
     "gulp-plumber": "^1.0.1",
@@ -38,6 +39,7 @@
     "gulp-shell": "^0.5.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-zip": "^3.0.2",
+    "isparta": "^4.0.0",
     "node-bourbon": "^4.2.3",
     "run-sequence": "^1.2.2"
   }

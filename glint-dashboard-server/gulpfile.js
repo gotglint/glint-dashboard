@@ -7,15 +7,17 @@ const eslint = require('gulp-eslint');
 const nodemon = require('gulp-nodemon');
 const sourcemaps = require('gulp-sourcemaps');
 
-// utils
-const del = require('del');
-const runSequence = require('run-sequence');
-
 // testing
+const istanbul = require('gulp-istanbul');
 const mocha = require('gulp-mocha');
 
+// utils
+const del = require('del');
+const isparta = require('isparta');
+const runSequence = require('run-sequence');
+
 gulp.task('clean', () => {
-  return del(['dist/**']);
+  return del(['dist/**', 'coverage/**']);
 });
 
 gulp.task('lint', () => {
@@ -25,16 +27,40 @@ gulp.task('lint', () => {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('test', ['lint'], () => {
-  return gulp.src('./test/**/*.js')
+gulp.task('coverage', ['lint'], () => {
+  return gulp.src(['src/**/*.js'])
+    .pipe(istanbul({
+      instrumenter: isparta.Instrumenter
+    }))
+    .pipe(istanbul.hookRequire());
+});
+
+
+gulp.task('test:coverage', ['lint', 'coverage'], () => {
+  return gulp.src('test/unit/**/*.js')
     .pipe(mocha({
       reporter: 'spec',
-      quiet: false,
-      colors: true,
-      timeout: 10000
+      quiet:    false,
+      colors:   true,
+      timeout:  10000
+    }))
+    .pipe(istanbul.writeReports({
+      reporters: ['lcov']
     }));
 });
 
+gulp.task('test', ['lint', 'coverage'], () => {
+  return gulp.src('./test/unit/**/*.js')
+    .pipe(mocha({
+      reporter: 'spec',
+      quiet:    false,
+      colors:   true,
+      timeout:  10000
+    }))
+    .pipe(istanbul.writeReports({
+      reporters: ['text-summary']
+    }));
+});
 gulp.task('build', ['lint'], () => {
   return gulp.src('src/**/*.js')
     .pipe(sourcemaps.init())
@@ -58,6 +84,10 @@ gulp.task('watch', ['test', 'server'], () => {
 
 gulp.task('default', (callback) => {
   runSequence('clean', 'build', callback);
+});
+
+gulp.task('ci', (callback) => {
+  runSequence('clean', 'build', 'test:coverage', callback);
 });
 
 gulp.task('dist', ['test']);

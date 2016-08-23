@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
 run_build=true
+run_ci=false
 
 while getopts ":w" opt; do
   case $opt in
     w)
       echo "Running as watch instead of build" >&2
       run_build=false
+      ;;
+    c)
+      echo "Running in CI mode" >&2
+      run_ci=true
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -26,8 +31,14 @@ do
   echo "Running \`npm install\` for ${dir}..."
   npm install
 
-  echo "Running \`gulp dist\` for ${dir}..."
-  gulp dist
+  if [ "$run_ci" = true ]
+  then
+    echo "Running \`gulp ci\` for ${dir}..."
+    gulp ci
+  else
+    echo "Running \`gulp dist\` for ${dir}..."
+    gulp dist
+  fi
 
   cd -
 done
