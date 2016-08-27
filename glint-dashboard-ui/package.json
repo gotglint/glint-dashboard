@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/gotglint/glint-dashboard/issues"
   },
-  "license": "GPL-3",
+  "license": "GPL-3.0",
   "dependencies": {
     "aurelia-animator-css": "1.0.0",
     "aurelia-bootstrapper-webpack": "1.0.0",

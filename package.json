@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/gotglint/glint-dashboard/issues"
   },
-  "license": "GPL-3",
+  "license": "GPL-3.0",
   "scripts": {
     "build": "./build.sh",
     "watch": "./build.sh -w"
