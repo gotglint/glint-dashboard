@@ -1,5 +1,5 @@
 {
-  "name": "glint-dashboard",
+  "name": "@gotglint/glint-dashboard",
   "version": "0.0.1",
   "description": "Got Glint?",
   "author": "Michael Laccetti <michael@laccetti.com> (https://laccetti.com)",
