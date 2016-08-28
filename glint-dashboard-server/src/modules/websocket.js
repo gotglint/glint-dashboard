@@ -19,8 +19,6 @@ class Websocket extends Module {
   constructor(Primus) {
     super();
     this.Primus = Primus;
-
-    this.glintClient = new GlintClient('localhost', 45468);
   }
 
   get primus() {
@@ -47,14 +45,15 @@ class Websocket extends Module {
         const blob = deserialized.message.blob;
         this.log.debug('WS server received a blob: ', blob);
 
-        this.glintClient.init().then(() => {
+        const glintClient = new GlintClient('localhost', 45468);
+        glintClient.init().then(() => {
           eval(blob);  // eslint-disable-line no-eval
 
-          this.glintClient.run();
+          glintClient.run();
 
           const parent = this;
 
-          this.glintClient.waitForJob().then(function(result) {
+          glintClient.waitForJob().then(function(result) {
             parent.log.debug('Job result: ', result);
             spark.write(JSONfn.stringify({type: 'result', result: result}));
           }).catch((err) => {

@@ -11,9 +11,9 @@ export class Repl {
     this.ws = ws;
     this.log = getLogger('repl');
 
-    this.replInput = `const input = [...new Array(5).keys()].slice(1);
+    this.replInput = `const input = [...new Array(6).keys()].slice(1);
 
-this.glintClient.parallelize(input).map(function(el) {
+glintClient.parallelize(input).map(function(el) {
   return el + 324;
 }).filter(function(el, idx) {
   return !!(el === 325 || idx === 2);
@@ -25,7 +25,7 @@ this.glintClient.parallelize(input).map(function(el) {
     this.ws.subscribe('result', (data) => {
       this.log.debug('REPL message: ', data);
 
-      this.replOutput += JSONfn.stringify(data);
+      this.replOutput += JSONfn.stringify(data) + '<br>';
     });
   }
 
