@@ -13,6 +13,7 @@
   },
   "license": "GPL-3.0",
   "dependencies": {
+    "arrive": "^2.3.1",
     "aurelia-animator-css": "1.0.0",
     "aurelia-bootstrapper-webpack": "1.0.0",
     "aurelia-event-aggregator": "1.0.0",
@@ -33,6 +34,7 @@
     "bootstrap-material-design": "0.5.10",
     "brace": "0.8.0",
     "font-awesome": "4.6.3",
+    "jsonfn": "^0.31.0",
     "node-bourbon": "4.2.8",
     "regenerator-runtime": "0.9.5"
   },

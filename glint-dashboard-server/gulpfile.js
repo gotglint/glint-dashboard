@@ -4,7 +4,6 @@ const gulp = require('gulp');
 // plugins
 const babel = require('gulp-babel');
 const eslint = require('gulp-eslint');
-const nodemon = require('gulp-nodemon');
 const sourcemaps = require('gulp-sourcemaps');
 
 // testing
@@ -15,6 +14,7 @@ const mocha = require('gulp-mocha');
 const del = require('del');
 const isparta = require('isparta');
 const runSequence = require('run-sequence');
+const spawn = require('child_process').spawn;
 
 gulp.task('clean', () => {
   return del(['dist/**', 'coverage/**']);
@@ -69,18 +69,37 @@ gulp.task('build', ['lint'], () => {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('server', ['build'], () => {
-  nodemon({
+// BEGIN watch stuff
+let server;
+gulp.task('serve', ['build'], function() {
+  if (server) {
+    server.kill();
+  }
+
+  server = spawn('node', ['--debug', 'app.js'], {
+    stdio: 'inherit',
     cwd: 'dist',
-    script: 'app.js',
-    ext: 'js html',
-    env: { 'NODE_ENV': 'development' }
+    env: process.env
+  });
+
+  server.on('close', function (code) {
+    if (code > 0) {
+      console.error('Error detected, waiting for changes...');
+    }
   });
 });
 
-gulp.task('watch', ['test', 'server'], () => {
-  gulp.watch('src/**/*.js', ['build']);
+process.on('exit', () => {
+  if (server) {
+    server.kill();
+  }
 });
+
+gulp.task('watch', ['lint', 'serve'], () => {
+  gulp.watch('src/**/*.js', {interval: 1000, mode: 'poll'}, ['lint', 'serve']);
+  gulp.watch('.ravelrc', {interval: 1000, mode: 'poll'}, ['serve']);
+});
+// END watch stuff
 
 gulp.task('default', (callback) => {
   runSequence('clean', 'build', callback);

@@ -1,4 +1,5 @@
 import 'bootstrap-material-design/dist/js/material.min';
+import 'bootstrap-material-design/dist/js/ripples.min';
 
 import {inject} from 'aurelia-framework';
 import {getLogger} from 'aurelia-logging';

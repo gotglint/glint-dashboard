@@ -64,11 +64,10 @@ gulp.task('build', ['lint'], (callback) => {
   runSequence('build:sass', 'build:js', callback);
 });
 
-gulp.task('server', () => {
+gulp.task('serve', () => {
   connect.server({
     root: ['dist'],
     port: 9000,
-    livereload: true,
     middleware: () => {
       return [
         proxy('/primus', {
@@ -81,7 +80,7 @@ gulp.task('server', () => {
   });
 });
 
-gulp.task('watch', ['build', 'server'], () => {
+gulp.task('watch', ['build', 'serve'], () => {
   gulp.watch(paths.sass, ['build:sass']);
   gulp.watch(paths.js, ['build:js']);
   gulp.watch(paths.html, ['build:js']);

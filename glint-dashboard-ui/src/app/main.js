@@ -3,7 +3,11 @@ import {ConsoleAppender} from 'aurelia-logging-console';
 
 import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-material-design/dist/css/ripples.min.css';
+import 'bootstrap-material-design/dist/css/bootstrap-material-design.min.css';
+
 import 'bootstrap';
+import 'arrive';
 
 // comment out if you don't want a Promise polyfill (remove also from webpack.common.js)
 import * as Bluebird from 'bluebird';
