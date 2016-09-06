@@ -7,7 +7,7 @@ const postlisten = Module.postlisten;
 
 const JSONfn = require('jsonfn').JSONfn;
 
-const GlintClient = require('@gotglint/glint-client');
+const GlintClient = require('@gotglint/glint-client').GlintClient;
 
 const sPrimus = Symbol('primus');
 
